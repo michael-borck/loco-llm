@@ -1,0 +1,34 @@
+# LocoLLM Adapter Registry
+# 
+# This file tracks all adapters in the LocoLLM ecosystem.
+# Each adapter must include evaluation results showing improvement
+# over the base model before being added here.
+#
+# Base model for 2026-2027: Qwen/Qwen2.5-3B-Instruct (Q4_K_M)
+
+base_model:
+  name: "Qwen/Qwen2.5-3B-Instruct"
+  quantization: "Q4_K_M"
+  format: "gguf"
+  size_gb: 2.0
+  academic_year: "2026-2027"
+
+adapters: {}
+  # Adapters will be added here as they pass evaluation.
+  #
+  # Template:
+  #
+  # adapter-name:
+  #   version: "1.0.0"
+  #   base_model: "Qwen/Qwen2.5-3B-Instruct"
+  #   quantization: "Q4_K_M"
+  #   lora_rank: 16
+  #   created: "2026-S2"
+  #   authors: ["Team Name, Unit Code"]
+  #   benchmark_score: 0.00
+  #   base_model_score: 0.00
+  #   improvement: "+0.0%"
+  #   description: "One-line description"
+  #   tags: ["relevant", "keywords"]
+  #   size_mb: 0
+  #   router_keywords: ["trigger", "words"]
