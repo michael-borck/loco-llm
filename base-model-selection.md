@@ -158,6 +158,79 @@ That said, 1-2B models are worth considering for specific use cases:
 
 If hardware constraints force a smaller model, Llama-3.2-1B-Instruct shows the highest tunability and Qwen3-1.7B offers the best balance of size and post-fine-tuning quality below 2B.
 
+## Future: 1.58-Bit Native Models (Research Track)
+
+The most significant development on the horizon for LocoLLM is 1.58-bit native quantization, primarily through Microsoft's BitNet architecture and models built on it.
+
+### What Is 1.58-Bit?
+
+Unlike post-training quantization (where you train a model in full precision then compress it), BitNet models are trained natively with ternary weights: every weight is -1, 0, or +1. This is 1.58 bits per parameter (log2(3)). Because the model learns to work within these constraints from the start, it avoids the quality loss that comes from compressing a model after the fact.
+
+### Why It Matters for LocoLLM
+
+The numbers are transformative for the digital divide thesis:
+
+| Metric | Qwen3-4B (Q4_K_M) | BitNet b1.58 2B4T |
+|---|---|---|
+| Model size on disk | ~2.5GB | ~0.4GB |
+| RAM usage | ~3.5GB | ~0.8GB |
+| Inference speed (CPU) | 15-30 tok/s | ~6 tok/s (unoptimized) |
+| Energy per inference | ~35W | ~10W |
+| Minimum viable hardware | 8GB RAM laptop | Raspberry Pi 5 / 4GB Chromebook |
+
+A 0.4GB model running on a Raspberry Pi at human reading speed opens LocoLLM to an entirely different population of users: students in developing regions, schools with no laptop budget, offline kiosks, phone-based access.
+
+### Current Limitations
+
+**LoRA incompatibility.** Standard LoRA adapters attach to nn.Linear layers. BitNet replaces these with BitLinear layers that use ternary weights. The two architectures are fundamentally incompatible. Emerging solutions:
+
+- **BitLoRA** (2025): A modified PEFT method designed specifically for BitLinear layers. All adapter weights also operate in ternary. Early results are promising but the tooling is not yet production-ready.
+- **Falcon-Edge** (TII, 2025): 1B and 3B models pre-trained natively in 1.58-bit format with a training paradigm specifically designed to support fine-tuning. Available in both BitNet and bfloat16 variants from the same training run.
+- **BitDistill** (2025): A framework for distilling existing full-precision models into 1.58-bit BitNet format with performance comparable to the original. Three-stage process: modeling refinement, continued pre-training, and attention distillation.
+- **HuggingFace 1.58-bit fine-tuning**: HuggingFace demonstrated that existing models can be gradually fine-tuned down to 1.58-bit using warmup quantization techniques, though results are not yet as strong as native pre-training.
+
+**No Ollama support.** BitNet models require Microsoft's bitnet.cpp inference runtime or specialized kernels. They cannot currently run through Ollama or standard llama.cpp. This means a separate installation path and a different user experience.
+
+**Limited model selection.** As of mid-2025, the available natively-trained 1.58-bit models are: BitNet b1.58 2B4T (Microsoft), Falcon-Edge 1B/3B (TII), and a handful of community experiments. The selection will grow, but it's thin compared to the hundreds of 4-bit quantized models available.
+
+**4K context length.** BitNet b1.58 2B4T has a maximum context of 4,096 tokens. This limits use cases that require longer context windows. Long-context fine-tuning is recommended but adds complexity.
+
+### Planned Research Track (Phase 3+)
+
+LocoLLM's architecture is designed to be base-model-agnostic. The router, evaluation harness, benchmarks, and adapter submission process all work regardless of the underlying model's precision format. This means we can run a parallel track:
+
+**Semester 3 project: "LocoLLM-1bit"**
+
+A student team ports the LocoLLM framework to a 1.58-bit base (Falcon-Edge 3B or successor), adapts the fine-tuning pipeline to use BitLoRA or Falcon-Edge's native fine-tuning approach, and benchmarks the same task domains at both precisions.
+
+Research questions:
+- Does routed 1.58-bit task specialization close the gap to 4-bit general models?
+- What is the quality/memory/speed trade-off curve across precisions for the same tasks?
+- Which task domains are most and least sensitive to extreme quantization?
+- Is the tunability inversion (smaller models gain more from fine-tuning) even more pronounced at 1.58-bit?
+
+This comparison, done rigorously on the same task benchmarks, would be a novel contribution. Nobody has published routed multi-adapter evaluation at 1.58-bit precision.
+
+### Decision Framework: When to Switch
+
+LocoLLM should consider making 1.58-bit the default pathway when:
+
+1. At least one 1.58-bit base model exists at 3-4B parameters with competitive benchmark scores
+2. A LoRA-compatible fine-tuning method (BitLoRA or equivalent) is available through standard tooling (HuggingFace PEFT or similar)
+3. An inference runtime works cross-platform (macOS, Windows, Linux) with a user experience comparable to Ollama
+4. Our own benchmarks confirm that routed 1.58-bit adapters achieve at least 80% of the quality of routed 4-bit adapters on LocoLLM task domains
+
+Until those conditions are met, 4-bit remains the production default and 1.58-bit remains a research track.
+
+### Key References
+
+- **BitNet b1.58 model**: https://huggingface.co/microsoft/bitnet-b1.58-2B-4T
+- **bitnet.cpp inference runtime**: https://github.com/microsoft/BitNet
+- **Falcon-Edge (fine-tunable 1.58-bit)**: https://falcon-lm.github.io/blog/falcon-edge/
+- **HuggingFace 1.58-bit fine-tuning guide**: https://huggingface.co/blog/1_58_llm_extreme_quantization
+- **BitLoRA paper (adapter tuning for 1.58-bit)**: https://www.sciencedirect.com/science/article/abs/pii/S0957417426003106
+- **BitDistill (distillation to 1.58-bit)**: https://arxiv.org/html/2510.13998v1
+
 ## Changing the Base Model
 
 A base model change affects the entire ecosystem. All existing adapters must be verified or retrained. This is a significant community effort, so changes should be:

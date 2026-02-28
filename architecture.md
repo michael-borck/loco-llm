@@ -382,10 +382,12 @@ Adapters are hosted on:
 
 ## Technical Constraints and Trade-offs
 
-**Memory ceiling dictates everything.** The 8GB RAM target is the single most important constraint. Every architectural decision flows from it. This is why we use 3B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead).
+**Memory ceiling dictates everything.** The 8GB RAM target is the single most important constraint. Every architectural decision flows from it. This is why we use 4B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead).
 
 **Adapter swapping adds latency, not memory.** Loading a LoRA adapter takes 50-200ms depending on size and disk speed. This is noticeable but acceptable for interactive use. It means we can have many adapters installed without increasing memory usage.
 
 **Router accuracy matters more as the library grows.** With 3-5 adapters, even keyword routing works fine. With 15+, misrouting becomes a real issue and can produce worse results than no adapter at all. The router needs to scale with the adapter library.
 
-**Base model quality sets the floor.** Adapters can improve specific capabilities but can't compensate for fundamental limitations in the base model's architecture or pretraining. If the 3B base can't do basic language understanding, no amount of LoRA fine-tuning will fix that. This is why base model selection matters so much.
+**Base model quality sets the floor.** Adapters can improve specific capabilities but can't compensate for fundamental limitations in the base model's architecture or pretraining. If the base model can't do basic language understanding, no amount of LoRA fine-tuning will fix that. This is why base model selection matters so much.
+
+**1.58-bit changes the hardware equation.** Native 1.58-bit models (BitNet architecture) reduce the memory floor from ~3.5GB to ~0.8GB, potentially moving LocoLLM from "runs on a laptop" to "runs on a Raspberry Pi." However, the current trade-off is tooling maturity: no Ollama support, no standard LoRA compatibility, and a limited model selection. The architecture of LocoLLM (router, eval harness, benchmarks, adapter workflow) is designed to be precision-agnostic, so a 1.58-bit base model can be slotted in as a research track without restructuring the project. See docs/base-model-selection.md for the full analysis and decision framework.

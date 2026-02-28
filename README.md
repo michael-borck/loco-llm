@@ -234,6 +234,7 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 - User study with students on quality perception and usage patterns
 - Adapter composition (can two adapters cooperate on a query?)
 - Explore ensemble voting within the framework
+- **1.58-bit research track**: Port LocoLLM to BitNet/Falcon-Edge base models, comparing same task domains at 4-bit vs 1.58-bit (quality, memory, speed, energy)
 
 ### Phase 4: Community (2028+)
 
@@ -241,6 +242,7 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 - Domain-specific distributions (LocoLLM-Business, LocoLLM-Health)
 - Automated adapter quality testing in CI/CD
 - Multi-base-model support as new small models emerge
+- 1.58-bit as default pathway if tooling matures (0.4GB models on Raspberry Pi, Chromebooks, phones)
 
 ## Research Context
 
@@ -254,7 +256,7 @@ LocoLLM builds on several converging lines of research, and critically, these te
 
 **Ensembling small models scales performance.** "More Agents Is All You Need" (Li et al., TMLR 2024) showed majority voting across small model instances can match larger models. Llama2-13B with voting outperformed Llama2-70B on a single pass. On a local model, the only cost is time, not money. This is LocoLLM's third layer: opt-in self-consistency voting.
 
-**Quantization preserves capability.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops.
+**Quantization preserves capability.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops. Looking further ahead, [BitNet b1.58](https://github.com/microsoft/BitNet) demonstrates that models trained natively at 1.58-bit precision (ternary weights: -1, 0, +1) can match full-precision peers while using 6x less RAM and 2-3x faster inference on CPU. A 2B BitNet model fits in 0.4GB. The tooling is still maturing, but the trajectory points toward sub-1GB models running on phones and Raspberry Pis.
 
 ### The Stackable Advantage
 
