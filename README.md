@@ -144,6 +144,7 @@ locollm/
 ├── docs/
 │   ├── why-locollm.md
 │   ├── architecture.md
+│   ├── finetuning-primer.md
 │   ├── adapter-guide.md
 │   ├── evaluation-standards.md
 │   ├── base-model-selection.md
