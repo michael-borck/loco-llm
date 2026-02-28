@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocoLLM - Frontier AI on a Budget</title>
+  <meta name="description" content="Frontier AI on a budget. Crazy, right? An open-source experiment in building routed, task-specific fine-tuned language models that run entirely on consumer hardware.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111114;
+      --bg-card: #16161a;
+      --bg-card-hover: #1c1c21;
+      --text-primary: #e8e6e3;
+      --text-secondary: #9a9a9e;
+      --text-muted: #5e5e63;
+      --accent: #f97316;
+      --accent-glow: rgba(249, 115, 22, 0.15);
+      --accent-secondary: #fb923c;
+      --green: #22c55e;
+      --green-dim: rgba(34, 197, 94, 0.12);
+      --border: #1e1e23;
+      --border-light: #2a2a30;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'DM Sans', -apple-system, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ═══ NAV ═══ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 11, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-logo .loco {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-links .gh-link {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ═══ HERO ═══ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+    }
+
+    /* Gradient orb behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+    }
+
+    .hero-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      border: 1px solid rgba(249, 115, 22, 0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      position: relative;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .hero h1 .highlight {
+      color: var(--accent);
+    }
+
+    .hero .tagline {
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-bottom: 2.5rem;
+      position: relative;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(249, 115, 22, 0.25);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+      transform: translateY(-1px);
+    }
+
+    /* Terminal preview */
+    .terminal-preview {
+      margin-top: 4rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0;
+      max-width: 680px;
+      width: 100%;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.2rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 2;
+    }
+
+    .terminal-line {
+      opacity: 0;
+      animation: typeIn 0.4s ease forwards;
+    }
+
+    .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+    .terminal-line:nth-child(2) { animation-delay: 1.2s; }
+    .terminal-line:nth-child(3) { animation-delay: 1.9s; }
+    .terminal-line:nth-child(4) { animation-delay: 2.6s; }
+    .terminal-line:nth-child(5) { animation-delay: 3.3s; }
+    .terminal-line:nth-child(6) { animation-delay: 4.0s; }
+
+    @keyframes typeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prompt { color: var(--green); }
+    .cmd { color: var(--text-primary); }
+    .flag { color: var(--accent); }
+    .comment { color: var(--text-muted); }
+    .output { color: var(--text-secondary); }
+
+    /* ═══ SECTIONS ═══ */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 600px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    /* ═══ HOW IT WORKS ═══ */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .how-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .how-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .how-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .how-card:hover::before { opacity: 1; }
+
+    .how-number {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+
+    .how-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .how-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* ═══ PHILOSOPHY ═══ */
+    .philosophy-section {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 2rem;
+    }
+
+    .philosophy-section .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .phil-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-primary);
+      transition: all 0.3s;
+    }
+
+    .phil-card:hover {
+      border-color: var(--border-light);
+    }
+
+    .phil-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .phil-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .phil-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* ═══ IS THIS FOR YOU ═══ */
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .persona-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .persona-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .persona-emoji {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .persona-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .persona-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ═══ ARCHITECTURE ═══ */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .arch-box {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .arch-query { background: rgba(249, 115, 22, 0.12); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.25); }
+    .arch-router { background: rgba(168, 85, 247, 0.12); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.25); }
+    .arch-adapter { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.25); }
+    .arch-base { background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .arch-arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+    .arch-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-align: center;
+      margin-top: 0.25rem;
+    }
+
+    /* ═══ STATUS / ROADMAP ═══ */
+    .status-track {
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .status-item {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      position: relative;
+    }
+
+    .status-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 3.2rem;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-light);
+    }
+
+    .status-marker {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+      border: 2px solid;
+    }
+
+    .status-marker.done { background: var(--green); border-color: var(--green); }
+    .status-marker.building { background: var(--accent); border-color: var(--accent); animation: pulseMarker 2s ease-in-out infinite; }
+    .status-marker.next { background: transparent; border-color: var(--text-muted); }
+    .status-marker.vision { background: transparent; border-color: var(--border-light); }
+
+    @keyframes pulseMarker {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); }
+    }
+
+    .status-content h3 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .status-content p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .status-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tag-done { background: var(--green-dim); color: var(--green); }
+    .tag-building { background: var(--accent-glow); color: var(--accent); }
+    .tag-next { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+    .tag-vision { background: rgba(255,255,255,0.03); color: var(--text-muted); }
+
+    /* ═══ GET INVOLVED ═══ */
+    .involve-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .involve-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-card);
+      transition: all 0.3s;
+    }
+
+    .involve-card:hover {
+      border-color: var(--border-light);
+    }
+
+    .involve-card h3 {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .involve-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* ═══ CTA BOTTOM ═══ */
+    .cta-bottom {
+      text-align: center;
+      padding: 6rem 2rem 8rem;
+      position: relative;
+    }
+
+    .cta-bottom::before {
+      content: '';
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .cta-quote {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .cta-bottom h2 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .cta-bottom p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+      position: relative;
+    }
+
+    .cta-bottom .hero-actions {
+      justify-content: center;
+    }
+
+    /* ═══ FOOTER ═══ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-secondary); }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+        gap: 1rem;
+      }
+
+      .how-grid, .persona-grid { grid-template-columns: 1fr; }
+      .philosophy-grid, .involve-grid { grid-template-columns: 1fr; }
+      .terminal-preview { margin-top: 2rem; }
+      .arch-row { flex-direction: column; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+    /* ═══ SCROLL ANIMATIONS ═══ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo"><span class="loco">Loco</span>LLM</a>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#philosophy">Philosophy</a></li>
+      <li><a href="#audience">Who It's For</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#status">Status</a></li>
+      <li><a href="#contribute">Contribute</a></li>
+      <li><a href="https://github.com/michael-borck/loco-llm" class="gh-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Yes, we're a little loco &middot; Open Source &middot; MIT License</div>
+    <h1><span class="highlight">Loco</span>LLM</h1>
+    <p class="tagline">
+      Frontier AI on a budget. Crazy, right? We're building a routed swarm of tiny specialist models and testing whether they can outperform generalists on real tasks. No cloud. No API keys. Just your hardware doing more than you'd expect.
+    </p>
+    <div class="hero-actions">
+      <a href="#how" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/michael-borck/loco-llm" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <!-- Terminal Demo -->
+    <div class="terminal-preview">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">terminal</span>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco setup</span></div>
+        <div class="terminal-line"><span class="output">&check; Pulled qwen3:4b via Ollama (2.5 GB)</span></div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco query</span> <span class="flag">"solve 2x + 5 = 13"</span></div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco query</span> <span class="flag">"solve 2x + 5 = 13"</span> <span class="cmd">--adapter</span> <span class="flag">math</span></div>
+        <div class="terminal-line"><span class="output">&check; Math adapter loaded &middot; x = 4</span></div>
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco eval</span> <span class="flag">math</span> <span class="comment"># how much does the adapter help?</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-label fade-up">How It Works</div>
+    <h2 class="section-title fade-up">One base model. Many specialists.<br>Sounds loco. Works great.</h2>
+    <p class="section-desc fade-up">
+      The idea is simple: instead of one giant model that's okay at everything, route each query to a lightweight specialist fine-tuned for that task. Research suggests this approach has real potential. We're building the tools to find out.
+    </p>
+    <div class="how-grid">
+      <div class="how-card fade-up">
+        <div class="how-number">1</div>
+        <h3>Single Base Model</h3>
+        <p>Qwen3-4B quantized to Q4_K_M. Fits in 2.5 GB of VRAM. Runs on any GPU from the last 6 years, or even a laptop CPU.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-number">2</div>
+        <h3>LoRA Adapters</h3>
+        <p>Tiny specialist layers (50-300 MB each) fine-tuned for specific domains. Hot-swap in milliseconds. We're starting with math, code, writing, and analysis.</p>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-number">3</div>
+        <h3>Smart Router</h3>
+        <p>Classifies your query and picks the best adapter automatically. No manual switching. Just ask your question. (This is the part we're building next.)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <div class="philosophy-section" id="philosophy">
+    <div class="inner">
+      <div class="section-label fade-up">Philosophy</div>
+      <h2 class="section-title fade-up">We're all a little loco here.</h2>
+      <p class="section-desc fade-up">
+        The sensible approach is to pay for API access and let someone else handle it. We'd rather find out what's possible on a GPU we bought secondhand for the price of a nice dinner. Maybe that's loco. We think it's worth finding out.
+      </p>
+      <div class="philosophy-grid">
+        <div class="phil-card fade-up">
+          <div class="phil-icon">&#9881;</div>
+          <h3>Skills Over Gear</h3>
+          <p>Built on the 80-20 principle. You don't need a $10k GPU rig. A secondhand graphics card and good training data will get you 80% of the way there. That's not a limitation. That's the point.</p>
+        </div>
+        <div class="phil-card fade-up">
+          <div class="phil-icon">&#127891;</div>
+          <h3>Built Together</h3>
+          <p>Every adapter, benchmark, and routing improvement makes the whole system smarter. Contribute a specialist and everyone benefits. That's the theory. We're building the evidence.</p>
+        </div>
+        <div class="phil-card fade-up">
+          <div class="phil-icon">&#128274;</div>
+          <h3>Runs Offline</h3>
+          <p>No API keys. No cloud bills. No data leaving your machine. Everything runs locally through Ollama. Your queries, your hardware, your business.</p>
+        </div>
+        <div class="phil-card fade-up">
+          <div class="phil-icon">&#128200;</div>
+          <h3>AI Last Resort</h3>
+          <p>LocoLLM is a thinking partner, not an answer machine. Do the work first, then use AI to check, challenge, and sharpen. That's not old-fashioned. That's how you actually learn.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHO IT'S FOR -->
+  <section id="audience">
+    <div class="section-label fade-up">Who It's For</div>
+    <h2 class="section-title fade-up">Are you loco enough?</h2>
+    <p class="section-desc fade-up">
+      If any of these sound like you, welcome to the club.
+    </p>
+    <div class="persona-grid">
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#128176;</div>
+        <h3>The Budget Rebel</h3>
+        <p>You refuse to pay per-token for something your own hardware can do. You've done the math on API costs and it offends you. Good. Channel that energy.</p>
+      </div>
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#129302;</div>
+        <h3>The Tinkerer</h3>
+        <p>You want to understand how LLMs actually work by cracking them open and rewiring the internals. Fine-tuning a real adapter teaches more than any tutorial ever will.</p>
+      </div>
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#128300;</div>
+        <h3>The Researcher</h3>
+        <p>You need reproducible local inference for experiments. You want to test whether a team of specialists really can beat a generalist. That's an open question. Help us answer it.</p>
+      </div>
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#127979;</div>
+        <h3>The Educator</h3>
+        <p>You teach AI or computing and want a real project your classes can contribute to. Not a toy demo. Real infrastructure that grows with every cohort.</p>
+      </div>
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#128272;</div>
+        <h3>The Vault</h3>
+        <p>Your data doesn't leave your machine. Period. Medical notes, legal research, personal journals, proprietary code. Local means local.</p>
+      </div>
+      <div class="persona-card fade-up">
+        <div class="persona-emoji">&#9881;</div>
+        <h3>The 80-20er</h3>
+        <p>You know the best gear doesn't make the best work. A $150 secondhand GPU and sharp training data might just surprise you. That's what we're betting on.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-label fade-up">Architecture</div>
+    <h2 class="section-title fade-up">Deceptively simple.</h2>
+    <p class="section-desc fade-up">
+      A query comes in, the router classifies it, the matching adapter loads onto the base model, and the response goes out. No orchestration frameworks. No agent graphs. No PhD required. Whether this simplicity is a strength or a limitation is what we're here to find out.
+    </p>
+    <div class="arch-diagram fade-up">
+      <div class="arch-row">
+        <div class="arch-box arch-query">Your Query</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">&darr;</span></div>
+      <div class="arch-row">
+        <div class="arch-box arch-router">Router (classifier)</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">&darr;</span></div>
+      <div class="arch-row">
+        <div class="arch-box arch-adapter">math</div>
+        <div class="arch-box arch-adapter">code</div>
+        <div class="arch-box arch-adapter">writing</div>
+        <div class="arch-box arch-adapter">analysis</div>
+        <div class="arch-box arch-adapter" style="opacity: 0.5;">yours?</div>
+      </div>
+      <div class="arch-label">LoRA Adapters (50-300 MB each) &middot; 4 building now, more to come</div>
+      <div class="arch-row"><span class="arch-arrow">&darr;</span></div>
+      <div class="arch-row">
+        <div class="arch-box arch-base">Qwen3-4B &middot; Q4_K_M &middot; 2.5 GB</div>
+      </div>
+      <div class="arch-label">Base model loaded once, adapters hot-swap</div>
+    </div>
+  </section>
+
+  <!-- WHERE WE ARE -->
+  <div class="philosophy-section" id="status">
+    <div class="inner">
+      <div class="section-label fade-up">Where We Are</div>
+      <h2 class="section-title fade-up">Early days. Eyes wide open.</h2>
+      <p class="section-desc fade-up">
+        LocoLLM is a young project. We're not pretending otherwise. Here's what exists today and where we're headed.
+      </p>
+      <div class="status-track">
+        <div class="status-item fade-up">
+          <div class="status-marker done"></div>
+          <div class="status-content">
+            <h3>Proof of Concept</h3>
+            <p>Single math adapter on Qwen3-4B, basic CLI, manual adapter loading. It works. We can measure the difference.</p>
+            <span class="status-tag tag-done">Now</span>
+          </div>
+        </div>
+        <div class="status-item fade-up">
+          <div class="status-marker building"></div>
+          <div class="status-content">
+            <h3>MVP: Four Specialists</h3>
+            <p>Math, code, writing, and analysis adapters. Simple router. Standardised evaluation. The first real test of whether routing beats a generalist.</p>
+            <span class="status-tag tag-building">Building</span>
+          </div>
+        </div>
+        <div class="status-item fade-up">
+          <div class="status-marker next"></div>
+          <div class="status-content">
+            <h3>Validation</h3>
+            <p>Rigorous benchmarks comparing specialist routing vs. base model across domains. Honest results, published openly, whatever they show.</p>
+            <span class="status-tag tag-next">Next</span>
+          </div>
+        </div>
+        <div class="status-item fade-up">
+          <div class="status-marker vision"></div>
+          <div class="status-content">
+            <h3>The Vision</h3>
+            <p>A growing ecosystem of community-trained specialist adapters, smart routing, and one-command setup. Frontier-capable AI that runs on hardware you already own.</p>
+            <span class="status-tag tag-vision">Vision</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GET INVOLVED -->
+  <section id="contribute">
+    <div class="section-label fade-up">Get Involved</div>
+    <h2 class="section-title fade-up">Join the loco ones.</h2>
+    <p class="section-desc fade-up">
+      LocoLLM is a collaborative project. Every adapter, benchmark, and improvement makes the whole system better for everyone. The barrier to entry is low. The ceiling is high.
+    </p>
+    <div class="involve-grid">
+      <div class="involve-card fade-up">
+        <h3>&#129514; Train an Adapter</h3>
+        <p>Pick a domain you care about, curate a dataset, fine-tune with Unsloth or MLX, and contribute it back. Your specialisation becomes everyone's tool.</p>
+      </div>
+      <div class="involve-card fade-up">
+        <h3>&#128202; Benchmark &amp; Evaluate</h3>
+        <p>Run standardised evaluations. Compare adapters against base models. Publish reproducible results. Help us prove what works.</p>
+      </div>
+      <div class="involve-card fade-up">
+        <h3>&#128187; Improve the Router</h3>
+        <p>The router is what makes the system feel smart. Better classification means better adapter selection. Bring your NLP skills.</p>
+      </div>
+      <div class="involve-card fade-up">
+        <h3>&#128221; Write Documentation</h3>
+        <p>Guides, tutorials, setup instructions, troubleshooting. Good docs lower the barrier for the next contributor.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BOTTOM -->
+  <div class="cta-bottom">
+    <p class="cta-quote">"Frontier AI on consumer hardware? That's loco."<br>Yeah. That's the name. Want to help us find out if it works?</p>
+    <h2>Get in early.</h2>
+    <p>We're just getting started. The best time to shape a project is before it's finished.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/michael-borck/loco-llm" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="#how" class="btn btn-secondary">Learn More</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-text">Released under the MIT License. &copy; 2025 LocoLLM</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/michael-borck/loco-llm">GitHub</a></li>
+        <li><a href="https://github.com/michael-borck/loco-llm/blob/main/docs/why-locollm.md">Docs</a></li>
+        <li><a href="https://github.com/michael-borck/loco-llm/blob/main/LICENSE">License</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Scroll animation observer -->
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
