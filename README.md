@@ -68,7 +68,7 @@ LocoLLM connects these ideas into a practical, local-first system. For the full 
 
 ```bash
 # Clone the repository
-git clone https://github.com/loco-llm/loco-llm.git
+git clone https://github.com/michael-borck/loco-llm.git
 cd loco-llm
 
 # Install LocoLLM
@@ -304,6 +304,6 @@ MIT License. See [LICENSE](LICENSE) for details.
   title={LocoLLM: Local Collaborative LLMs for Resource-Constrained AI Access},
   author={The 80-20 Workshop and Curtin University Contributors},
   year={2026},
-  url={https://github.com/loco-llm/loco-llm}
+  url={https://github.com/michael-borck/loco-llm}
 }
 ```
