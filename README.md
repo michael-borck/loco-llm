@@ -68,8 +68,8 @@ LocoLLM connects these ideas into a practical, local-first system.
 
 ```bash
 # Clone the repository
-git clone https://github.com/locollm/locollm.git
-cd locollm
+git clone https://github.com/loco-llm/loco-llm.git
+cd loco-llm
 
 # Install LocoLLM
 pip install -e .
@@ -161,7 +161,7 @@ Each adapter in the ecosystem is tracked in `adapters/registry.yaml`:
 adapters:
   math-reasoning:
     version: "1.2.0"
-    base_model: "Qwen/Qwen2.5-3B-Instruct"
+    base_model: "Qwen/Qwen3-4B-Instruct"
     quantization: "Q4_K_M"
     lora_rank: 16
     created: "2026-S2"
@@ -246,7 +246,7 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 
 LocoLLM builds on several converging lines of research, and critically, these techniques are stackable rather than competing:
 
-**Task-specific fine-tuning outperforms general models.** Predibase's LoRA Land showed fine-tuned Mistral-7B adapters beating GPT-4 on specific tasks. Small models with focused training punch well above their weight class. This is LocoLLM's foundation layer: route queries to specialist adapters.
+**Task-specific fine-tuning outperforms general models.** Predibase's LoRA Land showed fine-tuned Mistral-7B adapters beating GPT-4 on specific tasks. distil labs' 2025 benchmark of 12 small models confirmed this at the 3-4B scale: fine-tuned Qwen3-4B matched or exceeded a 120B+ teacher model on 7 of 8 tasks. Crucially, [smaller models show the largest gains from fine-tuning](https://www.distillabs.ai/blog/we-benchmarked-12-small-language-models-across-8-tasks-to-find-the-best-base-model-for-fine-tuning), meaning LocoLLM's adapter approach exploits a strength unique to the small model class, not just compensating for a weakness.
 
 **Routing reduces cost without sacrificing quality.** RouteLLM (Ong et al., ICLR 2025) demonstrated 2x+ cost reduction by routing queries to appropriately-sized models. Routers generalize well even across model pairs they weren't trained on.
 
@@ -254,7 +254,7 @@ LocoLLM builds on several converging lines of research, and critically, these te
 
 **Ensembling small models scales performance.** "More Agents Is All You Need" (Li et al., TMLR 2024) showed majority voting across small model instances can match larger models. Llama2-13B with voting outperformed Llama2-70B on a single pass. On a local model, the only cost is time, not money. This is LocoLLM's third layer: opt-in self-consistency voting.
 
-**Quantization preserves capability.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3B-parameter models practical on 8GB laptops.
+**Quantization preserves capability.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops.
 
 ### The Stackable Advantage
 
@@ -266,12 +266,12 @@ The key insight is that local inference makes all of these techniques cheaper th
 | RE2 prompting | ~2x prompt tokens billed | Near zero |
 | 5-sample voting | 5x generation cost | ~30 seconds of wall time |
 
-A routed, prompt-enhanced, vote-verified 4-bit 3B model may genuinely approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free. Testing that hypothesis is the project's central research question.
+A routed, prompt-enhanced, vote-verified 4-bit 4B model may genuinely approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free. Testing that hypothesis is the project's central research question.
 
 ## FAQ
 
 **Why not just use Ollama with a bigger model?**
-A 70B model in 4-bit still needs around 40GB of RAM. Most student laptops have 8-16GB. LocoLLM targets the 3B parameter range, which fits comfortably in 4-8GB, and compensates for smaller size through task specialization.
+A 70B model in 4-bit still needs around 40GB of RAM. Most student laptops have 8-16GB. LocoLLM targets the 3-4B parameter range, which fits comfortably in 4-8GB, and compensates for smaller size through task specialization. Recent benchmarks show that fine-tuned 4B models can match or exceed models 30x their size on specific tasks.
 
 **Won't 4-bit quantization kill the fine-tuning gains?**
 We fine-tune at higher precision and quantize afterward. The LoRA adapters themselves are small enough to stay at full precision. Research on QLoRA-style training shows most of the benefit is preserved.
@@ -280,7 +280,7 @@ We fine-tune at higher precision and quantize afterward. The LoRA adapters thems
 For many students, $20/month is a real barrier, and institutional licenses don't always cover everyone. LocoLLM is free, runs offline, keeps data private, and requires no internet connection. It won't match frontier models on everything, but for well-defined task domains, the combination of specialist fine-tuning, RE2 prompting, and self-consistency voting can get surprisingly close.
 
 **Doesn't running 5 samples for voting make it slow?**
-A 3B model on a modern laptop generates at roughly 20-40 tokens per second. A typical 200-token response takes 5-10 seconds. Five samples take 25-50 seconds. That's a real wait, but for a student working through a problem set, trading 30 seconds for a significantly more reliable answer is a good trade. Voting is opt-in and off by default for interactive chat.
+A 4B model on a modern laptop generates at roughly 15-30 tokens per second. A typical 200-token response takes 7-13 seconds. Five samples take 35-65 seconds. That's a real wait, but for a student working through a problem set, trading a minute for a significantly more reliable answer is a good trade. Voting is opt-in and off by default for interactive chat.
 
 **Can I use a different base model?**
 The framework is base-model-agnostic, but all adapters in the official registry target the current standard base model for a given academic year. Switching base models means retraining or verifying adapter compatibility.
@@ -299,6 +299,6 @@ MIT License. See [LICENSE](LICENSE) for details.
   title={LocoLLM: Local Collaborative LLMs for Resource-Constrained AI Access},
   author={The 80-20 Workshop and Curtin University Contributors},
   year={2026},
-  url={https://github.com/locollm/locollm}
+  url={https://github.com/loco-llm/loco-llm}
 }
 ```

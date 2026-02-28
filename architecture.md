@@ -6,17 +6,17 @@ This document describes how LocoLLM's components fit together and the reasoning 
 
 LocoLLM has five core components:
 
-1. **Base Model**: A single quantized small language model (3B parameters, 4-bit) that stays loaded in memory
+1. **Base Model**: A single quantized small language model (4B parameters, 4-bit) that stays loaded in memory
 2. **Adapter Library**: A collection of LoRA adapters, each fine-tuned for a specific task domain
 3. **Router**: A lightweight classifier that examines incoming queries and selects the most appropriate adapter
 4. **Inference Enhancements**: Stackable techniques (RE2 prompting, self-consistency voting) that boost output quality at no financial cost
 5. **CLI / Runtime**: The user-facing interface that ties everything together
 
-The key insight is that LoRA adapters are tiny (typically 20-30MB) compared to the base model (1.5-2GB in 4-bit). Swapping an adapter takes milliseconds. This means LocoLLM can behave like a multi-model system while only ever keeping one model in memory.
+The key insight is that LoRA adapters are tiny (typically 20-30MB) compared to the base model (2-3GB in 4-bit). Swapping an adapter takes milliseconds. This means LocoLLM can behave like a multi-model system while only ever keeping one model in memory.
 
 ## Base Model Selection
 
-### Current Standard: Qwen2.5-3B-Instruct (Q4_K_M)
+### Current Standard: Qwen3-4B-Instruct (Q4_K_M)
 
 The base model is standardized for an entire academic year. All adapters must target the same base model and quantization spec. This ensures any adapter can be loaded onto any LocoLLM installation.
 
@@ -28,9 +28,9 @@ The base model is standardized for an entire academic year. All adapters must ta
 - Permissive license for academic and research use
 - Available in GGUF format for Ollama compatibility
 
-**Why 3B and not 7B?**
+**Why 3-4B and not 7B?**
 
-A 7B model in 4-bit quantization needs roughly 4-5GB of RAM for the model alone. With the OS, runtime overhead, and adapter, you're pushing past 8GB. Many student laptops, especially older ones or Chromebooks, have exactly 8GB. The 3B class gives us more headroom and faster inference, at the cost of weaker baseline capability, which is exactly what the adapters compensate for.
+A 7B model in 4-bit quantization needs roughly 4-5GB of RAM for the model alone. With the OS, runtime overhead, and adapter, you're pushing past 8GB. Many student laptops, especially older ones or Chromebooks, have exactly 8GB. The 3-4B class gives us more headroom and faster inference, at the cost of weaker baseline capability, which is exactly what the adapters compensate for. Recent benchmarking (distil labs, 2025) also shows that smaller models gain more from fine-tuning than larger ones, so the gap narrows further once adapters are applied.
 
 **Why 4-bit quantization?**
 
@@ -234,7 +234,7 @@ loco query "Write a Python function to reverse a linked list" --adapter code-pyt
 
 **Why this works on local hardware:**
 
-With a frontier API, 5 samples costs 5x the money. On a 3B local model, 5 samples costs 5x the time, but no money. A 3B model on a modern laptop generates at roughly 20-40 tokens per second. A typical response of 200 tokens takes about 5-10 seconds. Five samples take 25-50 seconds. That's a meaningful wait, but for a student working through a problem set, trading 30 seconds of wall time for a significantly more reliable answer is an excellent deal.
+With a frontier API, 5 samples costs 5x the money. On a 4B local model, 5 samples costs 5x the time, but no money. A 4B model on a modern laptop generates at roughly 15-30 tokens per second. A typical response of 200 tokens takes about 7-13 seconds. Five samples take 35-65 seconds. That's a meaningful wait, but for a student working through a problem set, trading a minute of wall time for a significantly more reliable answer is an excellent deal.
 
 **Research basis:**
 
@@ -277,7 +277,7 @@ Each layer addresses a different failure mode:
 | RE2 prompting | Shallow reasoning on first pass | ~2x prompt tokens billed | Near zero |
 | Self-consistency voting | Random inference errors | Nx generation cost | Time only |
 
-This is the core of LocoLLM's thesis: a routed, prompt-enhanced, vote-verified 4-bit 3B model may approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free.
+This is the core of LocoLLM's thesis: a routed, prompt-enhanced, vote-verified 4-bit 4B model may approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free.
 
 ### Configuration
 

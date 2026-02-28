@@ -4,13 +4,13 @@
 # Each adapter must include evaluation results showing improvement
 # over the base model before being added here.
 #
-# Base model for 2026-2027: Qwen/Qwen2.5-3B-Instruct (Q4_K_M)
+# Base model for 2026-2027: Qwen/Qwen3-4B-Instruct (Q4_K_M)
 
 base_model:
-  name: "Qwen/Qwen2.5-3B-Instruct"
+  name: "Qwen/Qwen3-4B-Instruct"
   quantization: "Q4_K_M"
   format: "gguf"
-  size_gb: 2.0
+  size_gb: 2.5
   academic_year: "2026-2027"
 
 adapters: {}
@@ -20,7 +20,7 @@ adapters: {}
   #
   # adapter-name:
   #   version: "1.0.0"
-  #   base_model: "Qwen/Qwen2.5-3B-Instruct"
+  #   base_model: "Qwen/Qwen3-4B-Instruct"
   #   quantization: "Q4_K_M"
   #   lora_rank: 16
   #   created: "2026-S2"
