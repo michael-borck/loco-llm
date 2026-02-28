@@ -93,7 +93,7 @@ Using a frontier model to generate training examples is fine and often practical
 Use the standard training script to ensure consistency across all adapters:
 
 ```bash
-python scripts/fine_tune.py \
+uv run python scripts/fine_tune.py \
   --base-model Qwen/Qwen2.5-3B-Instruct \
   --dataset adapters/your-domain/training/dataset.jsonl \
   --output adapters/your-domain/ \
@@ -148,18 +148,18 @@ Run the standard evaluation harness to benchmark your adapter:
 
 ```bash
 # Evaluate your adapter
-python scripts/evaluate.py \
+uv run python scripts/evaluate.py \
   --adapter adapters/your-domain/ \
   --benchmark adapters/your-domain/eval/benchmark.jsonl \
   --output adapters/your-domain/eval/results.json
 
 # Evaluate the base model on the same benchmark (for comparison)
-python scripts/evaluate.py \
+uv run python scripts/evaluate.py \
   --benchmark adapters/your-domain/eval/benchmark.jsonl \
   --output adapters/your-domain/eval/base_results.json
 
 # Run out-of-domain check (pick another adapter's benchmark)
-python scripts/evaluate.py \
+uv run python scripts/evaluate.py \
   --adapter adapters/your-domain/ \
   --benchmark adapters/math-reasoning/eval/benchmark.jsonl \
   --output adapters/your-domain/eval/ood_results.json
@@ -226,6 +226,22 @@ Not every contribution needs to be a new adapter. Improving an existing one is e
 - **Version bumping**: If your improved adapter beats the current version on the same benchmark, submit it as a version upgrade
 
 When improving an existing adapter, keep the previous version's benchmark results in the PR for comparison.
+
+## Development Setup
+
+```bash
+# Install uv (if you don't have it)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install all dependencies (including dev tools)
+uv sync
+
+# Run checks
+uv run ruff check .        # lint
+uv run ruff format --check . # format check
+uv run mypy src/           # type check
+uv run pytest              # tests
+```
 
 ## Code Contributions
 

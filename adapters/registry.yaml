@@ -1,5 +1,5 @@
 # LocoLLM Adapter Registry
-# 
+#
 # This file tracks all adapters in the LocoLLM ecosystem.
 # Each adapter must include evaluation results showing improvement
 # over the base model before being added here.
@@ -12,23 +12,22 @@ base_model:
   format: "gguf"
   size_gb: 2.5
   academic_year: "2026-2027"
+  ollama_name: "qwen3:4b"
 
-adapters: {}
-  # Adapters will be added here as they pass evaluation.
-  #
-  # Template:
-  #
-  # adapter-name:
-  #   version: "1.0.0"
-  #   base_model: "Qwen/Qwen3-4B-Instruct"
-  #   quantization: "Q4_K_M"
-  #   lora_rank: 16
-  #   created: "2026-S2"
-  #   authors: ["Team Name, Unit Code"]
-  #   benchmark_score: 0.00
-  #   base_model_score: 0.00
-  #   improvement: "+0.0%"
-  #   description: "One-line description"
-  #   tags: ["relevant", "keywords"]
-  #   size_mb: 0
-  #   router_keywords: ["trigger", "words"]
+adapters:
+  math:
+    version: "0.2.0"
+    type: "merged-gguf"
+    gguf_path: "math/gguf/unsloth.Q4_K_M.gguf"  # relative to adapters/
+    description: "Math reasoning adapter (LoRA merged, Q4_K_M)"
+    authors: ["LocoLLM Team"]
+    tags: ["math", "arithmetic", "reasoning"]
+    eval_dataset: "eval_dataset.jsonl"
+    training:
+      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      method: "qlora"
+      dataset: "GSM8K (200 examples)"
+      lora_r: 16
+      lora_alpha: 32
+      epochs: 3
+      quantization: "q4_k_m"

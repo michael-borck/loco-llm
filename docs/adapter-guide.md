@@ -9,7 +9,7 @@ Make sure you have:
 - A LocoLLM installation (see README Quick Start)
 - Access to a GPU for training (Google Colab free tier works)
 - An approved adapter proposal (see CONTRIBUTING.md Step 1)
-- Python 3.10+ with the LocoLLM dev dependencies installed (`pip install -e ".[dev]"`)
+- Python 3.10+ with the LocoLLM dev dependencies installed (`uv sync`)
 
 ## Phase 1: Understand Your Domain (Week 1-2)
 
@@ -114,7 +114,7 @@ If you don't have local GPU access, use this Colab workflow:
 ### Local Training
 
 ```bash
-python scripts/fine_tune.py \
+uv run python scripts/fine_tune.py \
   --base-model Qwen/Qwen2.5-3B-Instruct \
   --dataset adapters/your-domain/training/dataset.jsonl \
   --output adapters/your-domain/ \
@@ -155,13 +155,13 @@ Watch for these patterns in the training loss:
 
 ```bash
 # Your adapter vs the benchmark
-python scripts/evaluate.py \
+uv run python scripts/evaluate.py \
   --adapter adapters/your-domain/ \
   --benchmark adapters/your-domain/eval/benchmark.jsonl \
   --output adapters/your-domain/eval/results.json
 
 # Base model vs the same benchmark
-python scripts/evaluate.py \
+uv run python scripts/evaluate.py \
   --benchmark adapters/your-domain/eval/benchmark.jsonl \
   --output adapters/your-domain/eval/base_results.json
 ```

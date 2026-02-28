@@ -141,10 +141,10 @@ The primary evaluation. Run the adapter and the base model on the same domain be
 
 ```bash
 # Adapter
-python scripts/evaluate.py --adapter adapters/your-domain/ --benchmark adapters/your-domain/eval/benchmark.jsonl
+uv run python scripts/evaluate.py --adapter adapters/your-domain/ --benchmark adapters/your-domain/eval/benchmark.jsonl
 
 # Base model (no adapter)
-python scripts/evaluate.py --benchmark adapters/your-domain/eval/benchmark.jsonl
+uv run python scripts/evaluate.py --benchmark adapters/your-domain/eval/benchmark.jsonl
 ```
 
 **Pass criterion:** Adapter score must be higher than base model score.
@@ -154,7 +154,7 @@ python scripts/evaluate.py --benchmark adapters/your-domain/eval/benchmark.jsonl
 Run the adapter on at least one other domain's benchmark to verify it doesn't degrade general capability.
 
 ```bash
-python scripts/evaluate.py --adapter adapters/your-domain/ --benchmark adapters/math-reasoning/eval/benchmark.jsonl
+uv run python scripts/evaluate.py --adapter adapters/your-domain/ --benchmark adapters/math-reasoning/eval/benchmark.jsonl
 ```
 
 **Pass criterion:** Adapter score should be within 5 percentage points of the base model's score on the same benchmark. Small degradation is normal (the adapter shifts the model's attention toward its domain). Large degradation (more than 10 points) indicates a problem with training.

@@ -71,39 +71,41 @@ LocoLLM connects these ideas into a practical, local-first system. For the full 
 git clone https://github.com/michael-borck/loco-llm.git
 cd loco-llm
 
-# Install LocoLLM
-pip install -e .
+# Install LocoLLM and all dependencies
+uv sync
 
 # Download the base model
-loco setup
+uv run loco setup
 
 # List available adapters
-loco adapters list
+uv run loco adapters list
 
 # Install adapters relevant to your coursework
-loco adapters install math-reasoning code-python writing-academic
+uv run loco adapters install math-reasoning code-python writing-academic
 
 # Start chatting
-loco chat
+uv run loco chat
 ```
+
+> **Tip:** If you activate the virtualenv (`source .venv/bin/activate`), you can run `loco` directly without the `uv run` prefix.
 
 ### Usage
 
 ```bash
 # Interactive chat (router auto-selects adapter, RE2 prompting on by default)
-loco chat
+uv run loco chat
 
 # Force a specific adapter
-loco chat --adapter math-reasoning
+uv run loco chat --adapter math-reasoning
 
 # Single query mode
-loco query "Solve: If a store offers 30% off and then an additional 15% off the sale price, what is the total discount?"
+uv run loco query "Solve: If a store offers 30% off and then an additional 15% off the sale price, what is the total discount?"
 
 # Maximum quality: adapter + RE2 + self-consistency voting (5 samples)
-loco query "Solve: ..." --votes 5
+uv run loco query "Solve: ..." --votes 5
 
 # Benchmark an adapter against the base model
-loco eval math-reasoning --benchmark standard
+uv run loco eval math-reasoning --benchmark standard
 ```
 
 ## Project Structure

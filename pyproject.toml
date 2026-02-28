@@ -7,7 +7,7 @@ name = "locollm"
 version = "0.1.0"
 description = "Local Collaborative LLMs -- Frontier AI on a Student Budget"
 readme = "README.md"
-license = "MIT"
+license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
     { name = "The 80-20 Workshop" },
@@ -23,7 +23,19 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-dependencies = []
+dependencies = [
+    "pyyaml",
+    "requests",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "types-requests",
+    "types-PyYAML",
+]
 
 [project.urls]
 Homepage = "https://github.com/michael-borck/loco-llm"
@@ -32,3 +44,33 @@ Issues = "https://github.com/michael-borck/loco-llm/issues"
 
 [project.scripts]
 loco = "locollm.cli:main"
+
+# --- Tool configuration ---
+
+[tool.ruff]
+target-version = "py310"
+line-length = 99
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
