@@ -146,6 +146,7 @@ locollm/
 │   ├── adapter-guide.md
 │   ├── evaluation-standards.md
 │   ├── base-model-selection.md
+│   ├── benchmarking-guide.md
 │   └── semester-reports/
 └── scripts/
     ├── fine_tune.py                # Standardized training script
@@ -220,6 +221,7 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 - Ship first 3-5 adapters from initial student cohort
 - Implement keyword-based router (v1)
 - Publish initial benchmark comparing LocoLLM vs base model vs frontier API
+- Systematic Q4_K_M benchmarking of 3-4B models across standard tasks (filling a gap in the literature where most benchmarks only test full-precision models). See [benchmarking guide](docs/benchmarking-guide.md)
 
 ### Phase 2: Growth (Semester 1, 2027)
 
@@ -256,7 +258,7 @@ LocoLLM builds on several converging lines of research, and critically, these te
 
 **Ensembling small models scales performance.** "More Agents Is All You Need" (Li et al., TMLR 2024) showed majority voting across small model instances can match larger models. Llama2-13B with voting outperformed Llama2-70B on a single pass. On a local model, the only cost is time, not money. This is LocoLLM's third layer: opt-in self-consistency voting.
 
-**Quantization preserves capability.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops. Looking further ahead, [BitNet b1.58](https://github.com/microsoft/BitNet) demonstrates that models trained natively at 1.58-bit precision (ternary weights: -1, 0, +1) can match full-precision peers while using 6x less RAM and 2-3x faster inference on CPU. A 2B BitNet model fits in 0.4GB. The tooling is still maturing, but the trajectory points toward sub-1GB models running on phones and Raspberry Pis.
+**Quantization preserves capability, and fine-tuning recovers the rest.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops. An important caveat: most published benchmarks evaluate full-precision models, so systematic data on how 3-4B models perform specifically at Q4_K_M quantization is thin. Studies on larger models show 96-99% recovery (Red Hat), but an IJCAI 2025 study warned that smaller LLMs can see significant accuracy drops at 4-bit. LocoLLM's Phase 1 benchmarks will help fill this gap. Critically, QLoRA (Dettmers et al., NeurIPS 2023) demonstrated that fine-tuning through a frozen 4-bit base model fully recovers 16-bit performance, and newer methods like Q-BLoRA (TACL 2025) further close the gap, sometimes exceeding 16-bit baselines. Multiple domain-specific studies confirm that fine-tuned quantized small models can match or outperform larger general-purpose models in cybersecurity, medicine, mathematics, and language tasks. See [base model selection](docs/base-model-selection.md#research-viability-can-fine-tuning-make-quantized-small-models-good-specialists) for the full evidence review. Looking further ahead, [BitNet b1.58](https://github.com/microsoft/BitNet) demonstrates that models trained natively at 1.58-bit precision (ternary weights: -1, 0, +1) can match full-precision peers while using 6x less RAM and 2-3x faster inference on CPU. A 2B BitNet model fits in 0.4GB. The tooling is still maturing, but the trajectory points toward sub-1GB models running on phones and Raspberry Pis.
 
 ### The Stackable Advantage
 
@@ -276,7 +278,7 @@ A routed, prompt-enhanced, vote-verified 4-bit 4B model may genuinely approach f
 A 70B model in 4-bit still needs around 40GB of RAM. Most student laptops have 8-16GB. LocoLLM targets the 3-4B parameter range, which fits comfortably in 4-8GB, and compensates for smaller size through task specialization. Recent benchmarks show that fine-tuned 4B models can match or exceed models 30x their size on specific tasks.
 
 **Won't 4-bit quantization kill the fine-tuning gains?**
-We fine-tune at higher precision and quantize afterward. The LoRA adapters themselves are small enough to stay at full precision. Research on QLoRA-style training shows most of the benefit is preserved.
+QLoRA (NeurIPS 2023) showed that fine-tuning through a frozen 4-bit base model matches 16-bit fine-tuning performance. Newer methods like Q-BLoRA (TACL 2025) go further, sometimes exceeding 16-bit baselines entirely. The LoRA adapters themselves stay at full precision and are small enough that this adds negligible overhead. That said, most QLoRA research targeted 7B+ models. Systematic benchmarks at the 3-4B scale with Q4_K_M quantization are sparse, which is why LocoLLM's own benchmarks are an early contribution to the field. The evidence from domain-specific studies (cybersecurity, medical QA, mathematics) consistently shows fine-tuned quantized small models matching or beating larger general-purpose models. See the [research viability analysis](docs/base-model-selection.md#research-viability-can-fine-tuning-make-quantized-small-models-good-specialists) for the full evidence chain.
 
 **How does this compare to paying for ChatGPT?**
 For many students, $20/month is a real barrier, and institutional licenses don't always cover everyone. LocoLLM is free, runs offline, keeps data private, and requires no internet connection. It won't match frontier models on everything, but for well-defined task domains, the combination of specialist fine-tuning, RE2 prompting, and self-consistency voting can get surprisingly close.
