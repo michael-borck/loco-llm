@@ -14,7 +14,7 @@ Access to capable AI is becoming a digital divide issue. Frontier models require
 
 Meanwhile, research shows that small models fine-tuned for specific tasks can match or exceed general-purpose large models on those tasks. And routing architectures can direct queries to the right specialist without needing a massive general-purpose model for everything.
 
-LocoLLM connects these ideas into a practical, local-first system.
+LocoLLM connects these ideas into a practical, local-first system. For the full argument, including the educational philosophy, the "AI Last" workflow, and why small models are better suited to the task than most people assume, see [Why LocoLLM Exists](docs/why-locollm.md).
 
 ## How It Works
 
@@ -142,6 +142,7 @@ locollm/
 │   │       └── results.json
 │   └── ...
 ├── docs/
+│   ├── why-locollm.md
 │   ├── architecture.md
 │   ├── adapter-guide.md
 │   ├── evaluation-standards.md
