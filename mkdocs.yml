@@ -34,6 +34,7 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
+  - LocoLLM.org: https://locollm.org
   - Home: index.md
   - Getting Started:
     - Why LocoLLM: why-locollm.md
