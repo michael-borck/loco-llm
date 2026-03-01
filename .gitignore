@@ -22,8 +22,27 @@ build/
 htmlcov/
 .coverage
 
+# Jupyter
+.ipynb_checkpoints/
+
 # MkDocs
 site/
+
+# Models and weights
+models/
+*.gguf
+*.bin
+*.safetensors
+
+# Benchmark results
+results/
+
+# Logs
+*.log
+
+# Training
+wandb/
+adapter_checkpoints/
 
 # Environment
 .env
