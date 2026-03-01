@@ -1,0 +1,110 @@
+/* LocoLLM brand overrides for MkDocs Material */
+
+:root {
+  /* Orange accent */
+  --md-primary-fg-color: #f97316;
+  --md-primary-fg-color--light: #fb923c;
+  --md-primary-fg-color--dark: #ea580c;
+  --md-accent-fg-color: #f97316;
+
+  /* Dark backgrounds matching landing page */
+  --md-default-bg-color: #0a0a0b;
+  --md-default-bg-color--light: #111114;
+  --md-default-bg-color--lighter: #16161a;
+  --md-default-bg-color--lightest: #1c1c21;
+}
+
+/* Slate scheme overrides */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0a0a0b;
+  --md-default-bg-color--light: #111114;
+  --md-default-bg-color--lighter: #16161a;
+  --md-default-bg-color--lightest: #1c1c21;
+
+  --md-primary-fg-color: #f97316;
+  --md-primary-fg-color--light: #fb923c;
+  --md-primary-fg-color--dark: #ea580c;
+  --md-accent-fg-color: #f97316;
+
+  --md-typeset-a-color: #f97316;
+
+  /* Header */
+  --md-header-bg-color: rgba(10, 10, 11, 0.85);
+
+  /* Code blocks */
+  --md-code-bg-color: #111114;
+
+  /* Footer */
+  --md-footer-bg-color: #111114;
+  --md-footer-bg-color--dark: #0a0a0b;
+}
+
+/* Header border to match landing page */
+.md-header {
+  border-bottom: 1px solid #1e1e23;
+  backdrop-filter: blur(12px);
+}
+
+/* Navigation sidebar */
+.md-sidebar {
+  background: #0a0a0b;
+}
+
+/* Active nav item */
+.md-nav__link--active,
+.md-nav__link:is(:focus, :hover) {
+  color: #f97316;
+}
+
+/* Search bar */
+.md-search__input {
+  background-color: #16161a;
+}
+
+/* Code block styling */
+.highlight code,
+code {
+  border-radius: 6px;
+}
+
+/* Card grid on home page */
+.md-typeset .grid.cards > ul > li {
+  background: #16161a;
+  border: 1px solid #1e1e23;
+  border-radius: 12px;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: #2a2a30;
+}
+
+/* Admonition styling */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 8px;
+  background: #111114;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+  background: #111114;
+  border-radius: 8px;
+}
+
+.md-typeset table:not([class]) th {
+  background: #16161a;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-track {
+  background: #0a0a0b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a30;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a40;
+}

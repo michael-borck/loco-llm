@@ -22,6 +22,9 @@ build/
 htmlcov/
 .coverage
 
+# MkDocs
+site/
+
 # Environment
 .env
 .env.local

@@ -73,7 +73,7 @@ The [Adapter Development Guide](adapter-guide.md#data-quality-checklist) has a c
 Using a frontier model (like GPT-4 or Claude) to generate training examples is practical and common. LocoLLM explicitly supports this workflow. But synthetic data has specific risks:
 
 - **Homogeneity**: A single model tends to produce examples in a similar style and at a similar difficulty level. You get breadth without true diversity. Vary your generation prompts aggressively.
-- **Inherited errors**: The generating model has its own biases and mistakes. Always review a sample of generated examples manually — the [contributing guide](../CONTRIBUTING.md#synthetic-data-generation) recommends at least 10%.
+- **Inherited errors**: The generating model has its own biases and mistakes. Always review a sample of generated examples manually — the [contributing guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md#synthetic-data-generation) recommends at least 10%.
 - **Subtle incorrectness**: For technical domains (math, code), synthetic outputs can look plausible but be wrong. Verify outputs, especially for tasks where you can check correctness programmatically.
 
 ### Data Contamination
@@ -111,7 +111,7 @@ The [Adapter Development Guide](adapter-guide.md#monitoring-training) covers wha
 
 **Learning rate**: How big a step the model takes when adjusting weights. Too high and training is unstable (overshooting). Too low and the model barely learns (tiny steps that never get anywhere). LocoLLM defaults to 2e-4, which is the standard starting point for QLoRA. You almost never need to increase it; occasionally you need to decrease it.
 
-The [contributing guide](../CONTRIBUTING.md#hyperparameter-guidance) has a table of defaults and when to adjust them.
+The [contributing guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md#hyperparameter-guidance) has a table of defaults and when to adjust them.
 
 ## Hardware Realities
 
@@ -177,7 +177,7 @@ The [Adapter Development Guide](adapter-guide.md#iteration-cycle) walks through 
 You now have the conceptual foundation. Here's where to go from here:
 
 - **[Adapter Development Guide](adapter-guide.md)**: The step-by-step practical guide for building your first adapter, from baseline testing through submission.
-- **[Contributing Guide](../CONTRIBUTING.md)**: The full contribution workflow including proposal, data requirements, evaluation bar, and PR checklist.
+- **[Contributing Guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md)**: The full contribution workflow including proposal, data requirements, evaluation bar, and PR checklist.
 - **[Architecture](architecture.md)**: How LocoLLM's components (router, adapter manager, inference pipeline, evaluation harness) fit together.
 - **[Evaluation Standards](evaluation-standards.md)**: What "good enough" means, how benchmarks work, and how scoring varies by domain type.
 - **[Benchmarking Guide](benchmarking-guide.md)**: Methodology for comparing adapters, base models, and quantization levels.

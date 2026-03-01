@@ -1,0 +1,72 @@
+site_name: LocoLLM Docs
+site_url: https://locollm.org/docs/
+site_description: Documentation for LocoLLM — Frontier AI on a Budget
+repo_url: https://github.com/michael-borck/loco-llm
+repo_name: michael-borck/loco-llm
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  font:
+    text: DM Sans
+    code: JetBrains Mono
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+exclude_docs: |
+  index.html
+  CNAME
+  TRAINING_LOG_TEMPLATE.md
+  capstone-project-blurb.md
+  adr/0000-template.md
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Why LocoLLM: why-locollm.md
+    - FAQ: faq.md
+    - Meet the Lab: meet-the-lab.md
+  - Guides:
+    - Adapter Development: adapter-guide.md
+    - Fine-Tuning Primer: finetuning-primer.md
+    - Training the Math Adapter: train-math-adapter.md
+    - Benchmarking: benchmarking-guide.md
+    - Evaluation Standards: evaluation-standards.md
+  - Reference:
+    - Architecture: architecture.md
+    - Base Model Selection: base-model-selection.md
+    - Research Roadmap: research-roadmap.md
+    - Ideas & Open Questions: ideas.md
+  - Decisions (ADRs):
+    - Overview: adr/README.md
+    - "0001: Base Model": adr/0001-base-model-qwen3-4b.md
+    - "0002: Registry Design": adr/0002-adapter-registry-design.md
+    - "0003: Single Router": adr/0003-single-evolving-router.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html

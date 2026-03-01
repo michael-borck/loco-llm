@@ -36,6 +36,9 @@ dev = [
     "types-requests",
     "types-PyYAML",
 ]
+docs = [
+    "mkdocs-material",
+]
 
 [project.urls]
 Homepage = "https://github.com/michael-borck/loco-llm"

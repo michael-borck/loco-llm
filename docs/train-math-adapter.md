@@ -2,7 +2,7 @@
 
 Step-by-step instructions for training the math adapter on neurocore (or any machine with an NVIDIA GPU and 8GB+ VRAM).
 
-> **No GPU?** Use the [Colab notebook](../notebooks/train_math_adapter.ipynb) instead — it runs on a free T4 GPU and produces the same GGUF file.
+> **No GPU?** Use the [Colab notebook](https://github.com/michael-borck/loco-llm/blob/main/notebooks/train_math_adapter.ipynb) instead — it runs on a free T4 GPU and produces the same GGUF file.
 
 ## Prerequisites
 
