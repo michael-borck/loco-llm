@@ -6,7 +6,6 @@ repo_name: michael-borck/loco-llm
 
 theme:
   name: material
-  custom_dir: docs/overrides
   palette:
     scheme: slate
     primary: custom
