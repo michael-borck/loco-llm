@@ -30,6 +30,14 @@ LocoLLM is an open-source experiment in building routed, task-specific fine-tune
 
     [:octicons-arrow-right-24: Architecture](architecture.md) · [Research Roadmap](research-roadmap.md)
 
+-   **Benchmarks**
+
+    ---
+
+    Interactive results: quality, speed, and efficiency across 14 models x 8 quant levels.
+
+    [:octicons-arrow-right-24: Overview](benchmarks/index.md) · [Quality](benchmarks/quality.md) · [Bang per Bit](benchmarks/bang-per-bit.md)
+
 -   **Decisions (ADRs)**
 
     ---

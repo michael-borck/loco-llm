@@ -1,5 +1,8 @@
 # Benchmarking Guide: Quantized Small Models
 
+!!! tip "Looking for Results?"
+    Interactive benchmark charts are available in the **[Benchmark Results](benchmarks/index.md)** section — including [quality analysis](benchmarks/quality.md), [speed comparisons](benchmarks/speed.md), and [bang-per-bit efficiency](benchmarks/bang-per-bit.md).
+
 This document covers how to run LocoLLM's benchmarks, what hardware to use, and how to produce the "bang per bit" analysis that fills a genuine gap in the literature.
 
 ## What We're Measuring and Why

@@ -33,9 +33,23 @@ exclude_docs: |
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - https://cdn.plot.ly/plotly-2.35.2.min.js
+  - javascripts/benchmark_data.js
+  - javascripts/chart_theme.js
+  - javascripts/charts_overview.js
+  - javascripts/charts_quality.js
+  - javascripts/charts_speed.js
+  - javascripts/charts_efficiency.js
+
 nav:
   - LocoLLM.org: https://locollm.org
   - Home: index.md
+  - Benchmarks:
+    - Overview: benchmarks/index.md
+    - Quality: benchmarks/quality.md
+    - Speed: benchmarks/speed.md
+    - Bang per Bit: benchmarks/bang-per-bit.md
   - Getting Started:
     - Why LocoLLM: why-locollm.md
     - FAQ: faq.md

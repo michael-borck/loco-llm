@@ -7,6 +7,7 @@ Download GGUF files first, then point the script at their directory.
 Usage:
     pip install lm-eval[hf]
     python scripts/benchmark_base_models.py --models-dir ./models
+    python scripts/benchmark_base_models.py --models-dir ./models --apply-chat-template
     python scripts/benchmark_base_models.py --models-dir ./models --tasks gsm8k,mmlu
     python scripts/benchmark_base_models.py --models-dir ./models --tokenizer Qwen/Qwen3-4B-Instruct
 """
@@ -64,22 +65,35 @@ def run_benchmark(
     output_dir: Path,
     batch_size: str,
     device: str,
+    apply_chat_template: bool,
 ) -> Path:
     """Run lm_eval on a single GGUF model via subprocess."""
     model_name = gguf_path.stem
     result_dir = output_dir / model_name
     result_dir.mkdir(parents=True, exist_ok=True)
 
+    # Use --model hf with gguf_file for direct local GGUF evaluation.
+    # The "gguf" model type is an API client that needs a running server;
+    # "hf" with gguf_file loads the file directly via HuggingFace Transformers.
+    model_args = (
+        f"pretrained={gguf_path.parent},"
+        f"gguf_file={gguf_path.name},"
+        f"tokenizer={tokenizer}"
+    )
+
     cmd = [
         sys.executable, "-m", "lm_eval",
-        "--model", "gguf",
-        "--model_args", f"base_url={gguf_path},tokenizer={tokenizer}",
+        "--model", "hf",
+        "--model_args", model_args,
         "--tasks", tasks,
         "--batch_size", batch_size,
         "--device", device,
         "--output_path", str(result_dir),
         "--log_samples",
     ]
+
+    if apply_chat_template:
+        cmd.append("--apply_chat_template")
 
     print(f"  Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -116,7 +130,10 @@ def collect_results(output_dir: Path) -> dict:
         results_data = data.get("results", {})
         for task_name, task_results in results_data.items():
             # lm_eval stores the primary metric as acc or acc_norm or exact_match
-            for metric in ("acc,none", "acc_norm,none", "exact_match,none", "mc2,none"):
+            for metric in (
+                "acc,none", "acc_norm,none", "exact_match,none", "mc2,none",
+                "acc", "acc_norm", "exact_match",
+            ):
                 if metric in task_results:
                     scores[task_name] = round(task_results[metric] * 100, 1)
                     break
@@ -195,6 +212,11 @@ def main():
         default=None,
         help="Override tokenizer for all models (useful for single-model runs)",
     )
+    parser.add_argument(
+        "--apply-chat-template",
+        action="store_true",
+        help="Apply the model's chat template (recommended for instruct/chat models)",
+    )
     args = parser.parse_args()
 
     models = discover_models(args.models_dir)
@@ -226,6 +248,7 @@ def main():
             output_dir=args.output_dir,
             batch_size=args.batch_size,
             device=args.device,
+            apply_chat_template=args.apply_chat_template,
         )
         print()
 

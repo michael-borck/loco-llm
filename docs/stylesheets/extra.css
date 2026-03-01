@@ -95,6 +95,60 @@ code {
   background: #16161a;
 }
 
+/* Plotly chart containers */
+.plotly-chart {
+  min-height: 400px;
+  border-radius: 12px;
+  background: #111114;
+  border: 1px solid #1e1e23;
+  margin: 1.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.plotly-chart .js-plotly-plot {
+  border-radius: 12px;
+}
+
+/* Loading state before Plotly renders */
+.plotly-chart:empty::after {
+  content: 'Loading chart\2026';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #64748b;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+}
+
+/* Plotly modebar overrides */
+.plotly-chart .modebar {
+  background: transparent !important;
+}
+
+.plotly-chart .modebar-btn path {
+  fill: #64748b !important;
+}
+
+.plotly-chart .modebar-btn:hover path {
+  fill: #f97316 !important;
+}
+
+/* Mobile responsiveness for charts */
+@media (max-width: 768px) {
+  .plotly-chart {
+    min-height: 300px;
+    margin: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .plotly-chart {
+    min-height: 250px;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar-track {
   background: #0a0a0b;

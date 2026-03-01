@@ -39,6 +39,9 @@ dev = [
 docs = [
     "mkdocs-material",
 ]
+benchmark = [
+    "lm-eval[hf]",
+]
 
 [project.urls]
 Homepage = "https://github.com/michael-borck/loco-llm"
