@@ -2,6 +2,8 @@
 
 Step-by-step instructions for training the math adapter on neurocore (or any machine with an NVIDIA GPU and 8GB+ VRAM).
 
+> **No GPU?** Use the [Colab notebook](../notebooks/train-math-adapter.ipynb) instead — it runs on a free T4 GPU and produces the same GGUF file.
+
 ## Prerequisites
 
 - NVIDIA GPU with 8GB+ VRAM (tested on RTX 2060 SUPER)
@@ -32,7 +34,7 @@ pip install --upgrade pip
 pip install --upgrade --force-reinstall --no-cache-dir unsloth unsloth_zoo
 ```
 
-> **Why not `uv`?** The main project doesn't use `uv` yet. When it does, this venv should remain separate — Unsloth's dependency matrix is incompatible with locollm's runtime deps.
+> **Why a separate venv?** The main project uses `uv sync`, but Unsloth's dependency matrix is incompatible with locollm's runtime deps. Keep the training venv separate.
 
 Pull the base model in Ollama (if not already present):
 
