@@ -1,5 +1,9 @@
 # LocoLLM
 
+<!-- BADGES:START -->
+[![collaborative](https://img.shields.io/badge/-collaborative-blue?style=flat-square)](https://github.com/topics/collaborative) [![consumer-hardware](https://img.shields.io/badge/-consumer--hardware-blue?style=flat-square)](https://github.com/topics/consumer-hardware) [![fine-tuning](https://img.shields.io/badge/-fine--tuning-blue?style=flat-square)](https://github.com/topics/fine-tuning) [![jupyter-notebook](https://img.shields.io/badge/-jupyter--notebook-blue?style=flat-square)](https://github.com/topics/jupyter-notebook) [![language-model](https://img.shields.io/badge/-language--model-blue?style=flat-square)](https://github.com/topics/language-model) [![python](https://img.shields.io/badge/-python-3776ab?style=flat-square)](https://github.com/topics/python) [![routing](https://img.shields.io/badge/-routing-blue?style=flat-square)](https://github.com/topics/routing) [![task-specific](https://img.shields.io/badge/-task--specific-blue?style=flat-square)](https://github.com/topics/task-specific)
+<!-- BADGES:END -->
+
 ### Local Collaborative LLMs -- Frontier AI on a Student Budget
 
 > *"Crazy enough to work."*
