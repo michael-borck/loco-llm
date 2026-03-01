@@ -123,3 +123,43 @@ Xu, X., Tao, C., Shen, T., Xu, C., Xu, H., Long, G., & Lou, J. (2024). RE2: Re-R
 Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. *Advances in Neural Information Processing Systems (NeurIPS 2023)*. https://arxiv.org/abs/2305.14314
 
 Borck, M. (2026). Conversation, Not Delegation: Mastering Human-AI Development. https://michael-borck.github.io/conversation-not-delegation/
+
+## Why the Name "LocoLLM"
+
+The name packs three meanings into one word:
+
+- **Local** — everything runs on hardware you own
+- **Low-cost** — zero API fees, zero subscriptions
+- **Loco** (Spanish: *crazy*) — because attempting frontier-quality AI on a student laptop is a little crazy
+
+The self-deprecating humour is deliberate. "Yes, we're a little loco" signals that we know this is an ambitious bet, and we're making it anyway.
+
+### The LLM Paradox
+
+A fair objection: the individual models in the stack are small (3-4B parameters, quantized to 4-bit). They are SLMs by any standard definition. So why call the project LocoLLM?
+
+Because "large" describes the system, not any single component. Fifteen specialist adapters behind a router, each tuned to excel in its domain, collectively cover the breadth that only a large language model would normally handle. The "large" part is emergent from the collaboration, not from the parameter count.
+
+This is the core research claim: that *large* is a property of system design, not model size. If routed 4-bit specialists can match frontier API quality on scoped tasks, that is a genuinely publishable insight.
+
+### The Backronyms
+
+If LocoLLM ever needs to sound serious for a grant application:
+
+- **L**ocal **Co**llaborative **LLM**s
+- **Lo**w-**Co**st **LLM** Framework
+
+### Name Candidates Considered
+
+For the record, the alternatives we weighed:
+
+| Name | Concept | Why we passed |
+|------|---------|---------------|
+| HydraLM | Many heads, one body | Cool but overpromises; Hydra implies one model, not a swarm |
+| SwarmLite | Collective small-model intelligence | Too generic; doesn't suggest local execution |
+| AdapterForge | Forging specialised tools | Focuses on the build process, not the runtime |
+| REALM | Routed Expert Adapters for Local Models | Strong but poor searchability; conflicts with Google's REALM |
+| MOSAIC | Multiple Optimised Specialists with Adaptive Inference Coordination | Accurate but forgettable as acronyms go |
+| FrontierLocal | Frontier quality at the edge | Descriptive but no personality |
+
+LocoLLM won because it was memorable, searchable, self-deprecating, and carried a real technical claim in disguise.
