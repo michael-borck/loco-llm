@@ -382,7 +382,7 @@ Adapters are hosted on:
 
 ## Technical Constraints and Trade-offs
 
-**Memory ceiling dictates everything.** The 8GB RAM target is the single most important constraint. Every architectural decision flows from it. This is why we use 4B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead).
+**Memory ceiling dictates everything.** The 8GB RAM target is the single most important constraint. Every architectural decision flows from it. This is why we use 4B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead). All training and inference is done on consumer-grade hardware — see [Meet the Lab](meet-the-lab.md) for the full specs.
 
 **Adapter swapping adds latency, not memory.** Loading a LoRA adapter takes 50-200ms depending on size and disk speed. This is noticeable but acceptable for interactive use. It means we can have many adapters installed without increasing memory usage.
 

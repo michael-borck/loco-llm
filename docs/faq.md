@@ -120,3 +120,5 @@ For Australian university contexts where students work with case studies, client
 Yes. The entire training and inference pipeline runs on hardware you can buy on eBay for under $200 AUD. If we publish a paper claiming "routed 4-bit specialists on Qwen3-4B achieve X% of GPT-4 performance on these tasks," any reviewer can verify it on their own machine.
 
 Academic ML has a massive reproducibility problem. Papers benchmark on A100 clusters that reviewers cannot access. LocoLLM's constraint — consumer hardware only — is a limitation that doubles as a methodological strength.
+
+The entire training lab — a Ryzen desktop with two RTX 2060 SUPERs, an ex-enterprise IBM server with a P100, and a MacBook M1 for testing — cost well under $1,000 AUD. See [Meet the Lab](meet-the-lab.md) for the full hardware specs.
