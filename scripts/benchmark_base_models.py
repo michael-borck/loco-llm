@@ -25,12 +25,15 @@ TOKENIZER_LOOKUP = [
     (["qwen", "coder", "3b"], "Qwen/Qwen2.5-Coder-3B"),
     (["llama", "3b"], "meta-llama/Llama-3.2-3B-Instruct"),
     (["llama", "1b"], "meta-llama/Llama-3.2-1B-Instruct"),
+    (["phi", "4", "mini", "reasoning"], "microsoft/Phi-4-mini-reasoning"),
     (["phi", "4", "mini"], "microsoft/phi-4-mini-instruct"),
     (["gemma", "4b"], "google/gemma-3-4b-it"),
     (["gemma", "1b"], "google/gemma-3-1b-it"),
+    (["deepseek", "r1", "7b"], "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"),
     (["deepseek", "r1", "1.5b"], "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"),
     (["smollm", "1.7b"], "HuggingFaceTB/SmolLM2-1.7B"),
     (["ministral", "3b"], "mistralai/Ministral-3-3B-Instruct-2512"),
+    (["tinyllama"], "TinyLlama/TinyLlama-1.1B-Chat-v1.0"),
 ]
 
 DEFAULT_TASKS = "mmlu,gsm8k,hellaswag,truthfulqa_mc2,arc_challenge"

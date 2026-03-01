@@ -31,6 +31,9 @@ Start with models that have existing full-precision benchmarks for comparison:
 | SmolLM2-1.7B | 1.7B | Hugging Face's on-device SOTA contender; tests impact of massive pre-training (11T tokens) on tiny architectures |
 | Ministral 3B | 3B | Mistral's edge-optimized model; strong multilingual and general-purpose baseline in the 3B class |
 | Qwen2.5-Coder-3B | 3B | Domain-specific (coding) baseline to see how generalized models compare to specialized ones |
+| Phi-4-Mini-Reasoning | 3.8B | Direct comparison to Phi-4-Mini; shows what reasoning distillation buys you |
+| DeepSeek-R1-Distill-Qwen-7B | 7B | Tests whether a heavily quantized 7B beats a 4B at Q4_K_M; practical question for 8GB RAM users |
+| TinyLlama-1.1B | 1.1B | Well-known community baseline; familiar reference point for comparing newer micro models |
 
 ### Quantization Levels
 
@@ -47,7 +50,7 @@ For each model, quantize at:
 | Q3_K_M | 3.4 | Tests where quality collapses |
 | Q2_K | 2.6 | Extreme compression; likely broken but worth documenting |
 
-That's 11 models x 8 quant levels = 88 model variants. Each takes 1-3 hours to evaluate depending on hardware, so budget accordingly for the full matrix.
+That's 14 models x 8 quant levels = 112 model variants. Each takes 1-3 hours to evaluate depending on hardware, so budget accordingly for the full matrix.
 
 ### Tasks
 
