@@ -1,8 +1,8 @@
 # Meet the Lab
 
-LocoLLM is built, trained, and tested on three machines. None of them are new. All of them were sourced secondhand. That's the point.
+LocoLLM is built, trained, and tested on four machines. None of them are new. All of them were sourced secondhand. That's the point.
 
-The naming follows the project's Spanish thread: Cerebro (brain), Burro (donkey), and Poco (a little). The brain thinks fast, the donkey carries heavy loads, and the little one connects you to both.
+The naming follows the project's Spanish thread: Cerebro (brain), Burro (donkey), Poco (a little), and Peque (little one). The brain thinks fast, the donkey carries heavy loads, the little one connects you to both, and the littlest one keeps everyone honest.
 
 ---
 
@@ -98,6 +98,33 @@ The x3500 M4 is enterprise tower hardware from 2012. Dual Xeon sockets, redundan
 
 ---
 
+## Peque
+
+**The Dell Optiplex -- Reference Machine and Swarm Test Node**
+
+| | |
+|---|---|
+| **Chassis** | Dell Optiplex 990 (DT) |
+| **GPU** | NVIDIA GeForce GTX 1050 Ti 4 GB (Gigabyte GV-N105TOC-4GL, low profile) |
+| **Memory** | 32 GB DDR3 |
+| **Storage** | 256 GB SSD |
+| **OS** | Ubuntu 22.04 LTS |
+| **Role** | Reference testing, minimum viable swarm node |
+
+Peque is informal Spanish for "little one." Every lab needs a machine that represents the floor — the least capable hardware that can still meaningfully participate. Peque is that machine.
+
+The GTX 1050 Ti is Pascal architecture (compute capability 6.1), same generation as Burro's P100 but a fraction of the capability: 4 GB GDDR5, 768 CUDA cores, 112 GB/s memory bandwidth, and no Tensor Cores. It draws 75W and doesn't need an external power connector — the low-profile card runs entirely off the PCIe slot.
+
+4 GB of VRAM is the real constraint. It forces every swarm test to answer a simple question: can a node with minimal resources still contribute? If a Q4_K_M quantised model loads and runs inference on Peque, it runs anywhere. If a swarm task can't distribute work to a 4 GB node, the swarm design needs rethinking, not the hardware.
+
+The Dell Optiplex is the secondhand market's most abundant desktop. Schools, offices, and government departments cycle through them by the thousands. They're cheap, standardised, and the compact chassis accepts low-profile GPUs without modification. The 1050 Ti low-profile was one of the few CUDA-capable cards designed for exactly this form factor.
+
+Ubuntu 22.04 LTS matches the rest of the fleet. Same CUDA toolkit, same driver stack, same Ollama installation path. No Windows-specific friction, no WSL2 indirection. One OS, one workflow, across every machine.
+
+**Best at:** Validating swarm participation on constrained hardware. Proving the floor works.
+
+---
+
 ## The Fleet at a Glance
 
 | Machine | GPU VRAM | Memory BW | Tensor Cores | Primary Role | Training Tool |
@@ -105,6 +132,7 @@ The x3500 M4 is enterprise tower hardware from 2012. Dual Xeon sockets, redundan
 | **Poco** (MacBook M1) | 16 GB unified | 68 GB/s | No | Remote terminal, Apple Silicon testing | MLX (when needed) |
 | **Cerebro** (Ryzen + 2x 2060S) | 8 GB per card | 448 GB/s | Yes (Turing) | Fast training, inference, benchmarking | Unsloth QLoRA |
 | **Burro** (IBM x3500 M4 + P100) | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA | PEFT / HF Trainer |
+| **Peque** (Dell Optiplex + 1050 Ti) | 4 GB GDDR5 | 112 GB/s | No | Reference machine, swarm testing | Ollama (inference only) |
 
 ---
 
