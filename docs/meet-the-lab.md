@@ -107,6 +107,16 @@ The x3500 M4 is enterprise tower hardware from 2012. Dual Xeon sockets, redundan
 
 ---
 
+## A Note on Hardware
+
+Nothing about this specific hardware is prescriptive. The P100 doesn't require an IBM server. It needs a PCIe x16 slot, a power supply that can handle the extra 250W draw, and enough airflow over a passively cooled card. That could be an old Dell workstation, an HP tower, a custom build from spare parts, or whatever you find on your local secondhand market. The x3500 M4 is just what happened to be in the workshop already.
+
+The same goes for Cerebro. Any mid-range desktop with an NVIDIA GPU and 8+ GB of VRAM runs the same Unsloth pipeline. The RTX 2060 SUPER isn't special. It's just what was available.
+
+If you're building your own LocoLLM lab, your hardware will look different from ours. That's fine. The architecture doesn't care about the brand on the case. It cares about VRAM, CUDA support, and whether the software stack runs. Match the capability, not the specific parts list.
+
+---
+
 ## Running Costs
 
 Old enterprise hardware draws more power per FLOP than current-generation GPUs. That's true. But when you do the maths on actual training runs, the electricity cost is measured in cents, not dollars. A single adapter training run on Cerebro costs roughly the price of a coffee pod. An overnight run on Burro costs about the price of a bus fare.
