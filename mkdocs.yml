@@ -55,6 +55,7 @@ nav:
     - FAQ: faq.md
     - Meet the Lab: meet-the-lab.md
     - Meet the Team: meet-the-team.md
+    - Economics of Local Training: economics-of-local-training.md
   - Guides:
     - Adapter Development: adapter-guide.md
     - Fine-Tuning Primer: finetuning-primer.md
@@ -62,7 +63,6 @@ nav:
     - Benchmarking: benchmarking-guide.md
     - Evaluation Standards: evaluation-standards.md
   - Reference:
-    - Economics of Local Training: economics-of-local-training.md
     - Architecture: architecture.md
     - Base Model Selection: base-model-selection.md
     - Research Roadmap: research-roadmap.md

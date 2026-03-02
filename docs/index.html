@@ -729,11 +729,82 @@
         gap: 1rem;
       }
 
+      .nav-dropdown > a .dd-arrow { display: none; }
+
+      .dropdown-menu {
+        display: block;
+        position: static;
+        transform: none;
+        min-width: 0;
+        background: none;
+        border: none;
+        border-radius: 0;
+        padding: 0 0 0 1rem;
+        margin-top: 0;
+        box-shadow: none;
+      }
+
+      .dropdown-menu a {
+        padding: 0.35rem 0;
+        font-size: 0.85rem;
+      }
+
       .how-grid, .persona-grid { grid-template-columns: 1fr; }
       .philosophy-grid, .involve-grid { grid-template-columns: 1fr; }
       .terminal-preview { margin-top: 2rem; }
       .arch-row { flex-direction: column; }
       .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+    /* ═══ NAV DROPDOWNS ═══ */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown > a {
+      cursor: default;
+    }
+
+    .nav-dropdown > a .dd-arrow {
+      font-size: 0.7em;
+      margin-left: 0.2em;
+      opacity: 0.6;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 220px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      margin-top: 0.6rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      z-index: 200;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.55rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
     }
 
     /* ═══ SCROLL ANIMATIONS ═══ */
@@ -762,8 +833,35 @@
       <li><a href="#architecture">Architecture</a></li>
       <li><a href="#status">Status</a></li>
       <li><a href="#contribute">Contribute</a></li>
-      <li><a href="/docs/benchmarks/">Benchmarks</a></li>
-      <li><a href="/docs/">Docs</a></li>
+      <li class="nav-dropdown">
+        <a href="/docs/benchmarks/">Benchmarks <span class="dd-arrow">&#9662;</span></a>
+        <div class="dropdown-menu">
+          <a href="/docs/benchmarks/">Overview</a>
+          <a href="/docs/benchmarks/quality/">Quality</a>
+          <a href="/docs/benchmarks/speed/">Speed</a>
+          <a href="/docs/benchmarks/bang-per-bit/">Bang per Bit</a>
+        </div>
+      </li>
+      <li class="nav-dropdown">
+        <a href="/docs/">Getting Started <span class="dd-arrow">&#9662;</span></a>
+        <div class="dropdown-menu">
+          <a href="/docs/why-locollm/">Why LocoLLM</a>
+          <a href="/docs/faq/">FAQ</a>
+          <a href="/docs/meet-the-lab/">Meet the Lab</a>
+          <a href="/docs/meet-the-team/">Meet the Team</a>
+          <a href="/docs/economics-of-local-training/">Economics of Local Training</a>
+        </div>
+      </li>
+      <li class="nav-dropdown">
+        <a href="/docs/">Guides <span class="dd-arrow">&#9662;</span></a>
+        <div class="dropdown-menu">
+          <a href="/docs/adapter-guide/">Adapter Development</a>
+          <a href="/docs/finetuning-primer/">Fine-Tuning Primer</a>
+          <a href="/docs/train-math-adapter/">Training Math Adapter</a>
+          <a href="/docs/benchmarking-guide/">Benchmarking</a>
+          <a href="/docs/evaluation-standards/">Evaluation Standards</a>
+        </div>
+      </li>
       <li><a href="https://github.com/michael-borck/loco-llm" class="gh-link">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
         GitHub
