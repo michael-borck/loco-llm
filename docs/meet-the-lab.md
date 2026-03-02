@@ -1,6 +1,6 @@
 # Meet the Lab
 
-LocoLLM is built, trained, and tested on three machines. None of them are new. None of them are expensive. That's the point.
+LocoLLM is built, trained, and tested on three machines. None of them are new. All of them were sourced secondhand. That's the point.
 
 The naming follows the project's Spanish thread: Cerebro (brain), Burro (donkey), and Poco (a little). The brain thinks fast, the donkey carries heavy loads, and the little one connects you to both.
 
@@ -69,26 +69,29 @@ Unsloth uses a single GPU for QLoRA training, so the dual-card setup creates a u
 
 ## Burro
 
-**The IBM x3650 M4 -- Dedicated Training Server**
+**The IBM x3500 M4 -- Dedicated Training Server**
 
 | | |
 |---|---|
-| **Chassis** | IBM System x3650 M4 (2U rack server) |
-| **GPU (training)** | NVIDIA Tesla P100 16 GB (Pascal, HBM2) |
-| **GPU (secondary)** | NVIDIA Quadro 4000 |
+| **Chassis** | IBM System x3500 M4 (5U tower) |
+| **CPU** | Intel Xeon E5-2600 v2 series |
+| **GPU** | NVIDIA Tesla P100 16 GB (Pascal, HBM2) |
+| **PSU** | 2x 750W redundant |
 | **Memory** | TBD |
 | **OS** | TBD |
 | **Role** | Overnight training, large datasets, "set and forget" |
 
 Burro means "donkey" in Spanish. Donkeys aren't fast, but they carry heavy loads without stopping. That's exactly what this server does.
 
-The P100 is the star here. Pascal architecture, compute capability 6.0, fully supported by current PyTorch and CUDA. Its 16 GB of HBM2 memory at 732 GB/s bandwidth opens up training options that Cerebro's 8 GB cards can't touch: full 16-bit LoRA (instead of 4-bit QLoRA), longer context windows (4096-8192 tokens), bigger batch sizes, and higher LoRA ranks. All of those translate to potentially better adapter quality.
+The P100 is the sole GPU. A small LCD monitor sits on the desk connected to the onboard Matrox G200 (via the IMM2), running a persistent tmux dashboard with GPU stats, training progress, and adapter registry status. Day to day it's a status display; when needed, a keyboard comes out of the drawer for direct access.
+
+Pascal architecture, compute capability 6.0, fully supported by current PyTorch and CUDA. The P100's 16 GB of HBM2 memory at 732 GB/s bandwidth opens up training options that Cerebro's 8 GB cards can't touch: full 16-bit LoRA (instead of 4-bit QLoRA), longer context windows (4096-8192 tokens), bigger batch sizes, and higher LoRA ranks. All of those translate to potentially better adapter quality. With 16 GB of VRAM, the P100 also handles inference and benchmarking after a training run completes, just sequentially rather than simultaneously like Cerebro's dual-card split.
 
 The P100 doesn't have Tensor Cores (those arrived with Volta), so it won't benefit from Unsloth's mixed-precision acceleration. Training runs through standard CUDA cores using vanilla PEFT or HuggingFace Trainer instead. Expect roughly 2-3x slower than Cerebro's 2060 SUPER for the same job. A three-hour Unsloth run on Cerebro becomes a six-to-eight-hour PEFT run on Burro. That's overnight, not days.
 
-The Quadro 4000 handles display output and light inference duties, keeping the P100 fully dedicated to training.
+The P100 PCIe is a passively cooled card designed for high-velocity rack airflow. The x3500's tower layout moves air more gently, so a 3D-printed fan shroud with a 92mm Noctua is fitted to direct airflow across the heatsink. Printed in PETG on the project's own Prusa fleet.
 
-An IBM x3650 M4 is enterprise hardware from 2012. Dual Xeon sockets, redundant power supplies, ECC memory, hot-swap drive bays. Built to run 24/7 in a data centre. It's loud, it's heavy, and it doesn't care. You give it a training job at 6pm, and the adapter is ready when you walk in the next morning.
+The x3500 M4 is enterprise tower hardware from 2012. Dual Xeon sockets, redundant power supplies, ECC memory, hot-swap drive bays. Built to run 24/7. The tower form factor keeps things practical: quieter fan profile, full-height PCIe slots that fit the P100 without compromise, and it lives under a desk without anyone needing to worry about it. You give it a training job at 6pm, and the adapter is ready when you walk in the next morning.
 
 **Best at:** Long training runs on larger datasets. Higher-fidelity LoRA training at 16-bit. Jobs where time isn't the constraint but quality is.
 
@@ -100,14 +103,22 @@ An IBM x3650 M4 is enterprise hardware from 2012. Dual Xeon sockets, redundant p
 |---|---|---|---|---|---|
 | **Poco** (MacBook M1) | 16 GB unified | 68 GB/s | No | Remote terminal, Apple Silicon testing | MLX (when needed) |
 | **Cerebro** (Ryzen + 2x 2060S) | 8 GB per card | 448 GB/s | Yes (Turing) | Fast training, inference, benchmarking | Unsloth QLoRA |
-| **Burro** (IBM x3650 M4 + P100) | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA | PEFT / HF Trainer |
+| **Burro** (IBM x3500 M4 + P100) | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA | PEFT / HF Trainer |
+
+---
+
+## Running Costs
+
+Old enterprise hardware draws more power per FLOP than current-generation GPUs. That's true. But when you do the maths on actual training runs, the electricity cost is measured in cents, not dollars. A single adapter training run on Cerebro costs roughly the price of a coffee pod. An overnight run on Burro costs about the price of a bus fare.
+
+The full cost analysis, including idle power draw, cloud GPU comparisons, capital expenditure versus running costs, and total cost of ownership, is covered in [The Economics of Local Training](economics-of-local-training.md).
 
 ---
 
 ## Why This Matters
 
-The total hardware cost of the LocoLLM training lab is well under $1,000 AUD. The MacBook was already owned. Cerebro was built from mid-range consumer parts. The P100 was picked up on eBay for under $150 USD. The IBM server chassis was acquired through the same "patient marketplace hunting" approach that built the rest of The 80-20 Workshop.
+Every machine in this lab was sourced secondhand through patient marketplace hunting, the same approach that built the rest of The 80-20 Workshop. No premium prices. No enterprise procurement. Just consumer-grade and ex-enterprise hardware, acquired opportunistically.
 
-Every result LocoLLM publishes is reproducible on hardware that anyone can acquire for a few hundred dollars. No A100 clusters. No cloud credits. No asterisks.
+Every result LocoLLM publishes is reproducible on hardware that anyone can acquire the same way. No A100 clusters. No cloud credits. No asterisks.
 
 That's not a limitation. That's the thesis.
