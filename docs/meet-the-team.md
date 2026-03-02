@@ -34,4 +34,4 @@ He runs the lab hardware, sets the project direction, designs the training curri
 
 ## Contributing
 
-You don't need to be at Curtin to contribute. LocoLLM is open source under the MIT license. If you want to train an adapter, improve the router, run benchmarks, or write documentation, see [Getting Started](getting-started.md) or open an issue on [GitHub](https://github.com/michael-borck/loco-llm).
+You don't need to be at Curtin to contribute. LocoLLM is open source under the MIT license. If you want to train an adapter, improve the router, run benchmarks, or write documentation, see [Getting Started](why-locollm.md) or open an issue on [GitHub](https://github.com/michael-borck/loco-llm).
