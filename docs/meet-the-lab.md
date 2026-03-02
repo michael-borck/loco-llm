@@ -74,11 +74,12 @@ Unsloth uses a single GPU for QLoRA training, so the dual-card setup creates a u
 | | |
 |---|---|
 | **Chassis** | IBM System x3500 M4 (5U tower) |
-| **CPU** | Intel Xeon E5-2600 v2 series |
+| **CPU** | Intel Xeon E5-2660 (8 cores, 16 threads @ 2.2 GHz) |
 | **GPU** | NVIDIA Tesla P100 16 GB (Pascal, HBM2) |
 | **PSU** | 2x 750W redundant |
-| **Memory** | TBD |
-| **OS** | TBD |
+| **Memory** | 32 GB DDR3 ECC (8x 4 GB) |
+| **Storage** | 300 GB SAS (boot) + 5x 300 GB SAS (available) |
+| **OS** | Ubuntu Server 22.04 LTS |
 | **Role** | Overnight training, large datasets, "set and forget" |
 
 Burro means "donkey" in Spanish. Donkeys aren't fast, but they carry heavy loads without stopping. That's exactly what this server does.
