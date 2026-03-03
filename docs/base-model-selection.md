@@ -244,7 +244,7 @@ Unlike post-training quantization (where you train a model in full precision the
 
 ### Why It Matters for LocoLLM
 
-The numbers are transformative for the digital divide thesis:
+The numbers are significant for LocoLLM's hardware floor:
 
 | Metric | Qwen3-4B (Q4_K_M) | BitNet b1.58 2B4T |
 |---|---|---|

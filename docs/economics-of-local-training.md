@@ -98,20 +98,17 @@ The economics are actually getting more favourable for secondhand buyers, not le
 
 ## Data Sovereignty and Ownership
 
-There's a cost that doesn't appear on any invoice: control.
+When you train on cloud infrastructure, your training data transits external networks and resides on hardware you don't own. For a university research project handling case study data, student work, or anything adjacent to sensitive domains, that creates compliance requirements.
 
-When you train on cloud infrastructure, your training data transits external networks and resides on hardware you don't own. For a university research project handling case study data, student work, or anything adjacent to sensitive domains, that's a compliance conversation at minimum.
+When you run inference through a commercial API, every query leaves your network. For students working with business scenarios, client data in case studies, or health-adjacent content in related programs, local inference avoids that data flow entirely.
 
-When you run inference through a commercial API, every query leaves your network. For students working with business scenarios, client data in case studies, or health-adjacent content in related programs, "the data stays on this machine" is not a feature toggle. It's a structural property of running locally. Nothing leaves because nothing can leave.
-
-Owning the hardware means:
-- No terms of service changes that affect your workflow
-- No vendor deciding to discontinue the model or instance type you depend on
-- No per-query costs that scale with student numbers
+Running locally means:
 - No data processing agreements to negotiate
-- No surprise price increases mid-semester
+- No per-query costs that scale with student numbers
+- No dependency on a specific provider's continued availability or pricing
+- Compliance with data sovereignty requirements by default
 
-This matters more as data sovereignty regulation tightens. The Australian Privacy Act reforms, sector-specific data handling requirements, and university ethics frameworks all favour architectures where data stays local. Building that into the infrastructure from the start is cheaper than retrofitting it later.
+Australian Privacy Act reforms, sector-specific data handling requirements, and university ethics frameworks are relevant context here. Local architectures simplify compliance, though they are not the only way to achieve it.
 
 ---
 

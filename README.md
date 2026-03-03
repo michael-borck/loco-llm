@@ -16,11 +16,11 @@ The project is designed to be built collaboratively, semester by semester, by un
 
 ## The Problem
 
-Access to capable AI is becoming a digital divide issue. Frontier models require paid subscriptions or API access. Running large open-weight models locally demands expensive hardware. Students, researchers, and practitioners in resource-constrained settings are left behind.
+Frontier models require paid subscriptions or API access. Running large open-weight models locally demands expensive hardware. Research shows that small models fine-tuned for specific tasks can match or exceed general-purpose large models on those tasks — and routing architectures can direct queries to the right specialist without needing a massive generalist model.
 
-Meanwhile, research shows that small models fine-tuned for specific tasks can match or exceed general-purpose large models on those tasks. And routing architectures can direct queries to the right specialist without needing a massive general-purpose model for everything.
+The question LocoLLM investigates: can a system of routed, task-specific adapters on a single quantized small model approach frontier quality on well-defined tasks, running entirely on consumer hardware?
 
-LocoLLM connects these ideas into a practical, local-first system. For the full argument, including the educational philosophy, the "AI Last" workflow, and why small models are better suited to the task than most people assume, see [Why LocoLLM Exists](docs/why-locollm.md).
+For the full argument, including the educational philosophy, the "AI Last" workflow, and why small models are better suited to the task than most people assume, see [Why LocoLLM Exists](docs/why-locollm.md).
 
 ## How It Works
 

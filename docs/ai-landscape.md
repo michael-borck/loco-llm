@@ -42,7 +42,7 @@ Free tiers are not guaranteed. As the financial realities of inference compute b
 - Providers are tightening free-tier limits and degrading free-tier model quality
 - "Free" often means "free until we have enough users to justify charging"
 - Student-specific programmes (GitHub Education, Google for Education) are the most stable but require institutional partnerships
-- The business model of free tiers is user acquisition and conversion, not public service
+- Free tiers are a user-acquisition strategy, and their long-term availability is not guaranteed
 
 This is not a criticism. It is the economics. But it means that any curriculum built entirely on free cloud AI is one pricing change away from disruption.
 
@@ -128,11 +128,11 @@ This is what LocoLLM actually recommends, not what a marketing page would say:
 
 The AI landscape is moving fast. Tools that are cutting-edge today may be commoditised or deprecated within a year. Free tiers may get more generous or may tighten. Local models will get better. New tools will emerge.
 
-LocoLLM's bet is that local capability retains value even as cloud capability improves, because:
+LocoLLM's bet is that local capability retains value even as cloud capability improves, for practical reasons:
 
-- **Dependency on any single provider is fragile.** Diversification matters.
+- **Provider terms change.** Pricing, rate limits, and model availability are not under the user's control. Local inference is.
 - **Privacy is structural, not policy-based.** Local inference cannot leak what it does not send.
-- **Understanding how AI works** — by building it, not just using it — creates capability that no subscription provides.
-- **The tools you own cannot be taken away.** The tools you rent can.
+- **Understanding how AI works** — by building it, not just using it — creates technical skills that using a hosted service does not develop.
+- **Offline capability matters** for users with unreliable connectivity or in environments where cloud access is restricted.
 
 Whether that bet pays off is an empirical question. This document exists so that anyone evaluating LocoLLM can see the full landscape and make their own informed decision.

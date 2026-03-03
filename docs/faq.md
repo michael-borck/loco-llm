@@ -6,9 +6,9 @@
 
 ### Why not just give students API credits?
 
-Because dependency on external APIs is the digital divide problem, not the solution. API credits run out. Subscriptions require credit cards. Rate limits throttle usage during assignment deadlines. And when the provider changes pricing, deprecates a model, or goes down, your curriculum breaks.
+Because API credits run out, subscriptions require credit cards, and rate limits throttle usage during assignment deadlines. When the provider changes pricing, deprecates a model, or goes down, your curriculum breaks.
 
-LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity.
+LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity. That said, free tiers and cheap APIs are strong options too — see the [AI Landscape](ai-landscape.md) for an honest comparison.
 
 ### How is this different from just running Ollama?
 
@@ -87,7 +87,7 @@ Most MoE and routing research is built by ML engineers for deployment to end use
 This is not just a nice story for a grant application. It means:
 - **Evaluation criteria are grounded in real task needs**, not synthetic benchmarks. When a group fine-tunes an adapter for accounting problem formats, it is because they actually need that capability.
 - **The feedback loop between builder and user is zero-length.** The person who notices the adapter fails on a certain problem type is the same person who can retrain it.
-- **The learning is in the building.** Dependency on external APIs is the digital divide problem. Building your own tools is the pedagogical response.
+- **The learning is in the building.** Understanding how AI works by constructing the system yourself develops skills that using a hosted service does not.
 
 ### Is the adapter registry just a config file?
 

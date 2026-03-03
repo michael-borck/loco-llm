@@ -1,18 +1,12 @@
 # Why LocoLLM Exists
 
-This document describes the problem LocoLLM responds to, the assumptions it makes, and the philosophy that shapes its design. It is not a manifesto. It is a practical argument for a specific technical approach, grounded in evidence and experience.
+This document describes what LocoLLM is, the assumptions it makes, and the philosophy that shapes its design.
 
-## The Problem Is Access, Not Capability
+## A Teaching and Research Framework
 
-There is a conversation happening in higher education about how AI will transform learning. It is an important conversation, and it has a blind spot.
+LocoLLM is primarily a teaching project. Each semester, students learn about fine-tuning, evaluation, data curation, routing, and system design by contributing to a working system. The research question — can routed specialist adapters on a quantized small model approach frontier quality on scoped tasks? — gives that work direction and publishable outcomes.
 
-In any given tutorial, some students walk in with frontier AI subscriptions and capable hardware. Others are working with whatever free tier they can get on a phone with a prepaid data plan. This is not hypothetical. This is Tuesday.
-
-The gap is structural, not temporary. Students who can afford $20-30 USD per month for a frontier model operate with fundamentally different cognitive tools than those who cannot. The institutional version of the same problem is just as sharp: a well-funded university with a dedicated AI strategy unit operates in a different reality than a regional provider where reliable broadband is still a challenge (Perkins & Roe, 2025). The divide runs through a single country, let alone across the globe.
-
-We have seen this pattern before. The internet, learning management systems, COVID and online learning. Same script every time: early adoption by the well-resourced, defensive reaction by the under-resourced, widening gap dressed up as "digital transformation." The difference this time is speed. Previous technology cycles gave institutions years to catch up. AI capabilities advance quarterly.
-
-LocoLLM is a practical response to this. Not a complete solution. Not a substitute for institutional investment in equitable access. But a working tool that makes AI-assisted learning available to students who would otherwise be excluded from it, running on hardware they already own, at zero ongoing cost.
+The system also happens to run on hardware students already own, at zero ongoing cost. In any given tutorial, some students have frontier AI subscriptions and capable hardware; others are working with whatever free tier they can get. That gap is real (Perkins & Roe, 2025), and it is worth noting that LocoLLM sidesteps it entirely by running locally. But the project exists because the teaching and research questions are interesting, not as a response to the access gap.
 
 ## Small Models Do Not Need to Beat Frontier Models
 
@@ -67,7 +61,7 @@ This is not primarily a philosophical stance, though the philosophy matters. It 
 
 - University students produce work that is their intellectual property. Routing it through third-party cloud services creates ambiguity about data ownership, processing, and retention that most students are not equipped to evaluate and most institutions have not resolved.
 - Many universities have procurement and data-sovereignty policies that prohibit sending student or academic content to external platforms without formal review. A local-first tool sidesteps this entirely.
-- Internet access is not universal, not reliable, and not free. A tool that requires a persistent cloud connection excludes exactly the users who most need access.
+- Internet access is not universal, not reliable, and not free. A tool that requires a persistent cloud connection excludes users without reliable connectivity.
 - API costs compound. Even modest per-token pricing becomes a barrier when multiplied across a semester of daily use. Local inference after a one-time setup has zero marginal cost.
 
 The BYOK (Bring Your Own Key) model provides an escape valve for users who want cloud model access: they supply their own API keys, the tool calls the provider directly, and we are not a proxy or middleman. But the default path, the one that works for the student with a $300 laptop and no credit card, is fully local.
@@ -76,7 +70,7 @@ Privacy in this context is not a feature. It is a structural property of the arc
 
 ## What LocoLLM Actually Provides
 
-Given all of the above, LocoLLM's contribution is not a single breakthrough. It is the integration of several known techniques into a coherent system designed for a specific, underserved population:
+Given all of the above, LocoLLM's contribution is not a single breakthrough. It is the integration of several known techniques into a coherent system designed for a specific use case:
 
 **Task-specific fine-tuning** narrows the gap between small and large models on defined tasks. A routed adapter hits the right specialist for each query without the user needing to know or care which adapter is active.
 
@@ -88,7 +82,7 @@ Given all of the above, LocoLLM's contribution is not a single breakthrough. It 
 
 **The "AI Last" workflow** means users bring focused problems, which is where small models perform best.
 
-None of these techniques are novel individually. The contribution is showing that they stack, that the combination is practically viable on consumer hardware, and that the result is good enough to be genuinely useful for the people who have the fewest alternatives.
+None of these techniques are novel individually. The contribution is showing that they stack, that the combination is practically viable on consumer hardware, and that the result is good enough to be genuinely useful.
 
 ## What LocoLLM Does Not Claim
 
@@ -98,17 +92,17 @@ Honesty about limitations matters more than optimism about potential.
 - A 4B quantized model will sometimes produce mediocre or wrong output. The conversation-based workflow and self-consistency voting mitigate this but do not eliminate it.
 - Local-first means no seamless multi-device sync, more setup friction, and a wider troubleshooting surface than a managed cloud service.
 - The "AI Last" principle requires discipline and skill development that some users will resist. Not everyone will use the tool in the way it is designed to be used.
-- This is not a substitute for institutional investment in equitable AI access. Universities should be providing AI tools and training. LocoLLM exists partly because many do not, and waiting for them to start is not an option for students who need help now.
+- This is not a substitute for institutional AI tooling. Where universities provide AI tools and training, students should use them.
 
 ## The Bigger Picture
 
-LocoLLM is a small project with modest ambitions. It will not solve the AI divide. It will not democratize artificial intelligence. Those are problems that require policy, funding, and institutional will at scales far beyond what an open-source adapter framework can provide.
+LocoLLM is a small project with modest ambitions. It is a teaching framework first, a research project second, and everything else is a byproduct.
 
-What it can do is demonstrate that the technical floor is lower than most people assume. That useful AI assistance does not require a $20/month subscription, a high-speed internet connection, or a $2,000 laptop. That the combination of task-specific fine-tuning, smart prompting, and local inference produces results that are good enough to make a real difference for students who would otherwise have nothing.
+What it can do is demonstrate that the technical floor for useful AI-assisted learning is lower than most people assume. The combination of task-specific fine-tuning, smart prompting, and local inference produces results that are worth studying — and potentially worth using.
 
-If the benchmarks confirm the hypothesis, and the evaluation data shows that routed specialist adapters on a 4B model approach frontier quality on well-defined tasks, that is a finding worth publishing. Not because it is a technical breakthrough, but because it changes the economics of who gets access to AI-assisted learning.
+If the benchmarks confirm the hypothesis, and the evaluation data shows that routed specialist adapters on a 4B model approach frontier quality on well-defined tasks, that is a finding worth publishing. If the data shows they do not, that is equally worth knowing.
 
-The research questions are real. The technical contributions are genuine. But they sit inside a larger argument: that the most important gap in AI is not between good and great, but between nothing and something. LocoLLM is an attempt to close the second gap for the people who need it most.
+The research questions are real. The technical contributions are genuine. The fact that the system happens to run on cheap hardware with no ongoing costs is a practical benefit, but the project stands or falls on whether the teaching works and the research produces replicable findings.
 
 ## References
 

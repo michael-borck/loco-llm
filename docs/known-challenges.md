@@ -101,7 +101,7 @@ Google's free tier of Gemini is, as of early 2026, remarkably capable when manag
 - **Free tiers are getting tighter.** As the financial realities of inference compute bite, providers are capping usage, degrading free-tier model quality, and pushing toward paid plans. What is generous today may not be generous in two years.
 - **Rate limits hit at the worst times.** A student hitting their free-tier cap the night before an assignment deadline has effectively lost access. Local inference has no rate limits.
 - **API access requires technical literacy.** Using OpenRouter or cheap API models requires understanding API keys, endpoints, rate limiting, and billing. This is a meaningful barrier for many students.
-- **Dependency is structural.** Every student using a free tier is one pricing decision away from losing access. That is not paranoia; it is the business model. Free tiers exist to convert users to paid plans, not as a public service.
+- **Dependency is structural.** Every student using a free tier is one pricing decision away from losing access. Free tiers are a user-acquisition strategy, and their terms can change at any time.
 
 ### The Honest Recommendation
 
@@ -109,7 +109,7 @@ LocoLLM's position should be: **use the best tools available to you, including f
 
 If the free tiers get better, the old models from providers become cheap enough, and local alternatives become unnecessary — that is a good outcome for students. LocoLLM should welcome that future, not fear it.
 
-But giving up and saying "just use the free tiers" has a cost too. As a society, complete dependency on a handful of AI companies for cognitive tools is a fragile position. LocoLLM is a small bet that local capability has value even when cloud capability is available. Not because it is better, but because it is *yours*.
+That said, local capability and cloud capability are not mutually exclusive. LocoLLM's bet is that there is research and teaching value in understanding how to build and run AI systems locally, independent of whether cloud alternatives are available. If the research shows the architecture adds meaningful value, that is worth knowing. If it does not, that is equally useful.
 
 ---
 
@@ -152,7 +152,7 @@ And that is revealing. The project is not defined by its constraints the way a h
 
 That said, the project should be honest about the interplay between conviction and circumstance. The constraints are real, the hardware is secondhand, and the budget is near zero. That is not a weakness to hide. It is a methodological choice that happens to align with financial reality. Both things are true.
 
-The throwaway culture deserves a brief mention: the instinct to always buy the newest hardware and discard the old misses the total cost of ownership and the environmental cost of e-waste. Secondhand enterprise hardware is absurdly capable for the price. A Tesla P100 that cost $5,000 new can be had for under $100 and still trains LoRA adapters effectively. There is a quiet argument here about sustainability that the project embodies without needing to make it loudly.
+There is also a practical point about hardware reuse: secondhand enterprise hardware is capable for the price. A Tesla P100 that cost $5,000 new can be had for under $100 and still trains LoRA adapters effectively. The total cost of ownership calculation often favours patient secondhand sourcing over buying new.
 
 ---
 
@@ -163,7 +163,7 @@ LocoLLM risks trying to be too many things at once:
 - A research project (routing, benchmarking, quantized fine-tuning)
 - A teaching framework (semester-based student contributions)
 - A product for students (local AI assistant)
-- A statement about the digital divide
+- A local-first alternative to cloud AI
 
 These are all legitimate, but they serve different audiences and should not be collapsed into a single narrative.
 
@@ -171,7 +171,7 @@ These are all legitimate, but they serve different audiences and should not be c
 
 **The secondary identity is a research project.** The benchmarking data, the routing experiments, and the methodology are genuine research contributions. If they lead to publications, that is a welcome outcome, not the driving purpose.
 
-**Everything else is a byproduct.** The CLI tool, the digital divide argument, the privacy story — these are real and they matter, but they are consequences of the primary and secondary goals, not goals in their own right.
+**Everything else is a byproduct.** The CLI tool, the local-first architecture, the privacy properties — these are real and they matter, but they are consequences of the primary and secondary goals, not goals in their own right.
 
 Keeping this hierarchy clear prevents scope creep and ensures that each output is evaluated against the right success criteria. A teaching project succeeds when students learn. A research project succeeds when it generates replicable findings. A product succeeds when users prefer it to alternatives. These are different standards, and conflating them leads to a project that is mediocre at all three.
 
