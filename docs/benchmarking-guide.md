@@ -1,48 +1,40 @@
 # Benchmarking Guide
 
-!!! note "Moved to smol-bench"
-    The full benchmarking methodology, test matrix, and tooling guide have been moved to [smol-bench](https://github.com/michael-borck/smol-bench) — a standalone benchmarking project that LocoLLM uses as its data source.
+How LocoLLM adapters are evaluated and how the results fit into the bigger picture.
 
-    **Full guide:** [smol-bench Benchmarking Guide](https://michael-borck.github.io/smol-bench/guide/)
+## What `loco eval` Does Today
 
-## Why a Separate Project?
-
-The benchmarking work has a different audience, a different publication path, and a different lifespan than LocoLLM:
-
-- **The benchmark data is independently citable.** Other researchers can use it regardless of whether they care about LocoLLM's routing approach.
-- **The data's credibility is stronger when independent.** It is not tied to a project that is also advocating for a specific architecture.
-- **Updates to the benchmark matrix** (new models, new quant levels) are decoupled from adapter/router development.
-
-## What smol-bench Covers
-
-- **14 models x 8 quantization levels** = 112 variants
-- **Standard tasks:** MMLU, HellaSwag, GSM8K, TruthfulQA, ARC-Challenge
-- **Speed metrics:** tokens/sec, time-to-first-token, peak RAM usage
-- **"Bang per bit" analysis:** Pareto efficiency frontiers for constrained hardware
-- **Consumer hardware focus:** Results on RTX 2060, CPU-only laptops, and secondhand machines
-
-## How LocoLLM Uses smol-bench
-
-LocoLLM consumes smol-bench data to:
-
-1. **Select the base model** — the annual ADR process references smol-bench rankings at Q4_K_M
-2. **Validate quantization choices** — confirming that Q4_K_M retains sufficient quality for adapter fine-tuning
-3. **Measure adapter impact** — comparing fine-tuned adapter scores against smol-bench base model baselines
-4. **Inform the benchmarks section** of the LocoLLM documentation site
-
-## Quick Start
-
-To run a quick benchmark yourself:
+The evaluation harness compares an adapter against the base model on the adapter's own evaluation dataset:
 
 ```bash
-pip install lm-eval[hf]
-
-lm_eval --model hf \
-  --model_args pretrained=/path/to/gguf/,gguf_file=qwen3-4b-q4_k_m.gguf,tokenizer=Qwen/Qwen3-4B-Instruct \
-  --tasks mmlu,gsm8k,hellaswag \
-  --device cuda:0 \
-  --batch_size auto \
-  --output_path results/qwen3-4b-q4_k_m/
+uv run loco eval math
 ```
 
-For the full methodology, hardware recommendations, and tiered evaluation approach, see the [smol-bench guide](https://michael-borck.github.io/smol-bench/guide/).
+This runs both `qwen3:4b` (base) and `locollm-math` (adapter) on the problems in `adapters/math/eval_dataset.jsonl` and prints a side-by-side score.
+
+Three scoring modes are supported, configured per adapter in `registry.yaml` via the `eval_type` field:
+
+| eval_type | How it scores | Used by |
+|-----------|---------------|---------|
+| `numeric` | Extract a number from the response, compare to expected answer | math |
+| `code` | Check valid Python syntax + expected keywords present | code |
+| `analysis` | Check that the expected answer string appears in the response | analysis |
+
+Each adapter must include at least 50 evaluation examples. See [evaluation standards](evaluation-standards.md) for benchmark construction guidelines.
+
+## What's Not Implemented Yet
+
+The following are documented in [evaluation standards](evaluation-standards.md) as requirements but are not yet built into the harness. Each is a student project:
+
+- **Out-of-domain check** — run your adapter on another domain's benchmark to verify it doesn't degrade general capability. The eval-standards doc specifies within 5 percentage points of base.
+- **Cross-model comparison** — run the same benchmark against other quantized models (e.g., does our fine-tuned Qwen3-4B beat a stock Phi-3-mini at Q4_K_M on math?). This would answer whether fine-tuning is better than just picking a different base model.
+- **Frontier API comparison** — run the benchmark against GPT-4 / Claude / Gemini to establish an upper bound. Answers the central research question: how close can routed 4-bit specialists get?
+- **Structured results output** — `results.json` with per-difficulty breakdowns, hardware info, inference settings, and version history.
+- **LLM-as-judge scoring** — for domains like writing where exact match doesn't apply.
+- **Deterministic inference settings** — temperature 0, fixed max_tokens, enforced by the harness rather than relying on Ollama defaults.
+
+## How smol-bench Informed Base Model Selection
+
+The base model (Qwen3-4B at Q4_K_M) was selected using data from [smol-bench](https://github.com/michael-borck/smol-bench), an independent benchmarking project that evaluates small language models across standard tasks (MMLU, GSM8K, HellaSwag, etc.) at multiple quantization levels on consumer hardware. The selection rationale is documented in [ADR-0001](adr/0001-base-model-qwen3-4b.md) and [base model selection](base-model-selection.md).
+
+smol-bench and LocoLLM are separate projects. smol-bench benchmarks base models. LocoLLM benchmarks what fine-tuning adds on top.
