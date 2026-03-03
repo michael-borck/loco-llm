@@ -15,17 +15,40 @@ class TestRegistry:
 
     def test_list_adapters(self):
         adapters = adapter_manager.list_adapters()
-        assert len(adapters) >= 1
+        assert len(adapters) >= 3
         names = [name for name, _ in adapters]
         assert "math" in names
+        assert "code" in names
+        assert "analysis" in names
 
     def test_get_adapter_exists(self):
         config = adapter_manager.get_adapter("math")
         assert config is not None
         assert config["type"] == "merged-gguf"
 
+    def test_get_adapter_code(self):
+        config = adapter_manager.get_adapter("code")
+        assert config is not None
+        assert config["type"] == "merged-gguf"
+        assert config["eval_type"] == "code"
+
+    def test_get_adapter_analysis(self):
+        config = adapter_manager.get_adapter("analysis")
+        assert config is not None
+        assert config["type"] == "merged-gguf"
+        assert config["eval_type"] == "analysis"
+
     def test_get_adapter_missing(self):
         assert adapter_manager.get_adapter("nonexistent") is None
+
+    def test_adapter_has_router_keywords(self):
+        config = adapter_manager.get_adapter("math")
+        assert "router_keywords" in config
+        assert len(config["router_keywords"]) > 0
+
+    def test_adapter_has_eval_type(self):
+        config = adapter_manager.get_adapter("math")
+        assert config["eval_type"] == "numeric"
 
 
 class TestModelfile:
@@ -94,6 +117,18 @@ class TestEvalDatasetPath:
 
     def test_get_eval_dataset_path(self):
         path = adapter_manager.get_eval_dataset_path("math")
+        assert path is not None
+        assert path.name == "eval_dataset.jsonl"
+        assert path.exists()
+
+    def test_get_eval_dataset_path_code(self):
+        path = adapter_manager.get_eval_dataset_path("code")
+        assert path is not None
+        assert path.name == "eval_dataset.jsonl"
+        assert path.exists()
+
+    def test_get_eval_dataset_path_analysis(self):
+        path = adapter_manager.get_eval_dataset_path("analysis")
         assert path is not None
         assert path.name == "eval_dataset.jsonl"
         assert path.exists()

@@ -59,6 +59,28 @@ def cmd_query(args):
             print("Adapter model not found. Run 'loco setup' first.")
             sys.exit(1)
         print(f"[adapter: {args.adapter}]")
+    elif not args.no_route:
+        # Auto-route using keyword router
+        from locollm.router import KeywordRouter
+
+        router = KeywordRouter()
+        routed = router.route(args.prompt)
+        if routed:
+            config = adapter_manager.get_adapter(routed)
+            model = adapter_manager.adapter_model_name(routed)
+            installed = ollama_client.list_models()
+            installed_base = {m.split(":")[0] for m in installed}
+            if model in installed_base:
+                print(f"[router -> {routed}]")
+            else:
+                # Adapter not trained yet, fall back to base
+                print(f"[router -> {routed} (not installed, using base model)]")
+                registry = adapter_manager.load_registry()
+                model = registry["base_model"].get("ollama_name", "qwen3:4b")
+        else:
+            print("[router -> base model]")
+            registry = adapter_manager.load_registry()
+            model = registry["base_model"].get("ollama_name", "qwen3:4b")
     else:
         registry = adapter_manager.load_registry()
         model = registry["base_model"].get("ollama_name", "qwen3:4b")
@@ -91,6 +113,9 @@ def cmd_eval(args):
     dataset = load_dataset(dataset_path)
     print(f"Loaded {len(dataset)} problems from {dataset_path.name}")
 
+    # Read eval_type from adapter config
+    eval_type = config.get("eval_type", "numeric")
+
     # Get model names
     registry = adapter_manager.load_registry()
     base_model = registry["base_model"].get("ollama_name", "qwen3:4b")
@@ -105,13 +130,132 @@ def cmd_eval(args):
 
     # Run base model eval
     print(f"\nEvaluating base model ({base_model})...")
-    base_correct, base_total, _ = run_eval(base_model, dataset)
+    base_correct, base_total, _ = run_eval(base_model, dataset, eval_type=eval_type)
 
     # Run adapter eval
     print(f"\nEvaluating adapter model ({adapter_model})...")
-    adapter_correct, adapter_total, _ = run_eval(adapter_model, dataset)
+    adapter_correct, adapter_total, _ = run_eval(adapter_model, dataset, eval_type=eval_type)
 
     format_results(base_correct, base_total, adapter_correct, adapter_total, adapter_name)
+
+
+def cmd_route(args):
+    """Show which adapter the router would pick for a query."""
+    from locollm.router import KeywordRouter
+
+    router = KeywordRouter()
+    result = router.route(args.query)
+    if result:
+        print(result)
+    else:
+        print("base model")
+
+
+def _handle_adapter_command(session, arg):
+    """Handle /adapter slash command variants. Returns a message string."""
+    if arg is None:
+        return session.adapter_list_display()
+    if arg == "auto":
+        session.set_adapter("auto")
+        return "[auto-routing enabled]"
+    if arg == "none":
+        session.set_adapter("none")
+        return "[using base model]"
+    try:
+        session.set_adapter(arg)
+        return f"[adapter: {arg}]"
+    except ValueError:
+        return f"Unknown adapter: {arg}"
+
+
+_CHAT_HELP = """\
+Commands:
+  /help              Show this help
+  /quit or /exit     Exit chat
+  /clear             Clear conversation history
+  /adapter           List available adapters
+  /adapter <name>    Switch to a specific adapter
+  /adapter auto      Auto-route based on your query
+  /adapter none      Use base model directly
+  /stats             Show session statistics
+
+Tips:
+  - Keep queries focused on one task — adapters are specialists
+  - The router picks an adapter from your first message, then sticks with it
+  - Use /clear to start fresh and let the router pick again
+  - Use /adapter to lock in a specific adapter when you know what you need"""
+
+
+def cmd_chat(args):
+    """Interactive multi-turn chat session."""
+    from locollm import ollama_client
+    from locollm.chat_session import ChatSession
+
+    if not ollama_client.check_running():
+        print("Error: Ollama is not running. Start it with: ollama serve")
+        sys.exit(1)
+
+    session = ChatSession(
+        adapter=args.adapter,
+        context_limit=args.context_limit,
+    )
+
+    mode_info = f"adapter: {args.adapter}" if args.adapter != "auto" else "auto-routing"
+    print(f"LocoLLM chat ({mode_info})")
+    print("Type /help for commands, /quit to exit.\n")
+
+    while True:
+        try:
+            user_input = input("you> ")
+        except (EOFError, KeyboardInterrupt):
+            print("\nBye!")
+            break
+
+        if not user_input.strip():
+            continue
+
+        command, arg = ChatSession.parse_slash_command(user_input)
+
+        if command in ("/quit", "/exit"):
+            print("Bye!")
+            break
+        elif command == "/help":
+            print(_CHAT_HELP)
+            continue
+        elif command == "/clear":
+            session.clear()
+            print("[conversation cleared]")
+            continue
+        elif command == "/adapter":
+            print(_handle_adapter_command(session, arg))
+            continue
+        elif command == "/stats":
+            print(session.session_stats_display())
+            continue
+        elif command is not None:
+            print(f"Unknown command: {command}")
+            continue
+
+        session.add_user_message(user_input)
+
+        full_response = []
+        meta = None
+        for chunk, chunk_meta in session.send():
+            print(chunk, end="", flush=True)
+            full_response.append(chunk)
+            if chunk_meta is not None:
+                meta = chunk_meta
+        print()
+
+        response_text = "".join(full_response)
+        session.add_assistant_message(response_text)
+
+        if meta:
+            session.record_turn(meta)
+            print(ChatSession.format_stats(session.active_adapter, meta))
+            notice = session.maybe_compact(meta.get("prompt_eval_count", 0))
+            if notice:
+                print(notice)
 
 
 def cmd_adapters_list(args):
@@ -147,12 +291,30 @@ def main():
     sp_query = subparsers.add_parser("query", help="Query a model")
     sp_query.add_argument("prompt", help="The prompt to send")
     sp_query.add_argument("--adapter", help="Name of adapter to use")
+    sp_query.add_argument(
+        "--no-route",
+        action="store_true",
+        help="Bypass router and use base model directly",
+    )
     sp_query.set_defaults(func=cmd_query)
+
+    # chat
+    sp_chat = subparsers.add_parser("chat", help="Interactive multi-turn chat session")
+    sp_chat.add_argument("--adapter", default="auto", help="Adapter to use (default: auto)")
+    sp_chat.add_argument(
+        "--context-limit", type=int, default=8192, help="Context window limit (default: 8192)"
+    )
+    sp_chat.set_defaults(func=cmd_chat)
 
     # eval
     sp_eval = subparsers.add_parser("eval", help="Run evaluation benchmark")
     sp_eval.add_argument("adapter_name", help="Name of adapter to evaluate")
     sp_eval.set_defaults(func=cmd_eval)
+
+    # route
+    sp_route = subparsers.add_parser("route", help="Show which adapter the router would pick")
+    sp_route.add_argument("query", help="The query to route")
+    sp_route.set_defaults(func=cmd_route)
 
     # adapters
     sp_adapters = subparsers.add_parser("adapters", help="Manage adapters")

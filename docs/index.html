@@ -896,8 +896,8 @@
         <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco setup</span></div>
         <div class="terminal-line"><span class="output">&check; Pulled qwen3:4b via Ollama (2.5 GB)</span></div>
         <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco query</span> <span class="flag">"solve 2x + 5 = 13"</span></div>
-        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco query</span> <span class="flag">"solve 2x + 5 = 13"</span> <span class="cmd">--adapter</span> <span class="flag">math</span></div>
-        <div class="terminal-line"><span class="output">&check; Math adapter loaded &middot; x = 4</span></div>
+        <div class="terminal-line"><span class="output">[router &rarr; math]</span></div>
+        <div class="terminal-line"><span class="output">x = 4</span></div>
         <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">loco eval</span> <span class="flag">math</span> <span class="comment"># how much does the adapter help?</span></div>
       </div>
     </div>
@@ -914,17 +914,17 @@
       <div class="how-card fade-up">
         <div class="how-number">1</div>
         <h3>Single Base Model</h3>
-        <p>Qwen3-4B quantized to Q4_K_M. Fits in 2.5 GB of VRAM. Runs on any GPU from the last 6 years, or even a laptop CPU.</p>
+        <p>Qwen3-4B quantized to Q4_K_M. Fits in 2.5 GB of VRAM. Tested on GPUs from a GTX 1050 Ti to an RTX 2060 Super. Runs on CPU too, just slower.</p>
       </div>
       <div class="how-card fade-up">
         <div class="how-number">2</div>
         <h3>LoRA Adapters</h3>
-        <p>Tiny specialist layers (50-300 MB each) fine-tuned for specific domains. Hot-swap in milliseconds. We're starting with math, code, writing, and analysis.</p>
+        <p>Tiny specialist layers fine-tuned for specific domains, merged into standalone GGUFs. We're starting with math, code, and analysis.</p>
       </div>
       <div class="how-card fade-up">
         <div class="how-number">3</div>
         <h3>Smart Router</h3>
-        <p>Classifies your query and picks the best adapter automatically. No manual switching. Just ask your question. (This is the part we're building next.)</p>
+        <p>Classifies your query and picks the best adapter automatically. No manual switching. Just ask your question. Keyword-based now, ML classifier next.</p>
       </div>
     </div>
   </section>
@@ -997,7 +997,7 @@
       </div>
       <div class="persona-card fade-up">
         <div class="persona-emoji">&#9881;</div>
-        <h3>The Tinkerer</h3>
+        <h3>The Scrapper</h3>
         <p>You know the best gear doesn't make the best work. A $150 secondhand GPU and sharp training data might just surprise you. That's what we're betting on.</p>
       </div>
     </div>
@@ -1008,7 +1008,7 @@
     <div class="section-label fade-up">Architecture</div>
     <h2 class="section-title fade-up">Deceptively simple.</h2>
     <p class="section-desc fade-up">
-      A query comes in, the router classifies it, the matching adapter loads onto the base model, and the response goes out. No orchestration frameworks. No agent graphs. No PhD required. Whether this simplicity is a strength or a limitation is what we're here to find out.
+      A query comes in, the router picks an adapter, Ollama loads the matching model, and the response goes out. No orchestration frameworks. No agent graphs. No PhD required. Whether this simplicity is a strength or a limitation is what we're here to find out.
     </p>
     <div class="arch-diagram fade-up">
       <div class="arch-row">
@@ -1022,16 +1022,15 @@
       <div class="arch-row">
         <div class="arch-box arch-adapter">math</div>
         <div class="arch-box arch-adapter">code</div>
-        <div class="arch-box arch-adapter">writing</div>
         <div class="arch-box arch-adapter">analysis</div>
         <div class="arch-box arch-adapter" style="opacity: 0.5;">yours?</div>
       </div>
-      <div class="arch-label">LoRA Adapters (50-300 MB each) &middot; 4 building now, more to come</div>
+      <div class="arch-label">LoRA Adapters (merged GGUF) &middot; 3 adapters now, more to come</div>
       <div class="arch-row"><span class="arch-arrow">&darr;</span></div>
       <div class="arch-row">
         <div class="arch-box arch-base">Qwen3-4B &middot; Q4_K_M &middot; 2.5 GB</div>
       </div>
-      <div class="arch-label">Base model loaded once, adapters hot-swap</div>
+      <div class="arch-label">Each adapter is a merged GGUF &middot; Ollama handles model switching</div>
     </div>
   </section>
 
@@ -1048,15 +1047,15 @@
           <div class="status-marker done"></div>
           <div class="status-content">
             <h3>Proof of Concept</h3>
-            <p>Single math adapter on Qwen3-4B, basic CLI, manual adapter loading. It works. We can measure the difference.</p>
+            <p>Three adapters (math, code, analysis) on Qwen3-4B, CLI with query and chat, keyword router, evaluation harness. It works. We can measure the difference.</p>
             <span class="status-tag tag-done">Now</span>
           </div>
         </div>
         <div class="status-item fade-up">
           <div class="status-marker building"></div>
           <div class="status-content">
-            <h3>MVP: Four Specialists</h3>
-            <p>Math, code, writing, and analysis adapters. Simple router. Standardised evaluation. The first real test of whether routing beats a generalist.</p>
+            <h3>MVP: Student Contributions</h3>
+            <p>First student cohort adds new adapters, improves the router (keyword &rarr; ML classifier), and publishes benchmark results. The first real test of whether routing beats a generalist.</p>
             <span class="status-tag tag-building">Building</span>
           </div>
         </div>
@@ -1072,7 +1071,7 @@
           <div class="status-marker vision"></div>
           <div class="status-content">
             <h3>The Vision</h3>
-            <p>A growing ecosystem of community-trained specialist adapters, smart routing, and one-command setup. Frontier-capable AI that runs on hardware you already own.</p>
+            <p>A growing ecosystem of community-trained specialist adapters, smart routing, and one-command setup. Competitive AI that runs on hardware you already own.</p>
             <span class="status-tag tag-vision">Vision</span>
           </div>
         </div>
@@ -1124,7 +1123,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <span class="footer-text">Released under the MIT License. &copy; 2025 LocoLLM</span>
+      <span class="footer-text">Released under the MIT License. &copy; 2026 LocoLLM</span>
       <ul class="footer-links">
         <li><a href="https://github.com/michael-borck/loco-llm">GitHub</a></li>
         <li><a href="/docs/">Docs</a></li>

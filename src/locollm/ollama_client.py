@@ -75,6 +75,48 @@ def _stream_chunks(resp):
             yield chunk
 
 
+def chat(model, messages, stream=True):
+    """Send a chat request. Yields (text, meta) tuples when streaming.
+
+    meta is None on intermediate chunks and a stats dict on the final chunk.
+    """
+    resp = requests.post(
+        f"{BASE_URL}/api/chat",
+        json={"model": model, "messages": messages, "stream": stream},
+        stream=stream,
+        timeout=300,
+    )
+    resp.raise_for_status()
+    if not stream:
+        data = resp.json()
+        text = data.get("message", {}).get("content", "")
+        return [(text, _extract_chat_meta(data))]
+    return _stream_chat_chunks(resp)
+
+
+def _stream_chat_chunks(resp):
+    """Yield (chunk_text, meta) tuples from a streaming /api/chat response."""
+    for line in resp.iter_lines():
+        if not line:
+            continue
+        data = json.loads(line)
+        chunk = data.get("message", {}).get("content", "")
+        if data.get("done"):
+            yield (chunk, _extract_chat_meta(data))
+        elif chunk:
+            yield (chunk, None)
+
+
+def _extract_chat_meta(data):
+    """Pull performance metadata from a chat response."""
+    return {
+        "eval_count": data.get("eval_count", 0),
+        "eval_duration": data.get("eval_duration", 0),
+        "prompt_eval_count": data.get("prompt_eval_count", 0),
+        "total_duration": data.get("total_duration", 0),
+    }
+
+
 def create_model(name, modelfile):
     """Create a model from a Modelfile string."""
     resp = requests.post(

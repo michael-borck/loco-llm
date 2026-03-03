@@ -27,40 +27,31 @@ For the full argument, including the educational philosophy, the "AI Last" workf
 ```
                     +-------------------+
    User Query ----->|   LocoLLM Router  |
-                    | (lightweight      |
-                    |  classifier)      |
+                    | (keyword v1,      |
+                    |  classifier v2+)  |
                     +-------------------+
                            |
-              +------------+-------------+------------+
-              |            |             |            |
-              v            v             v            v
-        +---------+  +---------+  +---------+  +---------+
-        | Adapter |  | Adapter |  | Adapter |  | Adapter |
-        |  Math   |  |  Code   |  | Writing |  | Domain  |
-        | Reason. |  |  Gen.   |  | Assist. |  |   QA    |
-        +---------+  +---------+  +---------+  +---------+
-              |            |             |            |
-              +------------+-------------+------------+
+              +------------+-------------+
+              |            |             |
+              v            v             v
+        +---------+  +---------+  +----------+
+        |  math   |  |  code   |  | analysis |    ...future adapters
+        +---------+  +---------+  +----------+
+              |            |             |
+              +------------+-------------+
                            |
                     +------+------+
                     | Base Model  |
-                    | (4-bit      |
-                    |  quantized) |
-                    +-------------+
-                           |
-                    +------+------+
-                    | Inference   |
-                    | Enhancements|
-                    | RE2 + Vote  |
+                    | Qwen3-4B    |
+                    | (Q4_K_M)    |
                     +-------------+
 ```
 
-1. A user sends a query through the LocoLLM CLI
-2. The router classifies the query and selects the most appropriate LoRA adapter
-3. The adapter is hot-swapped onto the base model (the base stays in memory)
-4. The prompt is constructed with RE2 (query re-reading) applied by default
-5. The response is generated (optionally: multiple samples with majority voting)
-6. Only the small adapter file changes between queries, not the full model
+1. A user sends a query through the LocoLLM CLI (`loco chat` or `loco query`)
+2. The router scores the query against each adapter's keywords and picks the best match
+3. If no adapter matches, the base model handles the query directly
+4. The selected adapter model generates the response via Ollama
+5. Each adapter is a merged GGUF — LoRA weights baked into the base model at export time
 
 ## Quick Start
 
@@ -80,14 +71,11 @@ cd loco-llm
 # Install LocoLLM and all dependencies
 uv sync
 
-# Download the base model
+# Download the base model and register adapters
 uv run loco setup
 
 # List available adapters
 uv run loco adapters list
-
-# Install adapters relevant to your coursework
-uv run loco adapters install math-reasoning code-python writing-academic
 
 # Start chatting
 uv run loco chat
@@ -98,70 +86,58 @@ uv run loco chat
 ### Usage
 
 ```bash
-# Interactive chat (router auto-selects adapter, RE2 prompting on by default)
+# Interactive chat (router auto-selects adapter)
 uv run loco chat
 
 # Force a specific adapter
-uv run loco chat --adapter math-reasoning
+uv run loco chat --adapter math
 
 # Single query mode
 uv run loco query "Solve: If a store offers 30% off and then an additional 15% off the sale price, what is the total discount?"
 
-# Maximum quality: adapter + RE2 + self-consistency voting (5 samples)
-uv run loco query "Solve: ..." --votes 5
+# Check which adapter the router would pick
+uv run loco route "Write a Python function to sort a list"
 
 # Benchmark an adapter against the base model
-uv run loco eval math-reasoning --benchmark standard
+uv run loco eval math
 ```
 
 ## Project Structure
 
 ```
-locollm/
+loco-llm/
 ├── README.md
-├── CONTRIBUTING.md
 ├── pyproject.toml
 ├── src/
 │   └── locollm/
 │       ├── __init__.py
 │       ├── cli.py                  # Command-line interface
-│       ├── router/
-│       │   ├── __init__.py
-│       │   ├── base.py             # Router base class
-│       │   ├── keyword.py          # Simple keyword router (v1)
-│       │   └── classifier.py       # ML-based router (v2+)
-│       ├── adapter_manager.py      # Adapter loading, swapping, registry
-│       ├── inference.py            # Ollama / llama.cpp integration
-│       └── eval/
-│           ├── __init__.py
-│           ├── harness.py          # Standard evaluation framework
-│           └── benchmarks/         # Per-domain test sets
+│       ├── chat_session.py         # Multi-turn chat state management
+│       ├── router.py               # Keyword router (v1)
+│       ├── adapter_manager.py      # Adapter loading, registry, Modelfiles
+│       ├── ollama_client.py        # Ollama REST API wrapper
+│       └── eval.py                 # Evaluation harness
 ├── adapters/
 │   ├── registry.yaml               # Adapter metadata and versions
-│   ├── math-reasoning/
-│   │   ├── adapter_config.json
-│   │   ├── adapter_model.safetensors
-│   │   ├── training/
-│   │   │   ├── dataset.jsonl
-│   │   │   ├── train_config.yaml
-│   │   │   └── TRAINING_LOG.md
-│   │   └── eval/
-│   │       ├── benchmark.jsonl     # 50+ test cases
-│   │       └── results.json
-│   └── ...
+│   ├── math/
+│   │   ├── gguf/                   # Merged GGUF model file
+│   │   ├── training_data.jsonl
+│   │   └── eval_dataset.jsonl
+│   ├── code/
+│   └── analysis/
 ├── docs/
-│   ├── why-locollm.md
 │   ├── architecture.md
-│   ├── finetuning-primer.md
 │   ├── adapter-guide.md
+│   ├── training-new-adapters.md
+│   ├── finetuning-primer.md
 │   ├── evaluation-standards.md
-│   ├── base-model-selection.md
-│   ├── benchmarking-guide.md
-│   └── semester-reports/
-└── scripts/
-    ├── fine_tune.py                # Standardized training script
-    ├── evaluate.py                 # Run benchmarks
-    └── export_adapter.py           # Package adapter for distribution
+│   └── adr/                        # Architecture Decision Records
+├── scripts/
+│   ├── train_adapter.py            # Generic fine-tuning script
+│   ├── prepare_gsm8k.py            # Data prep for math adapter
+│   ├── prepare_code_data.py
+│   └── prepare_analysis_data.py
+└── tests/
 ```
 
 ## Adapter Registry
@@ -170,19 +146,22 @@ Each adapter in the ecosystem is tracked in `adapters/registry.yaml`:
 
 ```yaml
 adapters:
-  math-reasoning:
-    version: "1.2.0"
-    base_model: "Qwen/Qwen3-4B-Instruct"
-    quantization: "Q4_K_M"
-    lora_rank: 16
-    created: "2026-S2"
-    authors: ["Team Alpha, ISYS6020"]
-    benchmark_score: 0.72
-    base_model_score: 0.41
-    improvement: "+75.6%"
-    description: "Arithmetic and word problem reasoning"
-    tags: ["math", "reasoning", "word-problems"]
-    size_mb: 24
+  math:
+    version: "0.2.0"
+    type: "merged-gguf"
+    gguf_path: "math/gguf/unsloth.Q4_K_M.gguf"
+    description: "Math reasoning adapter (LoRA merged, Q4_K_M)"
+    authors: ["LocoLLM Team"]
+    tags: ["math", "arithmetic", "reasoning"]
+    eval_dataset: "eval_dataset.jsonl"
+    eval_type: "numeric"
+    router_keywords: ["solve", "calculate", "equation", "math", ...]
+    training:
+      method: "qlora"
+      dataset: "GSM8K (200 examples)"
+      lora_r: 16
+      lora_alpha: 32
+      epochs: 3
 ```
 
 ## Evaluation Standards
@@ -191,11 +170,10 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 
 ### Required for Every Adapter
 
-1. **Domain benchmark** (`eval/benchmark.jsonl`): Minimum 50 test cases formatted as input/expected-output pairs
-2. **Base model baseline**: The base model's score on the same benchmark, run without any adapter
-3. **Adapter score**: The adapter's score on the same benchmark
-4. **Out-of-domain check**: Score on at least one other domain's benchmark to confirm the adapter doesn't degrade general capability
-5. **Training log** (`TRAINING_LOG.md`): Dataset sources, size, hyperparameters, training duration, loss curves
+1. **Evaluation dataset** (`eval_dataset.jsonl`): Minimum 50 test cases formatted as input/expected-output pairs
+2. **Base model baseline**: The base model's score on the same dataset, run without any adapter (`loco eval <name>` does this automatically)
+3. **Adapter score**: The adapter's score on the same dataset, showing measurable improvement
+4. **Training log** (`TRAINING_LOG.md`): Dataset sources, size, hyperparameters, training duration, loss curves
 
 ### Scoring Metrics by Domain
 

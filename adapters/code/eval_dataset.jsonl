@@ -1,0 +1,20 @@
+{"question": "Write a Python function called `reverse_string` that takes a string and returns it reversed.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `is_even` that returns True if a number is even, False otherwise.", "answer_keywords": ["def ", "return", "%"], "eval_type": "code"}
+{"question": "Write a Python function called `factorial` that computes the factorial of a non-negative integer.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `fibonacci` that returns the nth Fibonacci number.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `max_of_three` that takes three numbers and returns the largest.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `count_vowels` that counts the number of vowels in a string.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `is_palindrome` that checks if a string is a palindrome.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `flatten_list` that takes a nested list and returns a flat list.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `merge_dicts` that merges two dictionaries into one.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `remove_duplicates` that removes duplicates from a list while preserving order.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `celsius_to_fahrenheit` that converts Celsius to Fahrenheit.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `binary_search` that performs binary search on a sorted list.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python class called `Stack` with push, pop, and is_empty methods.", "answer_keywords": ["class ", "def ", "self"], "eval_type": "code"}
+{"question": "Write a Python function called `word_count` that counts the frequency of each word in a string and returns a dictionary.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `is_prime` that returns True if a number is prime.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `gcd` that computes the greatest common divisor of two integers.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `read_csv_lines` that reads a CSV file and returns a list of rows as lists.", "answer_keywords": ["def ", "return", "open"], "eval_type": "code"}
+{"question": "Write a Python function called `matrix_multiply` that multiplies two 2D matrices represented as lists of lists.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python function called `bubble_sort` that sorts a list using the bubble sort algorithm.", "answer_keywords": ["def ", "return"], "eval_type": "code"}
+{"question": "Write a Python generator function called `even_numbers` that yields even numbers up to a given limit.", "answer_keywords": ["def ", "yield"], "eval_type": "code"}

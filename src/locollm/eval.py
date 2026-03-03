@@ -1,5 +1,6 @@
 """Evaluation harness: runs a mini benchmark comparing base model vs adapter."""
 
+import ast
 import json
 import re
 
@@ -56,34 +57,88 @@ def _parse_number(s):
         return None
 
 
-def run_eval(model_name, dataset):
-    """Run evaluation on a model. Returns (correct, total, results_list)."""
+def check_code_syntax(text):
+    """Check if text contains valid Python syntax.
+
+    Extracts Python from markdown code blocks if present, otherwise tries
+    the full text. Returns True if ast.parse() succeeds.
+    """
+    # Try to extract from markdown code blocks
+    blocks = re.findall(r"```(?:python)?\s*\n(.*?)```", text, re.DOTALL)
+    if blocks:
+        code = "\n".join(blocks)
+    else:
+        code = text
+
+    try:
+        ast.parse(code)
+        return True
+    except SyntaxError:
+        return False
+
+
+def check_keywords(text, keywords):
+    """Check that all expected keyword strings appear in the response."""
+    for kw in keywords:
+        if kw not in text:
+            return False
+    return True
+
+
+def check_contains_answer(text, answer):
+    """Check if the expected answer appears in the response (case-insensitive)."""
+    return answer.lower() in text.lower()
+
+
+def run_eval(model_name, dataset, eval_type="numeric"):
+    """Run evaluation on a model. Returns (correct, total, results_list).
+
+    eval_type controls scoring:
+    - "numeric": extract a number and compare to expected answer
+    - "code": check valid Python syntax + expected keywords present
+    - "analysis": check that the answer string appears in the response
+    """
     correct = 0
     total = len(dataset)
     results = []
 
     for i, problem in enumerate(dataset, 1):
         question = problem["question"]
-        expected = problem["answer"]
-
         print(f"  [{i}/{total}] ", end="", flush=True)
 
         # Collect full response (non-streaming for eval)
         response = ollama_client.generate(model_name, question, stream=False)
-        predicted = extract_number(response)
 
-        is_correct = predicted is not None and float(predicted) == float(expected)
+        if eval_type == "numeric":
+            expected = problem["answer"]
+            predicted = extract_number(response)
+            is_correct = predicted is not None and float(predicted) == float(expected)
+            status_detail = f"expected={expected}, got={predicted}"
+
+        elif eval_type == "code":
+            expected_keywords = problem.get("answer_keywords", [])
+            syntax_ok = check_code_syntax(response)
+            keywords_ok = check_keywords(response, expected_keywords)
+            is_correct = syntax_ok and keywords_ok
+            status_detail = f"syntax={'OK' if syntax_ok else 'FAIL'}, keywords={'OK' if keywords_ok else 'MISS'}"
+
+        elif eval_type == "analysis":
+            expected = problem["answer"]
+            is_correct = check_contains_answer(response, expected)
+            status_detail = f"expected='{expected}', found={is_correct}"
+
+        else:
+            raise ValueError(f"Unknown eval_type: {eval_type}")
+
         if is_correct:
             correct += 1
 
         status = "OK" if is_correct else "MISS"
-        print(f"{status}  (expected={expected}, got={predicted})")
+        print(f"{status}  ({status_detail})")
 
         results.append(
             {
                 "question": question,
-                "expected": expected,
-                "predicted": predicted,
                 "correct": is_correct,
                 "response": response,
             }

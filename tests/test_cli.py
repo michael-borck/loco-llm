@@ -28,6 +28,12 @@ class TestCLI:
         assert "query" in result.stdout
         assert "eval" in result.stdout
         assert "adapters" in result.stdout
+        assert "route" in result.stdout
+
+    def test_chat_in_help(self):
+        result = run_loco("--help")
+        assert result.returncode == 0
+        assert "chat" in result.stdout
 
     def test_no_args_shows_help(self):
         result = run_loco()
@@ -38,4 +44,26 @@ class TestCLI:
         result = run_loco("adapters", "list")
         assert result.returncode == 0
         assert "math" in result.stdout
+        assert "code" in result.stdout
+        assert "analysis" in result.stdout
         assert "merged-gguf" in result.stdout
+
+    def test_route_math(self):
+        result = run_loco("route", "solve 2+2")
+        assert result.returncode == 0
+        assert "math" in result.stdout
+
+    def test_route_code(self):
+        result = run_loco("route", "write a python function")
+        assert result.returncode == 0
+        assert "code" in result.stdout
+
+    def test_route_analysis(self):
+        result = run_loco("route", "analyze this passage")
+        assert result.returncode == 0
+        assert "analysis" in result.stdout
+
+    def test_route_no_match(self):
+        result = run_loco("route", "hello")
+        assert result.returncode == 0
+        assert "base model" in result.stdout

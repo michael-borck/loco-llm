@@ -129,6 +129,16 @@ This runs the 20-problem benchmark comparing base `qwen3:4b` vs the merged math 
 
 **`loco setup` skips math adapter**: The GGUF must exist before setup can register it. Train first, then run setup.
 
+## Generic Training Script
+
+The math adapter can also be trained using the generic `train_adapter.py`:
+
+```bash
+python scripts/train_adapter.py --adapter-name math
+```
+
+This is equivalent to `train_math_adapter.py` with the same defaults. The generic script supports all adapters (math, code, analysis) — see [Training New Adapters](training-new-adapters.md) for the full workflow.
+
 ## Output Files
 
 | File | Purpose |

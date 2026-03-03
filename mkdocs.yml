@@ -49,6 +49,7 @@ nav:
     - Adapter Development: adapter-guide.md
     - Fine-Tuning Primer: finetuning-primer.md
     - Training the Math Adapter: train-math-adapter.md
+    - Training New Adapters: training-new-adapters.md
     - Benchmarking: benchmarking-guide.md
     - Evaluation Standards: evaluation-standards.md
   - Reference:

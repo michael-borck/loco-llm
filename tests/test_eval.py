@@ -1,6 +1,12 @@
-"""Tests for the evaluation harness — answer extraction and dataset loading."""
+"""Tests for the evaluation harness — answer extraction, checkers, and dataset loading."""
 
-from locollm.eval import extract_number, load_dataset
+from locollm.eval import (
+    check_code_syntax,
+    check_contains_answer,
+    check_keywords,
+    extract_number,
+    load_dataset,
+)
 
 
 class TestExtractNumber:
@@ -45,6 +51,71 @@ class TestExtractNumber:
     def test_multiple_numbers_prefers_answer_is(self):
         text = "First we get 10, then 20. The answer is 30."
         assert extract_number(text) == 30
+
+
+class TestCheckCodeSyntax:
+    """Tests for Python syntax checking."""
+
+    def test_valid_function(self):
+        code = "def hello():\n    return 'world'"
+        assert check_code_syntax(code) is True
+
+    def test_invalid_syntax(self):
+        code = "def hello(\n    return"
+        assert check_code_syntax(code) is False
+
+    def test_markdown_code_block(self):
+        text = "Here's the code:\n```python\ndef add(a, b):\n    return a + b\n```"
+        assert check_code_syntax(text) is True
+
+    def test_markdown_block_invalid(self):
+        text = "```python\ndef add(a, b)\n    return a + b\n```"
+        assert check_code_syntax(text) is False
+
+    def test_empty_string(self):
+        # Empty string is valid Python (no statements)
+        assert check_code_syntax("") is True
+
+
+class TestCheckKeywords:
+    """Tests for keyword presence checking."""
+
+    def test_all_present(self):
+        text = "def add(a, b):\n    return a + b"
+        assert check_keywords(text, ["def ", "return"]) is True
+
+    def test_missing_keyword(self):
+        text = "x = 42"
+        assert check_keywords(text, ["def ", "return"]) is False
+
+    def test_empty_keywords(self):
+        assert check_keywords("anything", []) is True
+
+    def test_partial_match(self):
+        text = "def hello():\n    pass"
+        assert check_keywords(text, ["def ", "return"]) is False
+
+
+class TestCheckContainsAnswer:
+    """Tests for case-insensitive answer substring matching."""
+
+    def test_exact_match(self):
+        assert check_contains_answer("chlorophyll", "chlorophyll") is True
+
+    def test_case_insensitive(self):
+        assert check_contains_answer("The answer is Chlorophyll.", "chlorophyll") is True
+
+    def test_substring_match(self):
+        assert check_contains_answer(
+            "The pigment chlorophyll is responsible for the green color.",
+            "chlorophyll",
+        ) is True
+
+    def test_not_present(self):
+        assert check_contains_answer("The answer is hemoglobin.", "chlorophyll") is False
+
+    def test_empty_answer(self):
+        assert check_contains_answer("some text", "") is True
 
 
 class TestLoadDataset:

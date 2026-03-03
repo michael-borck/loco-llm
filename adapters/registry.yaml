@@ -23,10 +23,50 @@ adapters:
     authors: ["LocoLLM Team"]
     tags: ["math", "arithmetic", "reasoning"]
     eval_dataset: "eval_dataset.jsonl"
+    eval_type: "numeric"
+    router_keywords: ["solve", "calculate", "equation", "math", "sum", "divide", "multiply", "how many", "how much", "total", "average"]
     training:
       base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
       method: "qlora"
       dataset: "GSM8K (200 examples)"
+      lora_r: 16
+      lora_alpha: 32
+      epochs: 3
+      quantization: "q4_k_m"
+
+  code:
+    version: "0.1.0"
+    type: "merged-gguf"
+    gguf_path: "code/gguf/unsloth.Q4_K_M.gguf"
+    description: "Python code generation adapter (LoRA merged, Q4_K_M)"
+    authors: ["LocoLLM Team"]
+    tags: ["code", "python", "programming"]
+    eval_dataset: "eval_dataset.jsonl"
+    eval_type: "code"
+    router_keywords: ["code", "python", "function", "program", "script", "class", "implement", "algorithm", "debug", "write a function"]
+    training:
+      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      method: "qlora"
+      dataset: "python_code_instructions_18k_alpaca (300 examples)"
+      lora_r: 16
+      lora_alpha: 32
+      epochs: 3
+      quantization: "q4_k_m"
+
+  analysis:
+    version: "0.1.0"
+    type: "merged-gguf"
+    gguf_path: "analysis/gguf/unsloth.Q4_K_M.gguf"
+    description: "Reading comprehension / analysis adapter (LoRA merged, Q4_K_M)"
+    authors: ["LocoLLM Team"]
+    tags: ["analysis", "reading", "comprehension", "reasoning"]
+    eval_dataset: "eval_dataset.jsonl"
+    eval_type: "analysis"
+    router_keywords: ["analyze", "analyse", "explain", "why", "describe", "passage", "reasoning", "evidence", "summarize", "summarise", "interpret", "compare"]
+    training:
+      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      method: "qlora"
+      dataset: "allenai/sciq (300 examples)"
       lora_r: 16
       lora_alpha: 32
       epochs: 3
