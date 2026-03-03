@@ -311,7 +311,7 @@ MIT License. See [LICENSE](LICENSE) for details.
 ```bibtex
 @software{locollm2026,
   title={LocoLLM: Local Collaborative LLMs for Resource-Constrained AI Access},
-  author={The 80-20 Workshop and Curtin University Contributors},
+  author={Michael Borck and Contributors},
   year={2026},
   url={https://github.com/michael-borck/loco-llm}
 }

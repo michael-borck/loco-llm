@@ -156,7 +156,7 @@ The full cost analysis, including idle power draw, cloud GPU comparisons, capita
 
 ## Why This Matters
 
-Every machine in this lab was sourced secondhand through patient marketplace hunting, the same approach that built the rest of The 80-20 Workshop. No premium prices. No enterprise procurement. Just consumer-grade and ex-enterprise hardware, acquired opportunistically.
+Every machine in this lab was sourced secondhand through patient marketplace hunting. No premium prices. No enterprise procurement. Just consumer-grade and ex-enterprise hardware, acquired opportunistically.
 
 Every result LocoLLM publishes is reproducible on hardware that anyone can acquire the same way. No A100 clusters. No cloud credits. No asterisks.
 

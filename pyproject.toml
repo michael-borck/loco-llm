@@ -10,7 +10,7 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    { name = "The 80-20 Workshop" },
+    { name = "Michael Borck", email = "michael@borck.id.au" },
 ]
 keywords = ["llm", "lora", "quantization", "local-inference", "education"]
 classifiers = [

@@ -1,57 +1,41 @@
 # Benchmark Results
 
-LocoLLM benchmarks **14 models** across **8 quantization levels** (112 variants) to answer one question: *which small, quantized model gives you the most capability per byte?*
+LocoLLM uses benchmark data from [smol-bench](https://github.com/michael-borck/smol-bench) — a standalone project that systematically evaluates **14 models** across **8 quantization levels** (112 variants) on consumer hardware.
 
-!!! info "Sample Data"
-    These charts currently show **simulated data** generated with realistic degradation curves. They will be replaced with real benchmark results once the full evaluation matrix completes.
+The benchmarking work was separated into its own project because:
 
-!!! tip "Key Finding"
-    Q4_K_M consistently sits in the efficiency sweet spot — retaining 90-95% of BF16 quality at ~30% of the file size. Below Q3_K_M, quality collapses sharply for knowledge-heavy tasks.
+- The data has value independent of LocoLLM's adapter/routing architecture
+- It can be cited and used by other researchers regardless of whether they use LocoLLM
+- It keeps LocoLLM focused on adapters, routing, and the teaching framework
 
-## Composite Score vs File Size
+## Key Findings
 
-Each point is one model at one quantization level. The **orange line** traces the Pareto frontier — the best quality achievable at each file size. Points above and to the left are more efficient.
+!!! tip "The Sweet Spot"
+    Q4_K_M consistently retains **90-95% of BF16 quality** at roughly **30% of the file size**. Below Q3_K_M, quality collapses sharply for knowledge-heavy tasks.
 
-<div id="chart-overview-scatter" class="plotly-chart"></div>
+- **Knowledge tasks (MMLU)** degrade fastest under quantization — factual recall is stored in weights and compressed away first
+- **Commonsense reasoning (HellaSwag)** is most robust, retaining 95%+ of BF16 quality even at Q4_0
+- **Math reasoning (GSM8K)** shows a sharp cliff below Q3_K_M for most models
+- **4B models at Q4_K_M** hover around 4-6 t/s on CPU, borderline for interactive use
+- **1B-1.7B models at Q4_K_M** are the speed sweet spot on CPU-only hardware (>10 t/s)
 
-## Top 10 Variants by Composite Score
+These findings directly inform LocoLLM's [base model selection](../base-model-selection.md) and the annual ADR process.
 
-Composite score averages across MMLU, HellaSwag, GSM8K, TruthfulQA, and ARC-Challenge.
+## Explore the Full Data
 
-<div id="chart-overview-leaderboard" class="plotly-chart"></div>
+The interactive charts, detailed analysis, and raw data live in smol-bench:
 
----
+| Resource | What It Covers |
+|----------|---------------|
+| [Quality Analysis](https://michael-borck.github.io/smol-bench/quality/) | Per-task scores and quantization degradation curves |
+| [Speed Analysis](https://michael-borck.github.io/smol-bench/speed/) | Generation speed, prompt processing, time-to-first-token |
+| [Bang per Bit](https://michael-borck.github.io/smol-bench/bang-per-bit/) | Pareto efficiency frontiers and tradeoffs |
+| [Benchmarking Guide](https://michael-borck.github.io/smol-bench/guide/) | Full methodology, tools, and how to contribute |
+| [GitHub Repository](https://github.com/michael-borck/smol-bench) | Scripts, raw results, and documentation source |
 
-## Explore the Details
+## How LocoLLM Uses This Data
 
-<div class="grid cards" markdown>
-
--   **Quality Analysis**
-
-    ---
-
-    Per-task scores and quantization degradation curves.
-
-    [:octicons-arrow-right-24: Quality](quality.md)
-
--   **Speed Analysis**
-
-    ---
-
-    Generation speed, prompt processing, and time-to-first-token.
-
-    [:octicons-arrow-right-24: Speed](speed.md)
-
--   **Bang per Bit**
-
-    ---
-
-    Pareto efficiency, quality-speed tradeoffs, and task sensitivity.
-
-    [:octicons-arrow-right-24: Bang per Bit](bang-per-bit.md)
-
-</div>
-
----
-
-**Methodology:** All quality benchmarks use [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness). Speed benchmarks use [llama-bench](https://github.com/ggml-org/llama.cpp) on CPU-only (0 GPU layers). See the [Benchmarking Guide](../benchmarking-guide.md) for full details.
+1. **Base model selection** — the annual ADR process references smol-bench rankings at Q4_K_M
+2. **Quantization validation** — confirming Q4_K_M retains sufficient quality for adapter fine-tuning
+3. **Adapter impact measurement** — comparing fine-tuned adapter scores against smol-bench baselines
+4. **Deployment guidance** — recommending hardware configurations based on speed/quality tradeoffs
