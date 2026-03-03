@@ -772,7 +772,8 @@
     }
 
     .dropdown-menu {
-      display: none;
+      visibility: hidden;
+      opacity: 0;
       position: absolute;
       top: 100%;
       left: 50%;
@@ -782,13 +783,16 @@
       border: 1px solid var(--border-light);
       border-radius: 10px;
       padding: 0.5rem 0;
-      margin-top: 0.6rem;
+      padding-top: 1.1rem;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
       z-index: 200;
+      transition: visibility 0s linear 0.25s, opacity 0.15s ease;
     }
 
     .nav-dropdown:hover .dropdown-menu {
-      display: block;
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s linear 0s, opacity 0.15s ease;
     }
 
     .dropdown-menu a {
@@ -838,19 +842,9 @@
         <div class="dropdown-menu">
           <a href="/docs/why-locollm/">Why LocoLLM</a>
           <a href="/docs/faq/">FAQ</a>
+          <a href="/docs/project-ideas/">Project Ideas</a>
           <a href="/docs/meet-the-lab/">Meet the Lab</a>
           <a href="/docs/meet-the-team/">Meet the Team</a>
-          <a href="/docs/economics-of-local-training/">Economics of Local Training</a>
-        </div>
-      </li>
-      <li class="nav-dropdown">
-        <a href="/docs/">Guides <span class="dd-arrow">&#9662;</span></a>
-        <div class="dropdown-menu">
-          <a href="/docs/adapter-guide/">Adapter Development</a>
-          <a href="/docs/finetuning-primer/">Fine-Tuning Primer</a>
-          <a href="/docs/train-math-adapter/">Training Math Adapter</a>
-          <a href="/docs/benchmarking-guide/">Benchmarking</a>
-          <a href="/docs/evaluation-standards/">Evaluation Standards</a>
         </div>
       </li>
       <li><a href="https://github.com/michael-borck/loco-llm" class="gh-link">
@@ -1080,7 +1074,7 @@
     <div class="involve-grid">
       <div class="involve-card fade-up">
         <h3>&#129514; Train an Adapter</h3>
-        <p>Pick a domain you care about, curate a dataset, fine-tune with Unsloth or MLX, and contribute it back. Your specialisation becomes everyone's tool.</p>
+        <p>Pick a domain you care about &mdash; math, code, business writing, security, legal. Curate a dataset, fine-tune, and contribute it back. Your specialisation becomes everyone's tool.</p>
       </div>
       <div class="involve-card fade-up">
         <h3>&#128202; Benchmark &amp; Evaluate</h3>
@@ -1091,10 +1085,21 @@
         <p>The router is what makes the system feel smart. Better classification means better adapter selection. Bring your NLP skills.</p>
       </div>
       <div class="involve-card fade-up">
+        <h3>&#128101; User Experience Study</h3>
+        <p>How do students actually use local AI? Design a study, observe real usage, and turn findings into actionable improvements. Research methods meet real users.</p>
+      </div>
+      <div class="involve-card fade-up">
+        <h3>&#128176; Cost-Benefit Analysis</h3>
+        <p>Is local AI actually cheaper than cloud? Build a cost model, run the numbers, and find out. Financial modelling meets open-source AI.</p>
+      </div>
+      <div class="involve-card fade-up">
         <h3>&#128221; Write Documentation</h3>
-        <p>Guides, tutorials, setup instructions, troubleshooting. Good docs lower the barrier for the next contributor.</p>
+        <p>Guides, tutorials, video walkthroughs, onboarding redesign. Good docs lower the barrier for the next contributor.</p>
       </div>
     </div>
+    <p class="section-desc fade-up" style="margin-top:1.5rem; font-style:italic; opacity:0.85;">
+      If a project interests you but you're not sure you have the skills, that's probably the right project. The one that stretches you is the one you'll learn the most from.
+    </p>
   </section>
 
   <!-- CTA BOTTOM -->
