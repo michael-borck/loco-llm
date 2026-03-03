@@ -20,7 +20,7 @@ class ChatSession:
 
         # Load adapter info
         registry = adapter_manager.load_registry()
-        self._base_model = registry["base_model"].get("ollama_name", "qwen3:4b")
+        self._base_model = registry["base_model"]["ollama_name"]
         self._adapter_names = list((registry.get("adapters") or {}).keys())
         self._installed = {m.split(":")[0] for m in ollama_client.list_models()}
 

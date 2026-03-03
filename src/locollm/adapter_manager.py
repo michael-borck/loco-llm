@@ -22,6 +22,16 @@ def load_registry():
         return yaml.safe_load(f)
 
 
+def get_base_model_name():
+    """Return the Ollama model name for the base model from the registry.
+
+    Reads base_model.ollama_name from registry.yaml.
+    Raises KeyError if the registry is missing required fields.
+    """
+    registry = load_registry()
+    return registry["base_model"]["ollama_name"]
+
+
 def get_adapter(name):
     """Return the config dict for a single adapter, or None."""
     registry = load_registry()
@@ -46,7 +56,7 @@ def _build_modelfile(adapter_config, registry):
     adapter_type = adapter_config.get("type", "system-prompt")
 
     if adapter_type == "system-prompt":
-        base_model = adapter_config.get("ollama_base", "qwen3:4b")
+        base_model = adapter_config.get("ollama_base") or get_base_model_name()
         system_prompt = adapter_config.get("system_prompt", "")
         return f'FROM {base_model}\nSYSTEM """{system_prompt}"""'
     elif adapter_type == "merged-gguf":

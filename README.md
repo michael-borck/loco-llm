@@ -12,6 +12,8 @@ LocoLLM is an open-source framework for building a routed collection of task-spe
 
 The project is designed to be built collaboratively, semester by semester, by university students. Each cohort contributes new specialist adapters, improved evaluation benchmarks, and better routing logic. The result is a growing ecosystem of local AI capability that anyone can install on a laptop.
 
+The goal is not to compete with frontier models. It is to understand how they work by building smaller versions of the same patterns. Students who build adapters, design evaluations, and reason about routing tradeoffs are learning the concepts that modern AI systems are built from — fine-tuning, specialisation, tool use, orchestration. Frameworks come and go. That understanding transfers.
+
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/michael-borck/loco-llm/blob/main/notebooks/train_math_adapter.ipynb) **Train your first adapter in 20 minutes — no GPU required.**
 
 ## The Problem

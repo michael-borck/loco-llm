@@ -15,8 +15,7 @@ def cmd_setup(args):
         sys.exit(1)
 
     # Pull base model
-    registry = adapter_manager.load_registry()
-    base_model = registry["base_model"].get("ollama_name", "qwen3:4b")
+    base_model = adapter_manager.get_base_model_name()
     installed = ollama_client.list_models()
     installed_base = {m.split(":")[0] for m in installed}
 
@@ -75,15 +74,12 @@ def cmd_query(args):
             else:
                 # Adapter not trained yet, fall back to base
                 print(f"[router -> {routed} (not installed, using base model)]")
-                registry = adapter_manager.load_registry()
-                model = registry["base_model"].get("ollama_name", "qwen3:4b")
+                model = adapter_manager.get_base_model_name()
         else:
             print("[router -> base model]")
-            registry = adapter_manager.load_registry()
-            model = registry["base_model"].get("ollama_name", "qwen3:4b")
+            model = adapter_manager.get_base_model_name()
     else:
-        registry = adapter_manager.load_registry()
-        model = registry["base_model"].get("ollama_name", "qwen3:4b")
+        model = adapter_manager.get_base_model_name()
 
     for chunk in ollama_client.generate(model, args.prompt):
         print(chunk, end="", flush=True)
@@ -117,8 +113,7 @@ def cmd_eval(args):
     eval_type = config.get("eval_type", "numeric")
 
     # Get model names
-    registry = adapter_manager.load_registry()
-    base_model = registry["base_model"].get("ollama_name", "qwen3:4b")
+    base_model = adapter_manager.get_base_model_name()
     adapter_model = adapter_manager.adapter_model_name(adapter_name)
 
     # Check adapter model exists
@@ -136,7 +131,7 @@ def cmd_eval(args):
     print(f"\nEvaluating adapter model ({adapter_model})...")
     adapter_correct, adapter_total, _ = run_eval(adapter_model, dataset, eval_type=eval_type)
 
-    format_results(base_correct, base_total, adapter_correct, adapter_total, adapter_name)
+    format_results(base_correct, base_total, adapter_correct, adapter_total, adapter_name, base_model)
 
 
 def cmd_route(args):

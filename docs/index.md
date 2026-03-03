@@ -28,7 +28,7 @@ LocoLLM is an open-source experiment in building routed, task-specific fine-tune
 
     Architecture decisions, model selection rationale, and research direction.
 
-    [:octicons-arrow-right-24: Architecture](architecture.md) · [Research Roadmap](research-roadmap.md)
+    [:octicons-arrow-right-24: Architecture](architecture.md) · [Research Roadmap](research-roadmap.md) · [Architecture Vision](architecture-vision.md)
 
 -   **Benchmarks**
 
@@ -37,6 +37,14 @@ LocoLLM is an open-source experiment in building routed, task-specific fine-tune
     Interactive results: quality, speed, and efficiency across 14 models x 8 quant levels.
 
     [:octicons-arrow-right-24: Overview](benchmarks/index.md)
+
+-   **Contribute**
+
+    ---
+
+    Project ideas for capstone students and contributors.
+
+    [:octicons-arrow-right-24: Project Ideas](project-ideas.md) · [Capstone Blurb](capstone-project-blurb.md)
 
 -   **Decisions (ADRs)**
 

@@ -52,8 +52,11 @@ nav:
     - Training New Adapters: training-new-adapters.md
     - Benchmarking: benchmarking-guide.md
     - Evaluation Standards: evaluation-standards.md
+  - Contribute:
+    - Project Ideas: project-ideas.md
   - Reference:
     - Architecture: architecture.md
+    - Architecture Vision: architecture-vision.md
     - Base Model Selection: base-model-selection.md
     - Research Roadmap: research-roadmap.md
     - Ideas & Open Questions: ideas.md

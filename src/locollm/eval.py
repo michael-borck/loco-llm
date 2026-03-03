@@ -147,7 +147,7 @@ def run_eval(model_name, dataset, eval_type="numeric"):
     return correct, total, results
 
 
-def format_results(base_correct, base_total, adapter_correct, adapter_total, adapter_name):
+def format_results(base_correct, base_total, adapter_correct, adapter_total, adapter_name, base_model_name="base"):
     """Print a comparison table of base vs adapter results."""
     base_pct = base_correct / base_total * 100 if base_total else 0
     adapter_pct = adapter_correct / adapter_total * 100 if adapter_total else 0
@@ -159,7 +159,8 @@ def format_results(base_correct, base_total, adapter_correct, adapter_total, ada
     print("=" * 50)
     print(f"  {'Model':<25} {'Score':>10}")
     print(f"  {'-' * 25} {'-' * 10}")
-    print(f"  {'Base (qwen3:4b)':<25} {base_correct:>3}/{base_total} ({base_pct:.0f}%)")
+    base_label = f"Base ({base_model_name})"
+    print(f"  {base_label:<25} {base_correct:>3}/{base_total} ({base_pct:.0f}%)")
     adapter_label = f"Adapter ({adapter_name})"
     print(f"  {adapter_label:<25} {adapter_correct:>3}/{adapter_total} ({adapter_pct:.0f}%)")
     print(f"  {'-' * 25} {'-' * 10}")
