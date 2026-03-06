@@ -59,12 +59,14 @@ nav:
     - Architecture Vision: architecture-vision.md
     - Base Model Selection: base-model-selection.md
     - Research Roadmap: research-roadmap.md
+    - Nvidia GPU Reference: nvidia-gpu-reference.md
     - Ideas & Open Questions: ideas.md
   - Decisions (ADRs):
     - Overview: adr/README.md
     - "0001: Base Model": adr/0001-base-model-qwen3-4b.md
     - "0002: Registry Design": adr/0002-adapter-registry-design.md
     - "0003: Single Router": adr/0003-single-evolving-router.md
+    - "0004: Retire Cerebro": adr/0004-retire-cerebro-adopt-b250-multi-gpu.md
 
 markdown_extensions:
   - admonition

@@ -37,3 +37,4 @@ ADRs are numbered sequentially: `0001-`, `0002-`, etc.
 | [0001](0001-base-model-qwen3-4b.md) | Use Qwen3-4B-Instruct as base model for 2026-2027 | Accepted |
 | [0002](0002-adapter-registry-design.md) | YAML-based adapter registry with domain grouping | Proposed |
 | [0003](0003-single-evolving-router.md) | Single evolving router over parallel routers | Proposed |
+| [0004](0004-retire-cerebro-adopt-b250-multi-gpu.md) | Retire Cerebro, adopt B250 Mining Expert as multi-GPU platform | Accepted |

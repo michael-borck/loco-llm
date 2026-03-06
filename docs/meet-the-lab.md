@@ -1,14 +1,14 @@
 # Meet the Lab
 
-LocoLLM is built, trained, and tested on four machines. None of them are new. All of them were sourced secondhand. That's the point.
+LocoLLM runs on four machines. None of them are new. All were sourced secondhand. Hardware was acquired opportunistically -- the right capability at the right price, not a planned procurement.
 
-The naming follows the project's Spanish thread: Cerebro (brain), Burro (donkey), Poco (a little), and Peque (little one). The brain thinks fast, the donkey carries heavy loads, the little one connects you to both, and the littlest one keeps everyone honest.
+The naming follows a Spanish thread: Colmena (hive), Burro (donkey), Poco (a little), and Peque (little one). The hive coordinates many workers, the donkey carries heavy loads, the little one connects you to both, and the littlest one keeps the floor honest.
 
 ---
 
 ## Poco
 
-**The MacBook M1 -- Remote Terminal and Apple Silicon Testbed**
+**MacBook M1 -- Remote Terminal and Apple Silicon Testbed**
 
 | | |
 |---|---|
@@ -16,60 +16,82 @@ The naming follows the project's Spanish thread: Cerebro (brain), Burro (donkey)
 | **Memory** | 16 GB unified (shared CPU/GPU) |
 | **Storage** | 256 GB SSD |
 | **OS** | macOS |
-| **Role** | Remote access to Cerebro and Burro, Apple Silicon compatibility testing |
+| **Role** | Remote access to lab machines, Apple Silicon compatibility testing |
 
-Poco means "a little" in Spanish. It doesn't do the heavy lifting, but it's how you reach the machines that do.
+Poco means "a little" in Spanish. It doesn't do the heavy lifting -- it's how you reach the machines that do.
 
-Day to day, Poco is a remote terminal. SSH into Cerebro for training and inference, SSH into Burro for overnight jobs, monitor progress, pull results. Portable, silent, works from anywhere.
+Day to day it's a remote terminal. SSH into Colmena for inference and benchmarking, SSH into Burro for overnight jobs, monitor progress, pull results. Portable and works from anywhere on the network.
 
-Its secondary role is as an Apple Silicon testbed. LocoLLM needs to run on the hardware students actually own, and a lot of them carry MacBooks. Poco validates that the installation process, Ollama inference, and adapter loading all work cleanly on Apple Silicon with unified memory. If it works on a base M1 with 16 GB, it works on anything a student is likely to have.
+Its secondary role is Apple Silicon compatibility testing. LocoLLM needs to run on hardware students actually own, and a significant proportion carry MacBooks. Poco validates that installation, Ollama inference, and adapter loading all work cleanly on Apple Silicon with unified memory. A base M1 with 16 GB represents a reasonable lower bound for that user group.
 
-Apple's MLX framework also supports LoRA fine-tuning natively via `mlx_lm.lora`, so Poco can verify the training-to-deployment pipeline on Apple hardware when needed. It's slow (68 GB/s memory bandwidth versus 448 GB/s on Cerebro), but "does it work" matters more than "how fast" for compatibility testing.
+Apple's MLX framework supports LoRA fine-tuning natively via `mlx_lm.lora`, so Poco can also verify the training-to-deployment pipeline on Apple hardware when needed. Memory bandwidth is 68 GB/s -- slow compared to the rest of the lab -- but functional.
 
-**Best at:** Remote access. Verifying the student experience on consumer Apple hardware.
+**Best at:** Remote access. Validating the student experience on consumer Apple hardware.
 
 ---
 
-## Cerebro
+## Colmena
 
-**The Ryzen Build -- Primary Training and Inference**
+**B250 Mining Expert -- Multi-GPU Inference Hive and Benchmark Rig**
 
 | | |
 |---|---|
-| **CPU** | AMD Ryzen 5 2600 (12 threads @ 3.4 GHz) |
-| **GPU** | 2x NVIDIA RTX 2060 SUPER (8 GB VRAM each) |
-| **Memory** | 32 GB DDR4 |
-| **OS** | Ubuntu 22.04.5 LTS |
-| **Role** | Production training, benchmarking, inference serving |
+| **Motherboard** | ASUS B250 Mining Expert (19 PCIe slots, LGA1151) |
+| **CPU** | Intel Celeron G3930 2.9 GHz |
+| **GPUs** | NVIDIA GTX 1050 Ti 4 GB, 3x RTX 2060 Super 8 GB, RTX 3060 12 GB (5 cards, 6th slot reserved) |
+| **Memory** | 16 GB DDR4 |
+| **OS** | Ubuntu 22.04 LTS |
+| **Form** | Open air frame (3D printed, PETG) |
+| **Role** | Multi-GPU inference, benchmarking, multi-GPU architecture research |
 
-Cerebro is the brain of the operation. The name is Spanish for "brain," and it fits: this is where adapters get trained, benchmarked, and served. Two RTX 2060 SUPERs with Turing architecture Tensor Cores, fully supported by Unsloth's optimised Triton kernels.
+Colmena means "hive" in Spanish. Multiple workers, one coordinated system.
 
-Unsloth uses a single GPU for QLoRA training, so the dual-card setup creates a useful split: one GPU trains while the other runs Ollama for inference and benchmarking. You can evaluate an adapter on GPU 1 while the next one trains on GPU 0.
+The B250 Mining Expert was designed for cryptocurrency mining -- 19 PCIe slots, each running a GPU via USB riser cable at x1 electrical bandwidth. x1 is enough for LLM inference. The bandwidth constraint matters for training; for inference it doesn't. Mining rig hardware turns out to be a reasonable fit for a multi-GPU research platform, and the entire machine was assembled from secondhand parts sourced opportunistically. Specialised in configuration, not in cost.
 
-**Practical training specs for Qwen3-4B QLoRA:**
-- VRAM usage: ~7-8 GB per card
-- Sequence length: 2048 tokens (up to 4096 if needed)
-- Batch size: 1 with gradient accumulation of 8
-- LoRA rank: 16 across all linear layers (q, k, v, o, gate, up, down)
-- Precision: float16 (Turing doesn't support bfloat16 natively; Unsloth auto-detects)
-- Typical training time: 2-4 hours per adapter on 1,000-2,000 examples
+Colmena has three roles in priority order:
 
-**The pipeline from dataset to deployment runs entirely on this machine:**
-1. Prepare dataset (JSONL, question/answer pairs)
-2. QLoRA fine-tune with Unsloth
-3. Export to GGUF (Unsloth has built-in llama.cpp export)
-4. Load in Ollama
-5. Benchmark against base model
+**1. smol-bench primary platform.** The main reason Colmena exists in this form. A standard desktop with one PCIe slot could never serve smol-bench's purpose -- you need simultaneous parallel runs across multiple cards to get robust comparative results, not sequential GPU swaps. The open frame makes card visibility and access practical rather than incidental.
 
-32 GB of system RAM handles dataset preprocessing and model loading comfortably. The Ryzen 5 2600 isn't flashy, but twelve threads keep data pipelines fed without bottlenecking.
+**2. Multi-GPU architecture research.** Three 2060 Supers in the same machine enables load balancing, Mixture of Agents, and speculative decoding experiments that a two-card setup can't fully explore.
 
-**Best at:** Full training runs. Side-by-side adapter evaluation. Running the LocoLLM inference stack as it would appear to end users.
+**3. Inference serving.** The 2060 Supers are the practical sweet spot for current 7B models. Colmena serves the CloudCore Networks simulation -- a virtual business populated with AI chatbot employees, each with unique backstories, which students interview to extract requirements and understand business problems as part of assessed work. Previously this ran on a single card in Cerebro. Colmena takes over that role. If inference load becomes an issue a 2060 Super can move back into a dedicated machine without disrupting the benchmarking setup.
+
+The open frame design and card progression also works as a physical demonstration piece. The hardware tells the VRAM story visually in a way a conventional tower case never could.
+
+The card lineup spans VRAM generations: 4 GB, 8 GB (x3), and 12 GB. A sixth slot is reserved for future expansion as the secondhand market matures. Each card runs its own Ollama instance, assigned via `CUDA_VISIBLE_DEVICES`.
+
+**GPU progression:**
+
+| Card | VRAM | Notes |
+|------|------|-------|
+| GTX 1050 Ti | 4 GB | Floor -- minimum viable inference node |
+| RTX 2060 Super (x3) | 8 GB each | Turing, Tensor Cores, QLoRA capable |
+| RTX 3060 | 12 GB | Comfortable headroom for 7B models at Q4 |
+| (Future) | TBD | 40-series when affordable secondhand |
+
+**A note on NVLink:** The 2060 Supers don't support NVLink -- true hardware VRAM pooling isn't available. This is a non-issue for this project. Consumer NVLink was briefly available on the RTX 2080 Ti and RTX 3090, but Nvidia removed it entirely from the 4090 and 5090. For consumer-grade hardware, NVLink is dead. Each card operates as an independent worker, which is the right architecture for this use case anyway.
+
+**Multi-GPU operating modes:**
+
+The three 2060 Supers don't support NVLink -- VRAM pooling at the hardware level isn't available. Each card operates as an independent worker. Three useful architectures are in scope:
+
+*Load balancer:* Three Ollama instances, one per 2060 Super, behind an nginx or FastAPI router distributing requests round-robin. Triples concurrent throughput with no quality tradeoff. Relevant for multi-user AnythingLLM sessions and CloudCore Networks simulations.
+
+*Mixture of Agents (MoA):* Two cards act as proposers, generating independent responses to the same query at slightly different temperatures. A third card acts as aggregator, synthesising the two outputs into a final response. Quality improvements are most noticeable on reasoning tasks. Adds roughly one generation cycle of latency. See [arxiv.org/abs/2406.04692](https://arxiv.org/abs/2406.04692).
+
+*Speculative decoding:* A small draft model on one card generates candidate tokens rapidly. A larger verifier model on another card accepts or rejects token batches. Net result is lower latency from the large model. Supported natively by llama.cpp via `--model-draft`.
+
+A meta-router can switch between modes depending on load and query type.
+
+**Best at:** Benchmarking across VRAM tiers. Multi-user inference serving. Multi-GPU architecture experiments.
+
+**A counterintuitive result:** For models that fit in 8 GB, the 2060 Supers will likely outperform the 3060 on tokens per second. LLM inference is memory bandwidth bound, not compute bound -- and the 2060 Super's 448 GB/s beats the 3060's 360 GB/s. The 3060's newer Ampere architecture and improved Tensor Cores don't help much when the bottleneck is getting weights off the card, not computing with them. The 3060's value in Colmena is VRAM capacity -- it's the only card that can load models larger than 8 GB. For everything that fits in 8 GB, the older cards are faster. A good thing to show students before they assume newer always means better.
 
 ---
 
 ## Burro
 
-**The IBM x3500 M4 -- Dedicated Training Server**
+**IBM x3500 M4 -- Dedicated Training Server**
 
 | | |
 |---|---|
@@ -77,87 +99,73 @@ Unsloth uses a single GPU for QLoRA training, so the dual-card setup creates a u
 | **CPU** | Intel Xeon E5-2660 (8 cores, 16 threads @ 2.2 GHz) |
 | **GPU** | NVIDIA Tesla P100 16 GB (Pascal, HBM2) |
 | **PSU** | 2x 750W redundant |
-| **Memory** | 32 GB DDR3 ECC (8x 4 GB) |
-| **Storage** | 300 GB SAS (boot) + 5x 300 GB SAS (available) |
+| **Memory** | 32 GB DDR3 ECC |
+| **Storage** | 300 GB SAS (boot) + 5x 300 GB SAS |
 | **OS** | Ubuntu Server 22.04 LTS |
-| **Role** | Overnight training, large datasets, "set and forget" |
+| **Role** | Overnight training, large datasets, high-fidelity LoRA |
 
-Burro means "donkey" in Spanish. Donkeys aren't fast, but they carry heavy loads without stopping. That's exactly what this server does.
+Burro means "donkey" in Spanish. Not fast, but it carries heavy loads reliably.
 
-The P100 is the sole GPU. A small LCD monitor sits on the desk connected to the onboard Matrox G200 (via the IMM2), running a persistent tmux dashboard with GPU stats, training progress, and adapter registry status. Day to day it's a status display; when needed, a keyboard comes out of the drawer for direct access.
+The P100's 16 GB of HBM2 at 732 GB/s opens training options that 8 GB cards can't reach: full 16-bit LoRA rather than 4-bit QLoRA, longer context windows (4096-8192 tokens), larger batch sizes, and higher LoRA ranks. These translate to higher-fidelity adapters for jobs where quality matters more than turnaround time.
 
-Pascal architecture, compute capability 6.0, fully supported by current PyTorch and CUDA. The P100's 16 GB of HBM2 memory at 732 GB/s bandwidth opens up training options that Cerebro's 8 GB cards can't touch: full 16-bit LoRA (instead of 4-bit QLoRA), longer context windows (4096-8192 tokens), bigger batch sizes, and higher LoRA ranks. All of those translate to potentially better adapter quality. With 16 GB of VRAM, the P100 also handles inference and benchmarking after a training run completes, just sequentially rather than simultaneously like Cerebro's dual-card split.
+Pascal architecture (compute capability 6.0) doesn't have Tensor Cores -- those arrived with Volta. Training runs through standard CUDA cores using vanilla PEFT or HuggingFace Trainer rather than Unsloth. Expect roughly 2-3x slower wall-clock time than a 2060 Super running Unsloth QLoRA for an equivalent job. A three-hour Unsloth run on a 2060 Super becomes a six-to-eight-hour PEFT run on Burro. That's an overnight job, not a multi-day one.
 
-The P100 doesn't have Tensor Cores (those arrived with Volta), so it won't benefit from Unsloth's mixed-precision acceleration. Training runs through standard CUDA cores using vanilla PEFT or HuggingFace Trainer instead. Expect roughly 2-3x slower than Cerebro's 2060 SUPER for the same job. A three-hour Unsloth run on Cerebro becomes a six-to-eight-hour PEFT run on Burro. That's overnight, not days.
+The P100 PCIe is passively cooled, designed for high-velocity rack airflow. The x3500's tower layout moves air more gently, so a 3D-printed fan shroud with a 92mm Noctua directs airflow across the heatsink. Printed in PETG on the lab's own Prusa fleet.
 
-The P100 PCIe is a passively cooled card designed for high-velocity rack airflow. The x3500's tower layout moves air more gently, so a 3D-printed fan shroud with a 92mm Noctua is fitted to direct airflow across the heatsink. Printed in PETG on the project's own Prusa fleet.
+A small LCD monitor connects to the onboard Matrox G200 via IMM2, running a persistent tmux dashboard with GPU stats and training progress. Keyboard stays in the drawer; the display is the only regular interaction.
 
-The x3500 M4 is enterprise tower hardware from 2012. Dual Xeon sockets, redundant power supplies, ECC memory, hot-swap drive bays. Built to run 24/7. The tower form factor keeps things practical: quieter fan profile, full-height PCIe slots that fit the P100 without compromise, and it lives under a desk without anyone needing to worry about it. You give it a training job at 6pm, and the adapter is ready when you walk in the next morning.
+**Best at:** Long training runs on larger datasets. Higher-fidelity LoRA at 16-bit precision. Jobs where quality matters more than speed.
 
-**Best at:** Long training runs on larger datasets. Higher-fidelity LoRA training at 16-bit. Jobs where time isn't the constraint but quality is.
+**A note on consolidation:** The P100 could physically move to Colmena -- it needs a PCIe slot, power, and airflow, all of which are available. The reason it stays in Burro is the B250 Mining Expert's riser cables run at x1 electrical bandwidth. For inference that's fine. For training, which is bandwidth sensitive, it would meaningfully degrade the P100's primary role. The x3500 also provides directed high-velocity airflow across the passive heatsink that an open frame can't replicate without a dedicated shroud redesign. The consolidation isn't worth the tradeoff.
 
 ---
 
 ## Peque
 
-**The Dell Optiplex -- Reference Machine and Swarm Test Node**
+**Dell Optiplex 990 -- Reference Node**
 
 | | |
 |---|---|
 | **Chassis** | Dell Optiplex 990 (DT) |
-| **GPU** | NVIDIA GeForce GTX 1050 Ti 4 GB (Gigabyte GV-N105TOC-4GL, low profile) |
-| **Memory** | 32 GB DDR3 |
+| **GPU** | NVIDIA GeForce GTX 1650 OC 4 GB |
+| **Memory** | 16 GB DDR3 |
 | **Storage** | 256 GB SSD |
 | **OS** | Ubuntu 22.04 LTS |
-| **Role** | Reference testing, minimum viable swarm node |
+| **Role** | Minimum viable inference node, reference testing |
 
-Peque is informal Spanish for "little one." Every lab needs a machine that represents the floor — the least capable hardware that can still meaningfully participate. Peque is that machine.
+Peque is informal Spanish for "little one." It represents the floor -- the least capable machine that can still participate meaningfully in the lab network.
 
-The GTX 1050 Ti is Pascal architecture (compute capability 6.1), same generation as Burro's P100 but a fraction of the capability: 4 GB GDDR5, 768 CUDA cores, 112 GB/s memory bandwidth, and no Tensor Cores. It draws 75W and doesn't need an external power connector — the low-profile card runs entirely off the PCIe slot.
+The 1650 is Turing architecture (compute capability 7.5), 4 GB GDDR6, 192 GB/s memory bandwidth. 4 GB VRAM is the real constraint. It runs quantised 7B models at Q4 -- tightly, but it runs them. The question Peque answers is whether a node at the low end of the capability range can still serve useful inference. If a Q4_K_M model loads and runs here, it runs on comparable consumer hardware.
 
-4 GB of VRAM is the real constraint. It forces every swarm test to answer a simple question: can a node with minimal resources still contribute? If a Q4_K_M quantised model loads and runs inference on Peque, it runs anywhere. If a swarm task can't distribute work to a 4 GB node, the swarm design needs rethinking, not the hardware.
+The Dell Optiplex 990 is the secondhand market's most common desktop chassis. Schools, offices, and government departments cycle through them at volume. Cheap, standardised, and the compact form factor is familiar to anyone who has worked in an office in the last decade. It represents a plausible "hardware a department already owns" scenario.
 
-The Dell Optiplex is the secondhand market's most abundant desktop. Schools, offices, and government departments cycle through them by the thousands. They're cheap, standardised, and the compact chassis accepts low-profile GPUs without modification. The 1050 Ti low-profile was one of the few CUDA-capable cards designed for exactly this form factor.
+Ubuntu 22.04 LTS matches the rest of the fleet. Same CUDA toolkit, same driver stack, same Ollama installation path.
 
-Ubuntu 22.04 LTS matches the rest of the fleet. Same CUDA toolkit, same driver stack, same Ollama installation path. No Windows-specific friction, no WSL2 indirection. One OS, one workflow, across every machine.
-
-**Best at:** Validating swarm participation on constrained hardware. Proving the floor works.
+**Best at:** Validating inference on constrained hardware. Representing what a department's existing PC can actually run.
 
 ---
 
-## The Fleet at a Glance
+## Fleet at a Glance
 
-| Machine | GPU VRAM | Memory BW | Tensor Cores | Primary Role | Training Tool |
-|---|---|---|---|---|---|
-| **Poco** (MacBook M1) | 16 GB unified | 68 GB/s | No | Remote terminal, Apple Silicon testing | MLX (when needed) |
-| **Cerebro** (Ryzen + 2x 2060S) | 8 GB per card | 448 GB/s | Yes (Turing) | Fast training, inference, benchmarking | Unsloth QLoRA |
-| **Burro** (IBM x3500 M4 + P100) | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA | PEFT / HF Trainer |
-| **Peque** (Dell Optiplex + 1050 Ti) | 4 GB GDDR5 | 112 GB/s | No | Reference machine, swarm testing | Ollama (inference only) |
-
----
-
-## A Note on Hardware
-
-Nothing about this specific hardware is prescriptive. The P100 doesn't require an IBM server. It needs a PCIe x16 slot, a power supply that can handle the extra 250W draw, and enough airflow over a passively cooled card. That could be an old Dell workstation, an HP tower, a custom build from spare parts, or whatever you find on your local secondhand market. The x3500 M4 is just what happened to be in the workshop already.
-
-The same goes for Cerebro. Any mid-range desktop with an NVIDIA GPU and 8+ GB of VRAM runs the same Unsloth pipeline. The RTX 2060 SUPER isn't special. It's just what was available.
-
-If you're building your own LocoLLM lab, your hardware will look different from ours. That's fine. The architecture doesn't care about the brand on the case. It cares about VRAM, CUDA support, and whether the software stack runs. Match the capability, not the specific parts list.
+| Machine | GPU | VRAM | Memory BW | Tensor Cores | Primary Role |
+|---------|-----|------|-----------|--------------|--------------|
+| **Poco** (MacBook M1) | Apple M1 GPU | 16 GB unified | 68 GB/s | No | Remote terminal, Apple Silicon testing |
+| **Colmena** (B250 Mining Expert) | 1050 Ti + 3x 2060S + 3060 | 4/8/8/8/12 GB | 112-448 GB/s | Yes (2060S, 3060) | Multi-GPU inference, benchmarking |
+| **Burro** (IBM x3500 M4 + P100) | Tesla P100 | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA |
+| **Peque** (Dell Optiplex + 1650) | GTX 1650 OC | 4 GB GDDR6 | 192 GB/s | Yes (Turing) | Reference node, minimum viable inference |
 
 ---
 
-## Running Costs
+## Hardware Notes
 
-Old enterprise hardware draws more power per FLOP than current-generation GPUs. That's true. But when you do the maths on actual training runs, the electricity cost is measured in cents, not dollars. A single adapter training run on Cerebro costs roughly the price of a coffee pod. An overnight run on Burro costs about the price of a bus fare.
+The specific hardware here isn't prescriptive. The P100 doesn't require an IBM server -- it needs a PCIe x16 slot, adequate power, and airflow over a passively cooled card. The B250 Mining Expert doesn't require this exact GPU lineup -- any PCIe cards via risers work. The Optiplex doesn't require a 1650 -- any low-profile CUDA card with 4 GB fits the role.
 
-The full cost analysis, including idle power draw, cloud GPU comparisons, capital expenditure versus running costs, and total cost of ownership, is covered in [The Economics of Local Training](economics-of-local-training.md).
+What matters for replication is capability tier, not specific parts. Match the VRAM range and CUDA support, source whatever is available locally at the time.
+
+The lab exists at this price point deliberately. Frontier model access on premium hardware -- cloud APIs, Apple Silicon, high-end workstations -- is available, but it concentrates AI capability around cost. A lab built from secondhand consumer hardware makes the same workflows accessible to anyone willing to learn the stack. Smaller models on modest hardware are genuinely useful for exploration, brainstorming, and iteration. That use case doesn't require a frontier model and doesn't require expensive hardware. It requires understanding what you're doing -- which is the point of the lab.
 
 ---
 
-## Why This Matters
+## A Note on Cerebro
 
-Every machine in this lab was sourced secondhand through patient marketplace hunting. No premium prices. No enterprise procurement. Just consumer-grade and ex-enterprise hardware, acquired opportunistically.
-
-Every result LocoLLM publishes is reproducible on hardware that anyone can acquire the same way. No A100 clusters. No cloud credits. No asterisks.
-
-That's not a limitation. That's the thesis.
+An earlier version of the lab included Cerebro, a Ryzen 5 2600 desktop with two RTX 2060 Super GPUs. Colmena supersedes it -- same GPU generation, more cards, more flexibility, and a purpose-built motherboard for multi-GPU work. Cerebro is retired. The 2060 Supers moved to Colmena.
