@@ -17,9 +17,11 @@ class TestCLI:
     """Tests for CLI subcommands and argument parsing."""
 
     def test_version(self):
+        from locollm import __version__
+
         result = run_loco("--version")
         assert result.returncode == 0
-        assert "0.2.0" in result.stdout
+        assert __version__ in result.stdout
 
     def test_help(self):
         result = run_loco("--help")
