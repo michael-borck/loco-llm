@@ -1,0 +1,52 @@
+/* Google Fonts — must be first */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* LocoLLM brand — matches landing page */
+
+:root {
+  --sl-color-accent-low: #1a0d02;
+  --sl-color-accent: #f97316;
+  --sl-color-accent-high: #fbd5b0;
+
+  --sl-color-white: #e8e6e3;
+  --sl-color-gray-1: #9a9a9e;
+  --sl-color-gray-2: #5e5e63;
+  --sl-color-gray-3: #2a2a30;
+  --sl-color-gray-4: #1e1e23;
+  --sl-color-gray-5: #16161a;
+  --sl-color-gray-6: #111114;
+  --sl-color-black: #0a0a0b;
+
+  --sl-font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Header border to match landing page */
+header.header {
+  border-bottom: 1px solid var(--sl-color-gray-4);
+  backdrop-filter: blur(12px);
+}
+
+/* Code block styling */
+code {
+  border-radius: 6px;
+}
+
+/* Table styling */
+table {
+  border-radius: 8px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-track {
+  background: var(--sl-color-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sl-color-gray-3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a40;
+}

@@ -20,15 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: "3.12"
+          node-version: 22
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build MkDocs
-        run: uv run --group docs mkdocs build --strict
+      - name: Build Starlight docs
+        run: npm run build
 
       - name: Assemble site
         run: |
@@ -38,8 +38,8 @@ jobs:
           cp docs/index.html _site/
           cp docs/CNAME _site/
 
-          # MkDocs output under /docs/
-          mv site _site/docs
+          # Starlight output under /docs/
+          mv dist _site/docs
 
       - uses: actions/upload-pages-artifact@v3
 

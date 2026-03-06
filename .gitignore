@@ -25,8 +25,9 @@ htmlcov/
 # Jupyter
 .ipynb_checkpoints/
 
-# MkDocs
-site/
+# Astro / Starlight
+.astro/
+node_modules/
 
 # Models and weights
 models/
