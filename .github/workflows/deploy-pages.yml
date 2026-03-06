@@ -37,6 +37,7 @@ jobs:
           # Landing page files at root
           cp docs/index.html _site/
           cp docs/CNAME _site/
+          touch _site/.nojekyll
 
           # Starlight output under /docs/
           mv dist _site/docs
