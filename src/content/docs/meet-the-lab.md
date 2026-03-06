@@ -2,8 +2,6 @@
 title: "Meet the Lab"
 ---
 
-# Meet the Lab
-
 LocoLLM runs on four machines. None of them are new. All were sourced secondhand. Hardware was acquired opportunistically -- the right capability at the right price, not a planned procurement.
 
 The naming follows a Spanish thread: Colmena (hive), Burro (donkey), Poco (a little), and Peque (little one). The hive coordinates many workers, the donkey carries heavy loads, the little one connects you to both, and the littlest one keeps the floor honest.

@@ -2,8 +2,6 @@
 title: "Known Challenges"
 ---
 
-# Known Challenges
-
 This document names the risks, tensions, and open questions that could undermine LocoLLM's thesis. They are recorded here not because they have been resolved, but because pretending they do not exist would be worse than confronting them honestly.
 
 A project that cannot articulate its own weaknesses is not rigorous. It is promotional.

@@ -2,8 +2,6 @@
 title: "Fine-Tuning Primer"
 ---
 
-# Fine-Tuning Primer
-
 A conceptual foundation for contributors who are new to fine-tuning. Read this before diving into the [Adapter Development Guide](adapter-guide.md).
 
 ## What Is Fine-Tuning?

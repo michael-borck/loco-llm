@@ -2,8 +2,6 @@
 title: "LocoLLM Ideas & Open Questions"
 ---
 
-# LocoLLM Ideas & Open Questions
-
 Captured design discussions and future directions. Items here are **not committed to** — they are candidates for ADRs and the research roadmap.
 
 ---

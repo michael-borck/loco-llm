@@ -2,8 +2,6 @@
 title: "Why LocoLLM Exists"
 ---
 
-# Why LocoLLM Exists
-
 This document describes what LocoLLM is, the assumptions it makes, and the philosophy that shapes its design.
 
 ## A Teaching and Research Framework

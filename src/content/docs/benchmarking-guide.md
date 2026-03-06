@@ -2,8 +2,6 @@
 title: "Benchmarking Guide"
 ---
 
-# Benchmarking Guide
-
 How LocoLLM adapters are evaluated and how the results fit into the bigger picture.
 
 ## What `loco eval` Does Today

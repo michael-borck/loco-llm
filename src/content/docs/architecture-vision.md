@@ -2,8 +2,6 @@
 title: "Architecture Vision: Where This Could Go"
 ---
 
-# Architecture Vision: Where This Could Go
-
 This document explores ideas that go beyond LocoLLM's current design. None of this is committed to. Some of it may never be built. But the ideas are worth recording because they connect the teaching project to real research questions, and because a student who understands these concepts can participate in conversations about where AI systems are heading.
 
 The current system — one base model, keyword router, specialist adapters — is Step 1. This document sketches what Steps 2 through N might look like.

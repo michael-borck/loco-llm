@@ -2,8 +2,6 @@
 title: "Training New Adapters"
 ---
 
-# Training New Adapters
-
 A generic workflow for creating LocoLLM adapters. The math, code, and analysis adapters all follow this pattern.
 
 ## Overview

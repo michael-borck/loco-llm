@@ -2,8 +2,6 @@
 title: "Nvidia GPU Generations -- An AI Inference Perspective"
 ---
 
-# Nvidia GPU Generations -- An AI Inference Perspective
-
 A reference for understanding Nvidia's consumer GPU lineup through the lens of local LLM inference rather than gaming performance. The two use cases share hardware but reward different specifications.
 
 ---

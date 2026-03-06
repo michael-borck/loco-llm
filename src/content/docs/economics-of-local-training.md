@@ -2,8 +2,6 @@
 title: "The Economics of Local Training"
 ---
 
-# The Economics of Local Training
-
 LocoLLM runs on secondhand hardware. This document puts real numbers to the question of whether that makes financial sense compared to cloud GPU rental, API inference, or buying new equipment.
 
 All figures use Australian dollars (AUD) and Perth electricity rates (Synergy Home Plan A1, ~$0.31/kWh).

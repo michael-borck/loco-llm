@@ -2,8 +2,6 @@
 title: "Tools for Running Small Language Models Locally"
 ---
 
-# Tools for Running Small Language Models Locally
-
 This is a survey of tools that let you run, interact with, and build on small language models on your own hardware. It is not exhaustive. It will date. It was accurate as of March 2026.
 
 LocoLLM is not a replacement for any of these. Several of them may be exactly what you need, and if one of them solves your problem without the complexity of adapters, routers, and training pipelines, use it. LocoLLM exists for a specific niche -- educational research into adapter-based specialisation on consumer hardware -- and makes no claim beyond that.

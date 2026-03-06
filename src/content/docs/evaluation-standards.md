@@ -2,8 +2,6 @@
 title: "Evaluation Standards"
 ---
 
-# Evaluation Standards
-
 This document defines how LocoLLM adapters are evaluated, what metrics are used, and what constitutes a passing result.
 
 ## Core Principle

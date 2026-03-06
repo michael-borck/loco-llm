@@ -2,8 +2,6 @@
 title: "Adapter Development Guide"
 ---
 
-# Adapter Development Guide
-
 A practical, step-by-step guide for student teams building their first LocoLLM adapter.
 
 ## Before You Start

@@ -2,8 +2,6 @@
 title: "ADR-0003: Single Evolving Router Over Parallel Routers"
 ---
 
-# ADR-0003: Single Evolving Router Over Parallel Routers
-
 ## Status
 
 Proposed

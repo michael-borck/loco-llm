@@ -2,8 +2,6 @@
 title: "LocoLLM Architecture"
 ---
 
-# LocoLLM Architecture
-
 This document describes how LocoLLM's components fit together and the reasoning behind key technical decisions.
 
 ## System Overview

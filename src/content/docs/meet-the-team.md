@@ -2,8 +2,6 @@
 title: "Meet the Team"
 ---
 
-# Meet the Team
-
 LocoLLM is an open-source project out of Curtin University, Perth. It started as one person's side project and is designed to grow through student contributions semester by semester.
 
 ---

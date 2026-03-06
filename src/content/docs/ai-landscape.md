@@ -2,8 +2,6 @@
 title: "AI Landscape"
 ---
 
-# AI Landscape
-
 LocoLLM does not exist in isolation. Students and educators have a growing set of options for accessing AI, from free cloud tiers to fully local tools. This document maps the landscape honestly so that users can make informed choices — including the choice not to use LocoLLM.
 
 A project that pretends its alternatives do not exist is selling something. We are not selling anything.

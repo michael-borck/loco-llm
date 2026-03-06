@@ -2,8 +2,6 @@
 title: "ADR-0004: Retire Cerebro, Adopt B250 Mining Expert as Multi-GPU Platform"
 ---
 
-# ADR-0004: Retire Cerebro, Adopt B250 Mining Expert as Multi-GPU Platform
-
 ## Status
 
 Accepted

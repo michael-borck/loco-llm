@@ -2,8 +2,6 @@
 title: "LocoLLM Project Ideas"
 ---
 
-# LocoLLM Project Ideas
-
 A catalogue of self-contained projects for capstone students and contributors. Each project is scoped to be achievable in one semester by a team of 2-4 people. Projects are grouped by discipline focus, but most are cross-disciplinary — a web interface project needs both design thinking and technical implementation.
 
 **How to read this page:** Pick a project that interests you. Read the description and deliverables. If it sounds like something you want to work on, talk to the project lead. Most of the skills listed are learnable during the project — attitude and curiosity matter more than existing expertise.

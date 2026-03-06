@@ -2,8 +2,6 @@
 title: "Benchmark Results"
 ---
 
-# Benchmark Results
-
 ## Base Model Benchmarks
 
 LocoLLM's base model (Qwen3-4B at Q4_K_M) was selected using data from [smol-bench](https://github.com/michael-borck/smol-bench), which evaluates small language models across standard tasks at multiple quantization levels. The key finding that shaped our choice:

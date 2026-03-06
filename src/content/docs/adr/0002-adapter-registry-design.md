@@ -2,8 +2,6 @@
 title: "ADR-0002: YAML-Based Adapter Registry with Domain Grouping"
 ---
 
-# ADR-0002: YAML-Based Adapter Registry with Domain Grouping
-
 ## Status
 
 Proposed

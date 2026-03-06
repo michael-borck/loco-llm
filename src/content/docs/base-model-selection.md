@@ -2,8 +2,6 @@
 title: "Base Model Selection"
 ---
 
-# Base Model Selection
-
 This document explains how the standard base model is chosen, the rationale behind the current selection, and the external benchmarking resources used to inform the decision.
 
 ## Current Standard

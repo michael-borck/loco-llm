@@ -2,8 +2,6 @@
 title: "Architecture Decision Records (ADRs)"
 ---
 
-# Architecture Decision Records (ADRs)
-
 We use ADRs to capture significant technical and research decisions in LocoLLM.
 
 ## What is an ADR?

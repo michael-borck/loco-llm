@@ -2,8 +2,6 @@
 title: "LocoLLM Documentation"
 ---
 
-# LocoLLM Documentation
-
 **Frontier AI on a budget. Crazy, right?**
 
 LocoLLM is an open-source experiment in building routed, task-specific fine-tuned language models that run entirely on consumer hardware. One base model, many specialist adapters, zero cloud dependencies.

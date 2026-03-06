@@ -2,8 +2,6 @@
 title: "Making Small Models More Useful: A Landscape Overview"
 ---
 
-# Making Small Models More Useful: A Landscape Overview
-
 Small language models running on consumer hardware are genuinely capable -- but capability is not evenly distributed. A 7B model used well can outperform a much larger model used passively. This piece maps the strategies, techniques, and architectures that close the gap between what a small model is and what it can do in practice.
 
 The framing throughout is practical: what can an educator, researcher, or practitioner actually do with modest hardware and reasonable effort?

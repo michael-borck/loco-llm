@@ -2,8 +2,6 @@
 title: "LocoLLM Research Roadmap"
 ---
 
-# LocoLLM Research Roadmap
-
 This document outlines the research questions, milestones, and evaluation criteria for the LocoLLM project.
 
 ## Core Research Question

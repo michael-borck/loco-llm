@@ -2,8 +2,6 @@
 title: "ADR-0001: Use Qwen3-4B-Instruct as Base Model for 2026-2027"
 ---
 
-# ADR-0001: Use Qwen3-4B-Instruct as Base Model for 2026-2027
-
 ## Status
 
 Accepted
