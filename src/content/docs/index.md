@@ -8,58 +8,44 @@ title: "LocoLLM Documentation"
 
 LocoLLM is an open-source experiment in building routed, task-specific fine-tuned language models that run entirely on consumer hardware. One base model, many specialist adapters, zero cloud dependencies.
 
-<div class="grid cards" markdown>
+---
 
--   **Getting Started**
+### Getting Started
 
-    ---
+Understand the project's goals, hardware, and philosophy.
 
-    Understand the project's goals, hardware, and philosophy.
+[Why LocoLLM](/docs/why-locollm/) · [FAQ](/docs/faq/) · [Meet the Lab](/docs/meet-the-lab/)
 
-    [:octicons-arrow-right-24: Why LocoLLM](why-locollm.md) · [FAQ](faq.md) · [Meet the Lab](meet-the-lab.md)
+### Guides
 
--   **Guides**
+Hands-on guides for training adapters, benchmarking, and evaluation.
 
-    ---
+[Adapter Guide](/docs/adapter-guide/) · [Fine-Tuning Primer](/docs/finetuning-primer/)
 
-    Hands-on guides for training adapters, benchmarking, and evaluation.
+### Reference
 
-    [:octicons-arrow-right-24: Adapter Guide](adapter-guide.md) · [Fine-Tuning Primer](finetuning-primer.md)
+Architecture decisions, model selection rationale, and research direction.
 
--   **Reference**
+[Architecture](/docs/architecture/) · [Research Roadmap](/docs/research-roadmap/) · [Architecture Vision](/docs/architecture-vision/)
 
-    ---
+### Benchmarks
 
-    Architecture decisions, model selection rationale, and research direction.
+Interactive results: quality, speed, and efficiency across 14 models x 8 quant levels.
 
-    [:octicons-arrow-right-24: Architecture](architecture.md) · [Research Roadmap](research-roadmap.md) · [Architecture Vision](architecture-vision.md)
+[Overview](/docs/benchmarks/)
 
--   **Benchmarks**
+### Contribute
 
-    ---
+Project ideas for capstone students and contributors.
 
-    Interactive results: quality, speed, and efficiency across 14 models x 8 quant levels.
+[Project Ideas](/docs/project-ideas/)
 
-    [:octicons-arrow-right-24: Overview](benchmarks/index.md)
+### Decisions (ADRs)
 
--   **Contribute**
+Recorded technical decisions and the reasoning behind them.
 
-    ---
-
-    Project ideas for capstone students and contributors.
-
-    [:octicons-arrow-right-24: Project Ideas](project-ideas.md) · [Capstone Blurb](capstone-project-blurb.md)
-
--   **Decisions (ADRs)**
-
-    ---
-
-    Recorded technical decisions and the reasoning behind them.
-
-    [:octicons-arrow-right-24: ADR Overview](adr/README.md)
-
-</div>
+[ADR Overview](/docs/adr/)
 
 ---
 
-**Links:** [Landing Page](https://locollm.org) · [GitHub](https://github.com/michael-borck/loco-llm) · [MIT License](https://github.com/michael-borck/loco-llm/blob/main/LICENSE)
+[Landing Page](https://locollm.org) · [GitHub](https://github.com/michael-borck/loco-llm) · [MIT License](https://github.com/michael-borck/loco-llm/blob/main/LICENSE)

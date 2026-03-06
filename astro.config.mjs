@@ -14,6 +14,7 @@ export default defineConfig({
         replacesTitle: false,
       },
       social: [
+        { icon: 'external', label: 'Home', href: 'https://locollm.org' },
         { icon: 'github', label: 'GitHub', href: 'https://github.com/michael-borck/loco-llm' },
       ],
       customCss: ['./src/styles/custom.css'],
