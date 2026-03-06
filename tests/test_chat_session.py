@@ -242,3 +242,44 @@ class TestAutoRouting:
         session.add_user_message("write python code")
         # Should stay on math, not route to code
         assert session.active_adapter == "math"
+
+
+# ===========================================================================
+# Conversational nudge
+# ===========================================================================
+
+
+class TestNudge:
+    def test_nudge_on_by_default(self):
+        session = _make_session()
+        assert session.nudge_enabled is True
+
+    def test_nudge_toggle(self):
+        session = _make_session()
+        assert session.toggle_nudge() is False
+        assert session.nudge_enabled is False
+        assert session.toggle_nudge() is True
+        assert session.nudge_enabled is True
+
+    def test_nudge_can_be_disabled_at_init(self):
+        with (
+            patch("locollm.chat_session.adapter_manager.load_registry", return_value=FAKE_REGISTRY),
+            patch("locollm.chat_session.ollama_client.list_models", return_value=FAKE_INSTALLED),
+        ):
+            session = ChatSession(nudge=False)
+        assert session.nudge_enabled is False
+
+    def test_next_nudge_cycles(self):
+        session = _make_session()
+        from locollm.chat_session import NUDGE_PHRASES
+
+        seen = [session.next_nudge() for _ in range(len(NUDGE_PHRASES) + 1)]
+        # Should cycle: the phrase at position N equals position N + len(pool)
+        assert seen[0] == seen[len(NUDGE_PHRASES)]
+
+    def test_next_nudge_returns_known_phrases(self):
+        session = _make_session()
+        from locollm.chat_session import NUDGE_PHRASES
+
+        for _ in range(10):
+            assert session.next_nudge() in NUDGE_PHRASES

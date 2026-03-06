@@ -19,7 +19,7 @@ class TestCLI:
     def test_version(self):
         result = run_loco("--version")
         assert result.returncode == 0
-        assert "0.1.0" in result.stdout
+        assert "0.2.0" in result.stdout
 
     def test_help(self):
         result = run_loco("--help")

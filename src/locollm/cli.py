@@ -173,6 +173,7 @@ Commands:
   /adapter auto      Auto-route based on your query
   /adapter none      Use base model directly
   /stats             Show session statistics
+  /nudge             Toggle conversational nudge on/off
 
 Tips:
   - Keep queries focused on one task — adapters are specialists
@@ -227,6 +228,10 @@ def cmd_chat(args):
         elif command == "/stats":
             print(session.session_stats_display())
             continue
+        elif command == "/nudge":
+            state = session.toggle_nudge()
+            print(f"[nudge {'on' if state else 'off'}]")
+            continue
         elif command is not None:
             print(f"Unknown command: {command}")
             continue
@@ -251,6 +256,9 @@ def cmd_chat(args):
             notice = session.maybe_compact(meta.get("prompt_eval_count", 0))
             if notice:
                 print(notice)
+
+        if session.nudge_enabled:
+            print(f"\n💬 {session.next_nudge()}\n")
 
 
 def cmd_adapters_list(args):

@@ -4,19 +4,31 @@ Handles conversation history, adapter routing, context compaction,
 and stats formatting. Does no IO (never calls print/input).
 """
 
+import random
+
 from locollm import adapter_manager, ollama_client
 from locollm.router import KeywordRouter
+
+NUDGE_PHRASES = [
+    "Does that make sense? If something seems off, ask me to explain differently.",
+    "What part of that would you like to explore further?",
+    "Does that match what you expected? If not, tell me what seems wrong.",
+    "Want to dig deeper into any part of that?",
+    "Anything there you'd push back on?",
+]
 
 
 class ChatSession:
     """Manages multi-turn chat state, routing, and compaction."""
 
-    def __init__(self, adapter="auto", context_limit=8192):
+    def __init__(self, adapter="auto", context_limit=8192, nudge=True):
         self._messages: list[dict] = []
         self._context_limit = context_limit
         self._total_tokens = 0
         self._total_duration_ns = 0
         self._turn_count = 0
+        self._nudge_enabled = nudge
+        self._nudge_index = random.randrange(len(NUDGE_PHRASES))
 
         # Load adapter info
         registry = adapter_manager.load_registry()
@@ -165,6 +177,20 @@ class ChatSession:
         command = parts[0].lower()
         arg = parts[1].strip() if len(parts) > 1 else None
         return (command, arg)
+
+    @property
+    def nudge_enabled(self):
+        return self._nudge_enabled
+
+    def toggle_nudge(self):
+        self._nudge_enabled = not self._nudge_enabled
+        return self._nudge_enabled
+
+    def next_nudge(self):
+        """Return the next nudge phrase, cycling through the pool."""
+        phrase = NUDGE_PHRASES[self._nudge_index % len(NUDGE_PHRASES)]
+        self._nudge_index += 1
+        return phrase
 
     def _auto_route(self, text):
         """Route a message using KeywordRouter. Only called in auto mode."""
