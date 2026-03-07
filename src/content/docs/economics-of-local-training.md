@@ -16,10 +16,10 @@ Both Colmena and Burro run 24/7. Most of the time they're idle (SSH available, O
 
 | Machine | Idle | Active Load |
 |---|---|---|
-| **Colmena** (B250 Mining Expert + 5 GPUs) | ~130W | ~450W (inference) |
+| **Colmena** (WEIHO 8-GPU + 3 GPUs installed) | ~100W | ~350W (inference) |
 | **Burro** (x3500 M4 + P100) | ~150W | ~420W (training) |
 
-*Note: Colmena estimates are based on typical TDP values (1050 Ti 75W, 2060 Super 175W, 3060 170W) with idle and inference scaling factors applied. Real-world measurements will replace these estimates once available.*
+*Note: Colmena estimates are based on typical TDP values (1050 Ti 75W, 2060 Super 175W, 3060 170W) for three installed cards, with idle and inference scaling factors applied. Power draw will increase as additional cards are installed. Real-world measurements will replace these estimates once available.*
 
 ---
 
@@ -54,9 +54,9 @@ That's a real cost. It's not free. The question is what you get for it, and what
 | Scenario | Duration | Energy | Electricity Cost |
 |---|---|---|---|
 | Burro: one adapter via PEFT overnight | 8 hours | 3.4 kWh | ~$1.05 AUD |
-| Colmena: CloudCore inference session (3 cards, 2 hours) | 2 hours | 0.6 kWh | ~$0.19 AUD |
+| Colmena: inference session (1 card, 2 hours) | 2 hours | 0.35 kWh | ~$0.11 AUD |
 
-Training now runs exclusively on Burro. A semester of adapter development (roughly 20 training runs across student groups) adds ~$21 AUD in marginal electricity on top of the idle baseline. Colmena's inference serving adds negligible marginal cost per session.
+Training now runs exclusively on Burro. A semester of adapter development (roughly 20 training runs across student groups) adds ~$21 AUD in marginal electricity on top of the idle baseline. Colmena's benchmarking and inference adds negligible marginal cost per session. CloudCore inference runs on Cerebro independently.
 
 ---
 
@@ -148,15 +148,15 @@ There is a broader point beyond data privacy. Owning the hardware means owning t
 | **Multi-GPU architecture research** | Native (3+ matched cards) | Not comparable | Limited by slot count |
 | **Payback period** | Already past | Never (recurring) | 6-10 years |
 
-The local lab costs more in electricity than a modern workstation would. It costs far less than cloud rental. Colmena's five-GPU configuration draws more at idle than the two-card Cerebro it replaced, but it also serves more concurrent workloads -- benchmarking, multi-GPU research, and inference serving that previously required separate machines. The hardware investment has already been made, at prices that are increasingly difficult to replicate for new equipment but remain available in the secondhand market for patient buyers.
+The local lab costs more in electricity than a modern workstation would. It costs far less than cloud rental. Colmena's multi-GPU configuration serves benchmarking and multi-GPU research that previously required separate machines. Cerebro remains active for CloudCore Networks with a dedicated 2060 Super. The hardware investment has already been made, at prices that are increasingly difficult to replicate for new equipment but remain available in the secondhand market for patient buyers.
 
 **What the cloud cannot do at any price:**
 
 "Just do it in the cloud" is a reasonable default for many workloads. It is not a reasonable default here. Two of Colmena's three roles -- and the two highest priority ones -- are not available in the cloud at any price:
 
-- **smol-bench** requires 4 GB, 8 GB, and 12 GB consumer GPUs running simultaneously. Cloud providers do not offer consumer-grade cards below 16 GB. The lowest tier widely available is the T4 (16 GB). There is no cloud instance with a GTX 1050 Ti, GTX 1650, or RTX 2060 Super. The benchmark data that smol-bench produces -- "what can a student run on a $150 secondhand GPU?" -- can only come from that actual hardware. This is not a cost problem. The capability does not exist.
+- **smol-bench** requires 4 GB, 6 GB, 8 GB, and 12 GB consumer GPUs. Cloud providers do not offer consumer-grade cards below 16 GB. The lowest tier widely available is the T4 (16 GB). There is no cloud instance with a GTX 1050 Ti, GTX 1060, or RTX 2060 Super. The benchmark data that smol-bench produces -- "what can a student run on a $150 secondhand GPU?" -- can only come from that actual hardware. This is not a cost problem. The capability does not exist.
 
-- **Multi-GPU architecture research** with matched consumer Turing cards is similarly unavailable. You could rent three T4s, but they're a different architecture with different memory bandwidth answering a different question. The research value is in understanding what works on hardware people actually have.
+- **Multi-GPU architecture research** with consumer Turing and Ampere cards is similarly unavailable. You could rent T4s, but they're a different architecture with different memory bandwidth answering a different question. The research value is in understanding what works on hardware people actually have.
 
 Only Colmena's third role -- inference serving -- is straightforwardly replicable in the cloud. That's the role where the cost comparison above applies. For the other two, the comparison isn't "local is cheaper than cloud." It's "local is the only option."
 

@@ -185,6 +185,18 @@ Q4_K_M is the practical standard for 8GB VRAM cards. A 7B model at Q4_K_M fits i
 
 Quantisation is the main mechanism by which VRAM tier translates to model tier. The 12GB 3060's value in Colmena is that it can run Q4_K_M 13B models that 8GB cards can't touch.
 
+### KV Cache: The Hidden VRAM Cost
+
+VRAM usage isn't just the model. The KV cache (key-value cache) stores the attention state for the current conversation -- it's how the model remembers what's been said. KV cache size scales with context window length, and it can consume significant VRAM on top of the model weights.
+
+On an 8 GB card with a Q4_K_M 7B model (~4.5 GB), setting the context window to 32,768 tokens can push KV cache to 2-3 GB, exceeding total VRAM and forcing layers to spill to system RAM. Generation speed collapses.
+
+**Rule of thumb for 8 GB VRAM:** keep context windows at 4,096-8,192 tokens. This keeps KV cache under ~1 GB, leaving headroom for the model and runtime overhead. Longer context is available if needed, but the speed penalty is severe.
+
+For 4 GB cards, context windows above 2,048 tokens become impractical with 7B models. The 4 GB tier works best with smaller models (3-4B) at moderate context.
+
+This is one reason LocoLLM standardises on Qwen3-4B rather than 7B -- a 4B model at Q4_K_M (~2.5 GB) leaves 5+ GB for KV cache, runtime, and OS on an 8 GB card. That headroom translates directly to usable context length and stable performance.
+
 ---
 
 ## 10. Context Management
@@ -203,17 +215,43 @@ Small models have shorter effective context windows and degrade faster at the ed
 
 ## 11. Model Selection
 
-The right model for the task is often smaller than assumed.
+The right model for the task is often smaller than assumed. LocoLLM standardises on Qwen3-4B for fine-tuning (see [base model selection](base-model-selection.md) and [ADR-0001](adr/0001-base-model-qwen3-4b.md)), but students exploring inference on their own hardware should know the broader landscape.
 
-For instruction following and conversation: Qwen2.5 7B, Llama 3.1 8B, Mistral 7B are well-established and capable.
+### The 7B-8B Landscape (Early 2026)
 
-For coding: Qwen2.5-Coder 7B punches significantly above its weight for code generation and explanation.
+These models are the current champions at the 7B-8B weight class. They fit in 8 GB VRAM when quantised to Q4_K_M and are capable enough for serious work. LocoLLM doesn't use them as base models (see [Why Not 7B?](base-model-selection.md#why-not-7b)) but they're excellent choices for personal inference on 8 GB+ cards.
 
-For very constrained hardware (4GB VRAM): Phi-3 Mini 3.8B, Qwen2.5 3B, Gemma 2B. Surprisingly capable for focused tasks despite small parameter counts.
+**Llama 3.1 8B Instruct.** Meta's 8B model remains the gold standard for general-purpose chat, creative writing, and instruction following. Highly coherent with strong multi-turn conversation ability. Extensive community fine-tunes available.
 
-For tool use: Llama 3.1 8B and Qwen2.5 7B have explicit tool calling training. Smaller models tend to misfire.
+**Qwen3 8B / Qwen 2.5 7B Instruct.** Alibaba's Qwen series punches above its weight class in coding, logic, and multi-turn dialogue. If the task is programming assistance or structured data extraction, Qwen is arguably the strongest option at this size.
 
-Model selection interacts with all other strategies -- a well-prompted Qwen2.5 7B with RAG on relevant documents will outperform a larger model guessing from training data on most domain-specific tasks.
+**DeepSeek R1 Distill Llama 8B.** Forces the model through a hidden chain-of-thought before answering, making it exceptionally strong on maths, logic puzzles, and complex problem-solving. The reasoning trace adds latency but the quality improvement on analytical tasks is significant.
+
+**Ministral 8B.** Mistral's efficient 8B model. Fast inference, good general capability, and a reputation for running well on consumer hardware. A solid default for users who want speed without sacrificing too much quality.
+
+### The 3-4B Class (LocoLLM's Territory)
+
+For fine-tuning and constrained hardware, the 3-4B class offers the best balance of tunability, VRAM headroom, and post-training quality:
+
+**Qwen3-4B-Instruct** -- LocoLLM's standard. Ranks first for post-fine-tuning performance across diverse tasks. See [base model selection](base-model-selection.md) for the full rationale.
+
+**Llama 3.2 3B Instruct** -- Good tunability, strong community support. A reasonable alternative if the Qwen ecosystem is unavailable.
+
+**Phi-3 Mini 3.8B** -- Microsoft's small model, surprisingly capable for reasoning tasks.
+
+### For Very Constrained Hardware (4 GB VRAM)
+
+Qwen3-1.7B, Gemma 2B, SmolLM2-1.7B. Surprisingly capable for focused tasks despite small parameter counts. At this size, fine-tuning gains are proportionally larger (the tunability inversion).
+
+### For Coding
+
+Qwen2.5-Coder 7B punches significantly above its weight for code generation and explanation. If coding is the primary use case, this is the model to try before anything larger.
+
+### For Tool Use
+
+Llama 3.1 8B and Qwen2.5 7B have explicit tool calling training. Smaller models tend to misfire on function calls -- tool use is one area where the 7B-8B class is meaningfully better than 3-4B.
+
+Model selection interacts with all other strategies -- a well-prompted Qwen 7B with RAG on relevant documents will outperform a larger model guessing from training data on most domain-specific tasks.
 
 ---
 

@@ -142,19 +142,19 @@ A few things this data shows that contradict the obvious assumption that newer =
 
 ## How Colmena Represents This
 
-Colmena's card selection wasn't arbitrary -- it maps onto the meaningful tiers:
+Colmena's card selection isn't arbitrary -- each card is the floor of its VRAM tier, not the best available. Conservative baselines mean: if it runs here, it runs on your card. Community submissions extend each tier upward.
 
-| Card in Colmena | Tier it represents |
-|-----------------|-------------------|
-| GTX 1050 Ti | Pascal floor -- minimum viable |
-| GTX 1660 Ti | GTX Turing ceiling -- no Tensor Cores, 6 GB |
-| RTX 2060 Super (x3) | RTX Turing sweet spot -- 8 GB + Tensor Cores |
-| RTX 3060 | Ampere VRAM step -- 12 GB headroom |
-| (Future 40-series) | Next tier when secondhand pricing normalises |
+| Card in Colmena | VRAM | Bandwidth | Tier Role |
+|-----------------|------|-----------|-----------|
+| GTX 1050 Ti | 4 GB | 112 GB/s | Floor of 4 GB tier (Pascal, no Tensor Cores) |
+| GTX 1060 6 GB | 6 GB | 192 GB/s | Floor of 6 GB tier (Pascal, no Tensor Cores) -- pending acquisition |
+| RTX 2060 Super | 8 GB | 448 GB/s | Floor of 8 GB Turing bandwidth (Tensor Cores) |
+| RTX 3060 AORUS Elite | 12 GB | 360 GB/s | Floor of 12 GB tier (Ampere, Tensor Cores) |
+| RTX 3090 (reserved) | 24 GB | 936 GB/s | Reference ceiling -- not a user recommendation |
 
-Each card answers a different question. The 1050 Ti: can this even run? The 1660 Ti: what does 6 GB without Tensor Cores look like? The 2060 Super: what's the practical floor for serious 8 GB inference? The 3060: what does 12 GB unlock that 8 GB can't do?
+Each card answers a different question. The 1050 Ti: can this even run? The 1060: what does 6 GB without Tensor Cores look like? The 2060 Super: what's the practical floor for 8 GB inference? The 3060: what does 12 GB unlock that 8 GB can't do? The 3090: do floor-tier results scale predictably to the consumer VRAM ceiling?
 
-Running benchmarks across all of them simultaneously gives comparative results that sequential testing on a single machine can't produce cleanly. That's the smol-bench rationale.
+The bandwidth delta within each tier allows readers to extrapolate to their specific card. Colmena runs smol-bench sequentially due to host RAM constraints (8 GB DDR3) -- results are identical to parallel runs, the benchmarks just don't happen simultaneously.
 
 ---
 

@@ -39,4 +39,6 @@ ADRs are numbered sequentially: `0001-`, `0002-`, etc.
 | [0001](0001-base-model-qwen3-4b.md) | Use Qwen3-4B-Instruct as base model for 2026-2027 | Accepted |
 | [0002](0002-adapter-registry-design.md) | YAML-based adapter registry with domain grouping | Proposed |
 | [0003](0003-single-evolving-router.md) | Single evolving router over parallel routers | Proposed |
-| [0004](0004-retire-cerebro-adopt-b250-multi-gpu.md) | Retire Cerebro, adopt B250 Mining Expert as multi-GPU platform | Accepted |
+| [0004](0004-retire-cerebro-adopt-b250-multi-gpu.md) | Retire Cerebro, adopt B250 Mining Expert as multi-GPU platform | Superseded by ADR-0005 |
+| [0005](0005-weiho-8gpu-replace-b250-colmena.md) | WEIHO 8-GPU enclosed chassis replaces B250 open frame for Colmena | Accepted |
+| [0006](0006-gguf-ollama-inference-standard.md) | GGUF and Ollama as inference standard | Accepted |

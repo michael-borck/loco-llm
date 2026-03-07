@@ -4,7 +4,7 @@ title: "ADR-0004: Retire Cerebro, Adopt B250 Mining Expert as Multi-GPU Platform
 
 ## Status
 
-Accepted
+Superseded by [ADR-0005](0005-weiho-8gpu-replace-b250-colmena.md)
 
 ## Date
 
