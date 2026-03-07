@@ -181,7 +181,11 @@ Reduce model precision to fit larger models in available VRAM.
 | Q3_K_M | 3-bit | Noticeable quality drop, emergency VRAM saving |
 | Q2_K | 2-bit | Significant degradation, last resort |
 
+The formats starting with "K" (Q4_K_M, Q3_K_M, etc.) use the **K-quant** method, which applies mixed precision per tensor group -- preserving quality in sensitive layers while compressing less critical ones. This offers significantly better accuracy for a similar file size compared to legacy formats like Q4_0. Always prefer K-quant variants when available.
+
 Q4_K_M is the practical standard for 8GB VRAM cards. A 7B model at Q4_K_M fits in ~4.5GB, leaving headroom for context. A 13B model at Q4_K_M requires ~8GB -- right at the edge for an 8GB card.
+
+**Rule of thumb for general inference:** it's almost always better to run a larger model at Q4_K_M than a smaller model at higher precision -- more parameters give better reasoning ability. However, for fine-tuning workflows like LocoLLM's, a smaller model at Q4_K_M is deliberately chosen to leave VRAM headroom for adapter swapping, KV cache, and training. The tunability inversion (see [base model selection](base-model-selection.md#the-tunability-inversion)) means the fine-tuned smaller model often closes the gap anyway.
 
 Quantisation is the main mechanism by which VRAM tier translates to model tier. The 12GB 3060's value in Colmena is that it can run Q4_K_M 13B models that 8GB cards can't touch.
 

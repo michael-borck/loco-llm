@@ -34,6 +34,8 @@ export default defineConfig({
             { label: 'Meet the Team', slug: 'meet-the-team' },
             { label: 'Economics of Local Training', slug: 'economics-of-local-training' },
             { label: 'Local LLM Tools', slug: 'local-llm-tools' },
+            { label: 'Ollama Model Guide', slug: 'ollama-model-guide' },
+            { label: 'Learning How LLMs Work', slug: 'learning-how-llms-work' },
           ],
         },
         {
