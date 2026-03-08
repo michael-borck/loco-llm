@@ -12,6 +12,18 @@ If you're unsure what quantisation format to use, Q4_K_M is almost always the ri
 
 ---
 
+## Top 3 Overall
+
+| Rank | Model | Size | Why |
+|---|---|---|---|
+| 1 | **mistral:7b** | 4.4 GB | Best all-rounder -- fast, reliable, loads comfortably with plenty of headroom |
+| 2 | **deepseek-r1:8b** | 4.9 GB | Unbeatable for reasoning and logic, fits well within VRAM limits |
+| 3 | **qwen2.5vl:7b** | 6.0 GB | Adds multimodal (vision) capability with strong base performance |
+
+**Honourable mentions:** `qwen2.5-coder:7b` (best-in-class coding), `granite3.3:8b` (strong structured/enterprise instruction following), `phi4-mini-reasoning:3.8b` (punches well above its weight for reasoning).
+
+---
+
 ## Top Picks by Use Case
 
 ### General Purpose / Chat
@@ -54,10 +66,10 @@ These fit well under the 8GB ceiling, leaving room for larger context windows or
 ## Quick Start
 
 ```bash
-ollama run qwen3:8b          # reasoning + general
+ollama run mistral:7b        # reliable all-rounder
 ollama run deepseek-r1:8b    # reasoning/thinking
-ollama run llama3.1:8b       # reliable all-rounder
 ollama run qwen2.5-coder:7b  # coding
+ollama run qwen2.5vl:7b      # vision + chat
 ```
 
 Each command downloads the model on first run (one-time, typically 4-5GB) and starts an interactive chat session. Type `/bye` to exit.
@@ -66,7 +78,7 @@ Each command downloads the model on first run (one-time, typically 4-5GB) and st
 
 ## Practical Tips
 
-**Start with two models.** `deepseek-r1:8b` and `qwen3:8b` are complementary: Qwen3 8B for maths and structured reasoning, DeepSeek-R1 8B for creative and general tasks. Both have built-in thinking capabilities and get you running in under five minutes.
+**Start with two models.** `mistral:7b` and `deepseek-r1:8b` are complementary: Mistral for fast general chat and assistants, DeepSeek-R1 for anything requiring chain-of-thought reasoning. Both fit comfortably on 8GB and get you running in under five minutes.
 
 **Watch your VRAM.** Only one model loads at a time by default. If you switch models frequently, Ollama keeps the previous model in memory for fast switching -- this can exceed 8GB with two large models. Use `ollama stop <model>` to unload explicitly.
 
@@ -92,44 +104,58 @@ These are the models currently pulled on the LocoLLM lab machines, categorised b
 
 | Model | Size | Notes |
 |---|---|---|
-| `mistral:latest` | 4.4 GB | **Best in class.** Reliable workhorse. Fast, great for assistants. |
-| `llama3.2:latest` | 2.0 GB | Compact Meta model. Good general capability at small size. |
-| `gemma3:latest` | 3.3 GB | Google's compact model. Also has built-in vision capability. |
+| `mistral:7b` | 4.4 GB | **Best in class.** Reliable workhorse. Fast, great for assistants. |
+| `granite3.3:8b` | 4.9 GB | Strong IBM instruction model. Improved reasoning over 3.2. |
+| `gemma3:4b` | 3.3 GB | Solid Google model. Also has built-in vision capability. |
+| `granite4:3b` | 2.1 GB | Latest Granite generation, promising. |
+| `phi4-mini:3.8b` | 2.5 GB | Efficient and capable for its size. |
+| `qwen3.5:4b` | 3.4 GB | Strong mid-size Qwen model. |
+| `qwen3.5:2b` | 2.7 GB | Lighter Qwen option. |
+| `nemotron-mini:4b` | 2.7 GB | Good NVIDIA model. |
+| `llama3.2:3b` | 2.0 GB | Reliable Meta baseline. |
 | `granite3.2:latest` | 4.9 GB | IBM's open model. Strong on enterprise and structured tasks. |
-| `granite3.3:latest` | 4.9 GB | Updated Granite. Improved reasoning over 3.2. |
-| `tinyllama:latest` | 637 MB | Tiny 1.1B model. Very fast, useful for testing pipelines and quick prototyping. |
+| `granite3.1-moe:3b` | 2.0 GB | Mixture-of-experts, efficient. |
+| `phi3:3.8b` | 2.2 GB | Previous-generation Phi. Superseded by phi4-mini. |
+| `granite3.2:2b` | 1.5 GB | Lightweight IBM model. |
+| `granite3.3:2b` | 1.5 GB | Updated small Granite. |
+| `granite4:1b` | 3.3 GB | Surprisingly large for 1B -- latest architecture. |
+| `granite3.1-moe:1b` | 1.4 GB | Tiny MoE model. |
+| `llama3.2:1b` | 1.3 GB | Very limited. |
+| `gemma3:1b` | 815 MB | Very limited. |
+| `qwen3.5:0.8b` | 1.0 GB | Very limited, edge use only. |
+| `tinyllama:1.1b` | 637 MB | Toy/testing use only. |
 
 ### Reasoning / Thinking
 
 | Model | Size | Notes |
 |---|---|---|
 | `qwen3:latest` | 5.2 GB | **Best in class.** Leads maths reasoning benchmarks at this size. Has thinking mode. |
-| `qwen3.5:4b` | 3.4 GB | Newer Qwen generation. Compact with strong reasoning. |
 | `deepseek-r1:8b` | 4.9 GB | Built-in chain-of-thought. Strong on analytical and creative tasks. |
-| `phi4-mini-reasoning:3.8b` | 3.2 GB | Microsoft's reasoning-optimised Phi-4. Compact and capable. |
-| `cogito:latest` | 4.9 GB | Deep Cogito model with thinking capability. |
-| `phi4-mini:3.8b` | 2.5 GB | General-purpose Phi-4. Solid reasoning for its size. |
-| `phi3:3.8b` | 2.2 GB | Previous-generation Phi. Still capable, slightly smaller footprint. |
+| `phi4-mini-reasoning:3.8b` | 3.2 GB | Microsoft's reasoning-optimised Phi-4. Excellent for its size. |
+| `cogito:8b` | 4.9 GB | Deep Cogito model with thinking capability. |
 
 ### Coding
 
 | Model | Size | Notes |
 |---|---|---|
 | `qwen2.5-coder:7b` | 4.7 GB | **Best in class.** Strong code generation, tight VRAM fit. |
+| `granite-code:8b` | 4.6 GB | IBM's capable code model. |
 | `deepseek-coder:6.7b` | 3.8 GB | Specialised and efficient. Good for code explanation. |
-| `deepseek-coder:1.3b` | 776 MB | Tiny code model. Fast completions, useful for lightweight tasks. |
 | `nemotron-mini:latest` | 2.7 GB | NVIDIA's compact model. Good at coding and structured output. |
+| `granite-code:3b` | 2.0 GB | Lightweight code option. |
+| `deepseek-coder:1.3b` | 776 MB | Tiny code model. Fast completions, useful for lightweight tasks. |
 
 ### Vision / Image Understanding
 
 | Model | Size | Notes |
 |---|---|---|
-| `moondream:latest` | 1.7 GB | Tiny vision model. Fast image description and visual QA. |
-| `qwen2.5vl:3b` | 3.2 GB | Compact Qwen vision-language model. Good quality for the size. |
-| `qwen2.5vl:7b` | 6.0 GB | **Best in class.** Strong image reasoning and document understanding. |
+| `qwen2.5vl:7b` | 6.0 GB | **Best in class.** Strong image reasoning and document understanding. Borderline VRAM -- watch at longer context. |
+| `llava-llama3:8b` | 5.5 GB | LLaVA built on Llama 3. Borderline VRAM -- monitor usage. |
 | `llava:7b` | 4.7 GB | The original open vision-language model. Solid general image understanding. |
-| `llava-llama3:8b` | 5.5 GB | LLaVA built on Llama 3. Newer base model than original LLaVA. |
 | `bakllava:7b` | 4.7 GB | LLaVA variant built on Mistral. |
+| `qwen2.5vl:3b` | 3.2 GB | Compact Qwen vision-language model. Good quality for the size. |
+| `granite3.2-vision:2b` | 2.4 GB | Tiny IBM vision model. |
+| `moondream:1.8b` | 1.7 GB | Ultra-lightweight vision. Fast image description and visual QA. |
 
 ### Best Overall
 
@@ -137,18 +163,14 @@ If you only install one model, make it **`qwen3:latest`**. It has the strongest 
 
 If you install two, add **`qwen2.5-coder:7b`** for dedicated coding work. The combination covers most use cases well.
 
-### Quick Reference by Size
+### VRAM Comfort Reference
 
-For choosing based on available memory:
-
-| Size tier | Models |
-|---|---|
-| **Under 1 GB** | `tinyllama` (637 MB), `deepseek-coder:1.3b` (776 MB) |
-| **1-2 GB** | `moondream` (1.7 GB), `llama3.2` (2.0 GB) |
-| **2-3 GB** | `phi3` (2.2 GB), `phi4-mini` (2.5 GB), `nemotron-mini` (2.7 GB) |
-| **3-4 GB** | `phi4-mini-reasoning` (3.2 GB), `qwen2.5vl:3b` (3.2 GB), `gemma3` (3.3 GB), `qwen3.5:4b` (3.4 GB), `deepseek-coder:6.7b` (3.8 GB) |
-| **4-5 GB** | `mistral` (4.4 GB), `qwen2.5-coder:7b` (4.7 GB), `llava:7b` (4.7 GB), `bakllava` (4.7 GB), `cogito` (4.9 GB), `granite3.2` (4.9 GB), `granite3.3` (4.9 GB), `deepseek-r1:8b` (4.9 GB) |
-| **5+ GB** | `qwen3` (5.2 GB), `llava-llama3:8b` (5.5 GB), `qwen2.5vl:7b` (6.0 GB) |
+| Comfort | Size Range | Examples |
+|---|---|---|
+| **Loads easily** | < 4.5 GB | `mistral:7b`, `phi4-mini`, `qwen3.5:4b`, `gemma3:4b` |
+| **Fine with headroom** | 4.5 -- 5.5 GB | `granite3.3:8b`, `qwen2.5-coder:7b`, `cogito:8b`, `qwen3`, `deepseek-r1:8b` |
+| **Borderline** | 5.5 -- 6.5 GB | `qwen2.5vl:7b`, `llava-llama3:8b` |
+| **Avoid** | > 6.5 GB | (too large for reliable 8GB use) |
 
 ---
 
