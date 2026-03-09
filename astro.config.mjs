@@ -8,6 +8,7 @@ export default defineConfig({
     starlight({
       title: 'LocoLLM',
       description: 'Frontier AI on a Budget',
+      favicon: '/llama.svg',
       logo: {
         alt: 'LocoLLM',
         src: './src/assets/llama.svg',
