@@ -10,7 +10,7 @@ title: "Frequently Asked Questions"
 
 Because API credits run out, subscriptions require credit cards, and rate limits throttle usage during assignment deadlines. When the provider changes pricing, deprecates a model, or goes down, your curriculum breaks.
 
-LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity. That said, free tiers and cheap APIs are strong options too — see the [AI Landscape](ai-landscape.md) for an honest comparison.
+LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity. That said, free tiers and cheap APIs are strong options too — see the [AI Landscape](https://locolabo.org) for an honest comparison.
 
 ### How is this different from just running Ollama?
 
@@ -123,4 +123,4 @@ Yes. The entire training and inference pipeline runs on hardware you can buy on 
 
 Academic ML has a massive reproducibility problem. Papers benchmark on A100 clusters that reviewers cannot access. LocoLLM's constraint — consumer hardware only — is a limitation that doubles as a methodological strength.
 
-The entire training lab — a Ryzen desktop with two RTX 2060 SUPERs, an ex-enterprise IBM server with a P100, and a MacBook M1 for testing — cost well under $1,000 AUD. See [Meet the Lab](meet-the-lab.md) for the full hardware specs.
+The entire training lab — a Ryzen desktop with two RTX 2060 SUPERs, an ex-enterprise IBM server with a P100, and a MacBook M1 for testing — cost well under $1,000 AUD. See [Meet the Lab](https://locolabo.org) for the full hardware specs.

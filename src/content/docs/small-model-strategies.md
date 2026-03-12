@@ -291,4 +291,4 @@ The landscape above suggests several directions that remain underexplored:
 
 ---
 
-*Part of the LocoLLM research documentation. Related: research-proposal-nudging.md, nvidia-gpu-reference.md, meet-the-lab.md*
+*Part of the LocoLLM research documentation.*

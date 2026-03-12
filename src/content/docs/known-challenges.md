@@ -117,7 +117,7 @@ That said, local capability and cloud capability are not mutually exclusive. Loc
 
 ## The AI Landscape: We Do Not Stand Alone
 
-LocoLLM is part of a broader ecosystem of local AI tools, and the documentation should acknowledge rather than ignore them. See [AI Landscape](ai-landscape.md) for an honest positioning of where LocoLLM sits relative to alternatives.
+LocoLLM is part of a broader ecosystem of local AI tools, and the documentation should acknowledge rather than ignore them. See [AI Landscape](https://locolabo.org) for an honest positioning of where LocoLLM sits relative to alternatives.
 
 The short version: a student running Ollama with a good system prompt already gets most of the way to what LocoLLM provides. The question is whether the adapter routing system, evaluation framework, and specialist fine-tuning add enough value to justify the additional complexity. That is an empirical question, and the answer may turn out to be "not much for general use, but interesting as research."
 

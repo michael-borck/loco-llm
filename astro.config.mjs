@@ -16,6 +16,7 @@ export default defineConfig({
       },
       social: [
         { icon: 'external', label: 'Home', href: 'https://locollm.org' },
+        { icon: 'external', label: 'LocoLab', href: 'https://locolabo.org' },
         { icon: 'github', label: 'GitHub', href: 'https://github.com/michael-borck/loco-llm' },
       ],
       customCss: ['./src/styles/custom.css'],
@@ -29,14 +30,7 @@ export default defineConfig({
           items: [
             { label: 'Why LocoLLM', slug: 'why-locollm' },
             { label: 'Known Challenges', slug: 'known-challenges' },
-            { label: 'AI Landscape', slug: 'ai-landscape' },
             { label: 'FAQ', slug: 'faq' },
-            { label: 'Meet the Lab', slug: 'meet-the-lab' },
-            { label: 'Meet the Team', slug: 'meet-the-team' },
-            { label: 'Economics of Local Training', slug: 'economics-of-local-training' },
-            { label: 'Local LLM Tools', slug: 'local-llm-tools' },
-            { label: 'Ollama Model Guide', slug: 'ollama-model-guide' },
-            { label: 'Learning How LLMs Work', slug: 'learning-how-llms-work' },
           ],
         },
         {
@@ -64,7 +58,6 @@ export default defineConfig({
             { label: 'Base Model Selection', slug: 'base-model-selection' },
             { label: 'Small Model Strategies', slug: 'small-model-strategies' },
             { label: 'Research Roadmap', slug: 'research-roadmap' },
-            { label: 'Nvidia GPU Reference', slug: 'nvidia-gpu-reference' },
             { label: 'Ideas & Open Questions', slug: 'ideas' },
           ],
         },

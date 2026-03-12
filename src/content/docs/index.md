@@ -12,7 +12,7 @@ LocoLLM is an open-source experiment in building routed, task-specific fine-tune
 
 Understand the project's goals, hardware, and philosophy.
 
-[Why LocoLLM](/docs/why-locollm/) · [FAQ](/docs/faq/) · [Meet the Lab](/docs/meet-the-lab/)
+[Why LocoLLM](/docs/why-locollm/) · [FAQ](/docs/faq/) · [Meet the Lab](https://locolabo.org)
 
 ### Guides
 
