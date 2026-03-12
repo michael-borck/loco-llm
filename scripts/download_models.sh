@@ -5,7 +5,7 @@
 # Use --all-quants to also grab other quantization levels for local testing.
 #
 # For the full 14-model x 8-quant benchmark matrix, see:
-#   https://github.com/michael-borck/smol-bench
+#   https://github.com/michael-borck/loco-bench
 #
 # Usage:
 #   bash scripts/download_models.sh                # base model only (~2.5 GB)
@@ -105,4 +105,4 @@ echo "Models saved to: $MODELS_DIR/"
 du -sh "$MODELS_DIR/" 2>/dev/null || true
 echo
 echo "For the full 14-model benchmark matrix, see:"
-echo "  https://github.com/michael-borck/smol-bench"
+echo "  https://github.com/michael-borck/loco-bench"

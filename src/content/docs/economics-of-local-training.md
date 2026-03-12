@@ -78,7 +78,7 @@ First, cloud hours are use-it-or-lose-it. When a student is iterating on dataset
 
 Second, cloud access introduces dependency. If the provider changes pricing, discontinues an instance type, or has an outage during assignment week, you have no fallback. The machines under the desk don't go away.
 
-Third, Colmena's multi-GPU benchmarking role is difficult and expensive to replicate in the cloud. smol-bench needs simultaneous runs across a range of VRAM tiers -- 4 GB, 8 GB, and 12 GB cards running the same model at the same quantisation level to produce comparable results. Cloud providers don't offer low-end consumer GPUs. The smallest widely available cloud GPU is typically a T4 (16 GB) or A4000 (16 GB). There is no cloud equivalent of a GTX 1050 Ti or GTX 1650 -- the hardware that represents the floor of what students and departments actually own. You can choose VRAM size in the cloud, but only from the middle of the range upward.
+Third, Colmena's multi-GPU benchmarking role is difficult and expensive to replicate in the cloud. LocoBench needs simultaneous runs across a range of VRAM tiers -- 4 GB, 8 GB, and 12 GB cards running the same model at the same quantisation level to produce comparable results. Cloud providers don't offer low-end consumer GPUs. The smallest widely available cloud GPU is typically a T4 (16 GB) or A4000 (16 GB). There is no cloud equivalent of a GTX 1050 Ti or GTX 1650 -- the hardware that represents the floor of what students and departments actually own. You can choose VRAM size in the cloud, but only from the middle of the range upward.
 
 Approximating Colmena's benchmarking setup in the cloud would require renting multiple GPU instances simultaneously. A rough estimate using RunPod community pricing (March 2026):
 
@@ -90,7 +90,7 @@ Approximating Colmena's benchmarking setup in the cloud would require renting mu
 
 A four-hour benchmarking session across three cloud instances would cost ~$5-6 AUD. Running that weekly over a semester (12 weeks) adds ~$60-72 AUD. And the results wouldn't be directly comparable to consumer hardware anyway -- different architectures, different memory bandwidth profiles, no persistent card identity for longitudinal tracking.
 
-The real issue isn't cost, it's validity. smol-bench exists to answer the question "what can a student run on hardware they can actually get?" Cloud GPUs don't answer that question. The 4 GB floor, the 8 GB sweet spot, and the specific bandwidth characteristics of consumer Turing and Ampere cards are the point. That data can only come from the actual hardware, which is part of what makes the benchmarking exercise a genuine research contribution rather than a replication of existing cloud benchmarks.
+The real issue isn't cost, it's validity. LocoBench exists to answer the question "what can a student run on hardware they can actually get?" Cloud GPUs don't answer that question. The 4 GB floor, the 8 GB sweet spot, and the specific bandwidth characteristics of consumer Turing and Ampere cards are the point. That data can only come from the actual hardware, which is part of what makes the benchmarking exercise a genuine research contribution rather than a replication of existing cloud benchmarks.
 
 ---
 
@@ -154,7 +154,7 @@ The local lab costs more in electricity than a modern workstation would. It cost
 
 "Just do it in the cloud" is a reasonable default for many workloads. It is not a reasonable default here. Two of Colmena's three roles -- and the two highest priority ones -- are not available in the cloud at any price:
 
-- **smol-bench** requires 4 GB, 6 GB, 8 GB, and 12 GB consumer GPUs. Cloud providers do not offer consumer-grade cards below 16 GB. The lowest tier widely available is the T4 (16 GB). There is no cloud instance with a GTX 1050 Ti, GTX 1060, or RTX 2060 Super. The benchmark data that smol-bench produces -- "what can a student run on a $150 secondhand GPU?" -- can only come from that actual hardware. This is not a cost problem. The capability does not exist.
+- **LocoBench** requires 4 GB, 6 GB, 8 GB, and 12 GB consumer GPUs. Cloud providers do not offer consumer-grade cards below 16 GB. The lowest tier widely available is the T4 (16 GB). There is no cloud instance with a GTX 1050 Ti, GTX 1060, or RTX 2060 Super. The benchmark data that LocoBench produces -- "what can a student run on a $150 secondhand GPU?" -- can only come from that actual hardware. This is not a cost problem. The capability does not exist.
 
 - **Multi-GPU architecture research** with consumer Turing and Ampere cards is similarly unavailable. You could rent T4s, but they're a different architecture with different memory bandwidth answering a different question. The research value is in understanding what works on hardware people actually have.
 

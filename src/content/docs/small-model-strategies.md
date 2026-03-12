@@ -281,7 +281,7 @@ The ceiling for a small model used with all of these strategies is significantly
 
 The landscape above suggests several directions that remain underexplored:
 
-**Benchmarking small models on small hardware** (smol-bench) -- systematic characterisation of what each VRAM tier can actually do across model families, quantisation levels, and task types. Currently absent from the literature.
+**Benchmarking small models on small hardware** (LocoBench) -- systematic characterisation of what each VRAM tier can actually do across model families, quantisation levels, and task types. Currently absent from the literature.
 
 **The nudge as intervention** -- testable hypothesis that interface design changes engagement behaviour independently of instruction. Connects pedagogy to HCI research.
 

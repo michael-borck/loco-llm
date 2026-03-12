@@ -35,8 +35,8 @@ The following are documented in [evaluation standards](evaluation-standards.md) 
 - **LLM-as-judge scoring** — for domains like writing where exact match doesn't apply.
 - **Deterministic inference settings** — temperature 0, fixed max_tokens, enforced by the harness rather than relying on Ollama defaults.
 
-## How smol-bench Informed Base Model Selection
+## How LocoBench Informed Base Model Selection
 
-The base model (Qwen3-4B at Q4_K_M) was selected using data from [smol-bench](https://github.com/michael-borck/smol-bench), an independent benchmarking project that evaluates small language models across standard tasks (MMLU, GSM8K, HellaSwag, etc.) at multiple quantization levels on consumer hardware. The selection rationale is documented in [ADR-0001](adr/0001-base-model-qwen3-4b.md) and [base model selection](base-model-selection.md).
+The base model (Qwen3-4B at Q4_K_M) was selected using data from [LocoBench](https://github.com/michael-borck/loco-bench), an independent benchmarking project that evaluates small language models across standard tasks (MMLU, GSM8K, HellaSwag, etc.) at multiple quantization levels on consumer hardware. The selection rationale is documented in [ADR-0001](adr/0001-base-model-qwen3-4b.md) and [base model selection](base-model-selection.md).
 
-smol-bench and LocoLLM are separate projects. smol-bench benchmarks base models. LocoLLM benchmarks what fine-tuning adds on top.
+LocoBench and LocoLLM are separate projects. LocoBench benchmarks base models. LocoLLM benchmarks what fine-tuning adds on top.

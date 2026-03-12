@@ -15,9 +15,9 @@ Accepted
 ADR-0004 adopted a B250 Mining Expert motherboard in an open air frame as the multi-GPU platform (Colmena), fully retiring Cerebro. During hardware sourcing, the plan changed substantially:
 
 1. A WEIHO 8-GPU enclosed mining rig (72x42x18cm, steel chassis, integrated 2000-3300W PSU) became available. It provides 8 native PCIe slots without riser cables in an enclosed, cooled chassis -- a better fit than an open frame with USB risers.
-2. Cerebro should not be fully retired. It continues to run CloudCore Networks, a separate project from LocoLLM and smol-bench. One RTX 2060 Super remains dedicated to CloudCore inference in Cerebro.
-3. smol-bench's benchmarking philosophy crystallised around floor cards per VRAM tier rather than multiple identical cards. Three matched 2060 Supers are no longer needed -- one 2060 Super represents the 8 GB Turing floor.
-4. The host system is deliberately constrained (i3-3220, 8 GB DDR3) because smol-bench benchmarks GPU capability on modest hardware, which is what most users actually have.
+2. Cerebro should not be fully retired. It continues to run CloudCore Networks, a separate project from LocoLLM and LocoBench. One RTX 2060 Super remains dedicated to CloudCore inference in Cerebro.
+3. LocoBench's benchmarking philosophy crystallised around floor cards per VRAM tier rather than multiple identical cards. Three matched 2060 Supers are no longer needed -- one 2060 Super represents the 8 GB Turing floor.
+4. The host system is deliberately constrained (i3-3220, 8 GB DDR3) because LocoBench benchmarks GPU capability on modest hardware, which is what most users actually have.
 
 ## Decision
 
@@ -50,16 +50,16 @@ Replace the B250 Mining Expert open frame design with the **WEIHO 8-GPU enclosed
 
 **Three distinct projects with distinct hardware:**
 - LocoLLM (Burro + Colmena) -- infrastructure, architecture research, fine-tuning
-- smol-bench (Colmena primary) -- benchmarking platform, community results
+- LocoBench (Colmena primary) -- benchmarking platform, community results
 - CloudCore Networks + Cerebro (standalone) -- student assessment simulation
 
 ## Consequences
 
-- smol-bench benchmarks use floor cards per tier, producing conservative baselines -- if it runs here, it runs on your card
+- LocoBench benchmarks use floor cards per tier, producing conservative baselines -- if it runs here, it runs on your card
 - Enclosed chassis replaces open frame; card visibility is traded for better cooling and a smaller footprint
 - 8 native PCIe slots (no risers) simplify the build and avoid x1 electrical bandwidth concerns
 - Deliberately constrained host (i3-3220, 8 GB RAM) means sequential benchmarking rather than parallel, but results are identical
 - Cerebro is no longer retired -- it remains active for CloudCore Networks with a dedicated 2060 Super
-- CloudCore Networks is cleanly separated from LocoLLM and smol-bench infrastructure
+- CloudCore Networks is cleanly separated from LocoLLM and LocoBench infrastructure
 - RTX 3090 reserved as reference ceiling validates whether floor-tier results scale predictably across the VRAM range
 - ADR-0004 is superseded; the B250 Mining Expert open frame design is not being built

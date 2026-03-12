@@ -70,4 +70,4 @@ llama.cpp has partial AWQ support, but GGUF remains its native format and gets t
 - Inference speed on NVIDIA hardware is not optimal -- EXL2 would be faster. This is an accepted tradeoff for portability
 - LM Studio, GPT4All, and `llm` CLI all work with LocoLLM's model files as alternative interfaces
 - If Ollama adds native EXL2 support in future, the benefit becomes available without changing the project's deployment path
-- smol-bench benchmarks use GGUF/Ollama, which means results reflect what Ollama users will actually experience rather than peak theoretical throughput
+- LocoBench benchmarks use GGUF/Ollama, which means results reflect what Ollama users will actually experience rather than peak theoretical throughput

@@ -9,7 +9,7 @@ The naming follows a Spanish thread: Colmena (hive), Burro (donkey), Poco (a lit
 **Three separate projects, distinct hardware roles:**
 
 - **LocoLLM** (Burro + Colmena) -- infrastructure, architecture research, fine-tuning
-- **smol-bench** (Colmena primary) -- benchmarking platform, community results
+- **LocoBench** (Colmena primary) -- benchmarking platform, community results
 - **CloudCore Networks + Cerebro** (standalone, untouched) -- student assessment simulation
 
 ---
@@ -55,23 +55,23 @@ Apple's MLX framework supports LoRA fine-tuning natively via `mlx_lm.lora`, so P
 | **GPU slots** | 8 native PCIe slots, no risers needed |
 | **OS** | Ubuntu 22.04 LTS |
 | **Form** | Enclosed chassis |
-| **Role** | Multi-GPU inference, smol-bench benchmarking, multi-GPU architecture research |
+| **Role** | Multi-GPU inference, LocoBench benchmarking, multi-GPU architecture research |
 
 Colmena means "hive" in Spanish. Multiple workers, one coordinated system.
 
-Colmena is a deliberately constrained machine. The i3-3220 CPU, 8 GB RAM ceiling, and modest storage exist by design, not accident. The CPU's job is to boot the OS and manage the PCIe bus. The GPUs do the work. Over-speccing the host system would make Colmena a worse research instrument -- smol-bench benchmarks GPU capability on modest hardware, which is what most users actually have.
+Colmena is a deliberately constrained machine. The i3-3220 CPU, 8 GB RAM ceiling, and modest storage exist by design, not accident. The CPU's job is to boot the OS and manage the PCIe bus. The GPUs do the work. Over-speccing the host system would make Colmena a worse research instrument -- LocoBench benchmarks GPU capability on modest hardware, which is what most users actually have.
 
-RAM constraints mean sequential rather than fully parallel benchmarking for smol-bench. Results are identical -- same hardware, same models -- the runs just don't happen simultaneously. For inference serving, one or two active instances at a time is realistic for student load anyway.
+RAM constraints mean sequential rather than fully parallel benchmarking for LocoBench. Results are identical -- same hardware, same models -- the runs just don't happen simultaneously. For inference serving, one or two active instances at a time is realistic for student load anyway.
 
 The WEIHO chassis was designed for cryptocurrency mining -- 8 native PCIe slots in an enclosed steel case with integrated high-wattage PSU and fan cooling. No riser cables needed. Mining rig hardware turns out to be a reasonable fit for a multi-GPU research platform, and the entire machine was assembled from secondhand parts sourced opportunistically.
 
 Colmena has two roles in priority order:
 
-**1. smol-bench primary platform.** The main reason Colmena exists in this form. Each VRAM tier is represented by the floor card for that tier, not the best available. Conservative baselines mean: if it runs here, it runs on your card. Community submissions extend each tier upward. The bandwidth delta within each tier is documented in nvidia-gpu-reference.md, allowing readers to extrapolate to their specific card.
+**1. LocoBench primary platform.** The main reason Colmena exists in this form. Each VRAM tier is represented by the floor card for that tier, not the best available. Conservative baselines mean: if it runs here, it runs on your card. Community submissions extend each tier upward. The bandwidth delta within each tier is documented in nvidia-gpu-reference.md, allowing readers to extrapolate to their specific card.
 
 **2. Multi-GPU architecture research.** Multiple cards in the same machine enables load balancing, Mixture of Agents, and speculative decoding experiments. Each card runs its own Ollama instance, assigned via `CUDA_VISIBLE_DEVICES`.
 
-**GPU progression -- smol-bench floor cards:**
+**GPU progression -- LocoBench floor cards:**
 
 | Card | VRAM | Bandwidth | Architecture | Tensor Cores | Tier Role |
 |------|------|-----------|-------------|--------------|-----------|
@@ -84,7 +84,7 @@ Colmena has two roles in priority order:
 
 The RTX 2060 Super is one of two cards previously in Cerebro. Michael's testing card migrates to Colmena; the other remains in Cerebro dedicated to CloudCore inference.
 
-The RTX 3090 24 GB is a reserved slot via work research budget. It's positioned as the reference ceiling for smol-bench, not a user recommendation. It sits in an awkward market position -- too old for enthusiasts, too expensive for budget builders -- but 24 GB VRAM is the consumer ceiling for secondhand hardware and validates whether floor-tier results scale predictably. A research instrument, not an aspirational purchase.
+The RTX 3090 24 GB is a reserved slot via work research budget. It's positioned as the reference ceiling for LocoBench, not a user recommendation. It sits in an awkward market position -- too old for enthusiasts, too expensive for budget builders -- but 24 GB VRAM is the consumer ceiling for secondhand hardware and validates whether floor-tier results scale predictably. A research instrument, not an aspirational purchase.
 
 **A note on NVLink:** Consumer NVLink was briefly available on the RTX 2080 Ti and RTX 3090, but Nvidia removed it entirely from the 4090 and 5090. For consumer-grade hardware, NVLink is dead. Each card operates as an independent worker, which is the right architecture for this use case anyway.
 
@@ -100,7 +100,7 @@ Cards don't support NVLink -- VRAM pooling at the hardware level isn't available
 
 A meta-router can switch between modes depending on load and query type.
 
-**Best at:** Benchmarking across VRAM tiers. Multi-GPU architecture experiments. Sequential smol-bench runs on deliberately constrained host hardware.
+**Best at:** Benchmarking across VRAM tiers. Multi-GPU architecture experiments. Sequential LocoBench runs on deliberately constrained host hardware.
 
 **A counterintuitive result:** For models that fit in 8 GB, the 2060 Super will likely outperform the 3060 on tokens per second. LLM inference is memory bandwidth bound, not compute bound -- and the 2060 Super's 448 GB/s beats the 3060's 360 GB/s. The 3060's newer Ampere architecture and improved Tensor Cores don't help much when the bottleneck is getting weights off the card, not computing with them. The 3060's value in Colmena is VRAM capacity -- it's the only card that can load models larger than 8 GB (until the 3090 arrives). For everything that fits in 8 GB, the older card is faster. A good thing to show students before they assume newer always means better.
 
@@ -176,9 +176,9 @@ Ubuntu 22.04 LTS matches the rest of the fleet. Same CUDA toolkit, same driver s
 
 Cerebro means "brain" in Spanish. It runs the thinking behind CloudCore Networks.
 
-Cerebro previously housed two RTX 2060 Super GPUs and served as the lab's primary inference machine. That role has moved to Colmena. One 2060 Super (Michael's testing card) migrated to Colmena for smol-bench duties. The other remains in Cerebro, dedicated to CloudCore Networks inference.
+Cerebro previously housed two RTX 2060 Super GPUs and served as the lab's primary inference machine. That role has moved to Colmena. One 2060 Super (Michael's testing card) migrated to Colmena for LocoBench duties. The other remains in Cerebro, dedicated to CloudCore Networks inference.
 
-CloudCore Networks is a separate project from LocoLLM and smol-bench -- a virtual business populated with AI chatbot employees, each with unique backstories, which students interview to extract requirements and understand business problems as part of assessed work. It runs independently and is not part of the benchmarking or fine-tuning infrastructure.
+CloudCore Networks is a separate project from LocoLLM and LocoBench -- a virtual business populated with AI chatbot employees, each with unique backstories, which students interview to extract requirements and understand business problems as part of assessed work. It runs independently and is not part of the benchmarking or fine-tuning infrastructure.
 
 **Best at:** Running CloudCore Networks. Staying out of the way.
 
@@ -189,7 +189,7 @@ CloudCore Networks is a separate project from LocoLLM and smol-bench -- a virtua
 | Machine | Project | GPU | VRAM | Memory BW | Tensor Cores | Primary Role |
 |---------|---------|-----|------|-----------|--------------|--------------|
 | **Poco** (MacBook M1) | LocoLLM | Apple M1 GPU | 16 GB unified | 68 GB/s | No | Remote terminal, Apple Silicon testing |
-| **Colmena** (WEIHO 8-GPU) | LocoLLM / smol-bench | 1050 Ti + 2060S + 3060 | 4/8/12 GB | 112-448 GB/s | Yes (2060S, 3060) | Benchmarking, multi-GPU research |
+| **Colmena** (WEIHO 8-GPU) | LocoLLM / LocoBench | 1050 Ti + 2060S + 3060 | 4/8/12 GB | 112-448 GB/s | Yes (2060S, 3060) | Benchmarking, multi-GPU research |
 | **Burro** (IBM x3500 M4 + P100) | LocoLLM | Tesla P100 | 16 GB HBM2 | 732 GB/s | No | Overnight training, high-fidelity LoRA |
 | **Peque** (Dell Optiplex + 1650) | LocoLLM | GTX 1650 OC | 4 GB GDDR6 | 192 GB/s | Yes (Turing) | Reference node, minimum viable inference |
 | **Cerebro** (Ryzen 5 2600) | CloudCore | RTX 2060 Super | 8 GB | 448 GB/s | Yes (Turing) | CloudCore Networks simulation |
@@ -204,7 +204,7 @@ What matters for replication is capability tier, not specific parts. Match the V
 
 **Why Nvidia only?** The entire local LLM toolchain -- Ollama, llama.cpp, PyTorch, bitsandbytes, Unsloth -- targets CUDA first. AMD's ROCm stack exists and is improving, but driver support is narrower, community troubleshooting is thinner, and the tooling friction is meaningfully higher. Intel Arc is earlier still. For a lab that needs to work reliably with minimal sysadmin overhead, CUDA is the only practical choice today.
 
-The secondhand market reinforces this. The cryptocurrency mining boom flooded resale channels with Nvidia consumer cards at accessible prices. AMD equivalents at the same VRAM tiers are rarer and less standardised. And the overwhelming majority of users running local LLMs on consumer hardware are on Nvidia -- smol-bench floor cards need to represent what people actually have.
+The secondhand market reinforces this. The cryptocurrency mining boom flooded resale channels with Nvidia consumer cards at accessible prices. AMD equivalents at the same VRAM tiers are rarer and less standardised. And the overwhelming majority of users running local LLMs on consumer hardware are on Nvidia -- LocoBench floor cards need to represent what people actually have.
 
 Apple Silicon is the exception, and Poco covers that path via Metal and MLX. If ROCm matures to the point where an AMD card is a genuine drop-in for Ollama inference, it becomes a candidate for a Colmena slot. That day isn't today.
 
