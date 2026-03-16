@@ -121,7 +121,7 @@ Fine-tuning doesn't help when: the problem is knowledge gaps (use RAG), the task
 
 ### LoRA vs QLoRA
 
-Full LoRA at 16-bit precision (requires 16GB VRAM -- Burro's P100 territory) produces higher-fidelity adapters than 4-bit QLoRA. For most practical applications QLoRA is sufficient. For research-grade adapter quality where the difference matters, the P100's 16GB HBM2 is the right tool.
+Full LoRA at 16-bit precision (requires 16GB VRAM -- Colmena's P100) produces higher-fidelity adapters than 4-bit QLoRA. For most practical applications QLoRA is sufficient. For research-grade adapter quality where the difference matters, the P100's 16GB HBM2 is the right tool.
 
 ---
 
