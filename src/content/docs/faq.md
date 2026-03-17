@@ -123,4 +123,4 @@ Yes. The entire training and inference pipeline runs on hardware you can buy on 
 
 Academic ML has a massive reproducibility problem. Papers benchmark on A100 clusters that reviewers cannot access. LocoLLM's constraint — consumer hardware only — is a limitation that doubles as a methodological strength.
 
-The entire training lab — a Ryzen desktop with two RTX 2060 SUPERs, an ex-enterprise IBM server with a P100, and a MacBook M1 for testing — cost well under $1,000 AUD. See [Meet the Lab](https://locolabo.org) for the full hardware specs.
+The entire training lab — five secondhand machines with 14 GPUs spanning 2 GB to 24 GB VRAM — cost well under $2,000 AUD. See [Meet the Lab](https://locolabo.org/docs/meet-the-lab/) for the full hardware specs.
