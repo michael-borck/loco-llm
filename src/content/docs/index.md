@@ -4,7 +4,7 @@ title: "LocoLLM Documentation"
 
 **Frontier AI on a budget. Crazy, right?**
 
-LocoLLM is an open-source experiment in building routed, task-specific fine-tuned language models that run entirely on consumer hardware. One base model, many specialist adapters, zero cloud dependencies.
+LocoLLM is an open-source experiment in building routed, task-specific language models that run entirely on consumer hardware. One base model, many specialist adapters, zero cloud dependencies.
 
 ---
 
@@ -18,7 +18,7 @@ Understand the project's goals, hardware, and philosophy.
 
 Hands-on guides for training adapters, benchmarking, and evaluation.
 
-[Adapter Guide](/docs/adapter-guide/) · [Fine-Tuning Primer](/docs/finetuning-primer/)
+[Adapter Guide](/docs/adapter-guide/) · [Adapter Primer](/docs/adapter-primer/)
 
 ### Reference
 

@@ -164,9 +164,9 @@ Design and build comprehensive evaluation benchmarks for each adapter domain. Th
 
 Systematically compare 3-5 candidate base models across all adapter domains. For each base model: train all adapters, run all benchmarks, measure quality, speed, and memory. Produce an evidence-based recommendation for the next academic year's base model.
 
-**Why it matters:** The base model decision is the highest-impact choice in the project. Currently it is made by reviewing published benchmarks and community consensus. This project would generate first-party evidence under LocoLLM's specific constraints (4-bit, consumer hardware, LoRA fine-tuned).
+**Why it matters:** The base model decision is the highest-impact choice in the project. Currently it is made by reviewing published benchmarks and community consensus. This project would generate first-party evidence under LocoLLM's specific constraints (4-bit, consumer hardware, LoRA adapter-trained).
 
-**Deliverables:** Comparison report covering quality (benchmark scores per domain), speed (tokens/second), memory (peak RAM), and fine-tuning responsiveness (how much does each base model improve with LoRA?). Recommendation with supporting data.
+**Deliverables:** Comparison report covering quality (benchmark scores per domain), speed (tokens/second), memory (peak RAM), and adapter training responsiveness (how much does each base model improve with LoRA?). Recommendation with supporting data.
 
 **Discipline fit:** Data Analysis, Research Methods, Information Systems
 

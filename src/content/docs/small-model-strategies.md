@@ -185,7 +185,7 @@ The formats starting with "K" (Q4_K_M, Q3_K_M, etc.) use the **K-quant** method,
 
 Q4_K_M is the practical standard for 8GB VRAM cards. A 7B model at Q4_K_M fits in ~4.5GB, leaving headroom for context. A 13B model at Q4_K_M requires ~8GB -- right at the edge for an 8GB card.
 
-**Rule of thumb for general inference:** it's almost always better to run a larger model at Q4_K_M than a smaller model at higher precision -- more parameters give better reasoning ability. However, for fine-tuning workflows like LocoLLM's, a smaller model at Q4_K_M is deliberately chosen to leave VRAM headroom for adapter swapping, KV cache, and training. The tunability inversion (see [base model selection](base-model-selection.md#the-tunability-inversion)) means the fine-tuned smaller model often closes the gap anyway.
+**Rule of thumb for general inference:** it's almost always better to run a larger model at Q4_K_M than a smaller model at higher precision -- more parameters give better reasoning ability. However, for adapter training workflows like LocoLLM's, a smaller model at Q4_K_M is deliberately chosen to leave VRAM headroom for adapter swapping, KV cache, and training. The tunability inversion (see [base model selection](base-model-selection.md#the-tunability-inversion)) means the adapter-trained smaller model often closes the gap anyway.
 
 Quantisation is the main mechanism by which VRAM tier translates to model tier. The 12GB 3060's value in Colmena is that it can run Q4_K_M 13B models that 8GB cards can't touch.
 
@@ -219,7 +219,7 @@ Small models have shorter effective context windows and degrade faster at the ed
 
 ## 11. Model Selection
 
-The right model for the task is often smaller than assumed. LocoLLM standardises on Qwen3-4B for fine-tuning (see [base model selection](base-model-selection.md) and [ADR-0001](adr/0001-base-model-qwen3-4b.md)), but students exploring inference on their own hardware should know the broader landscape.
+The right model for the task is often smaller than assumed. LocoLLM standardises on Qwen3-4B for adapter training (see [base model selection](base-model-selection.md) and [ADR-0001](adr/0001-base-model-qwen3-4b.md)), but students exploring inference on their own hardware should know the broader landscape.
 
 ### The 7B-8B Landscape (Early 2026)
 
@@ -235,9 +235,9 @@ These models are the current champions at the 7B-8B weight class. They fit in 8 
 
 ### The 3-4B Class (LocoLLM's Territory)
 
-For fine-tuning and constrained hardware, the 3-4B class offers the best balance of tunability, VRAM headroom, and post-training quality:
+For adapter training and constrained hardware, the 3-4B class offers the best balance of tunability, VRAM headroom, and post-training quality:
 
-**Qwen3-4B-Instruct** -- LocoLLM's standard. Ranks first for post-fine-tuning performance across diverse tasks. See [base model selection](base-model-selection.md) for the full rationale.
+**Qwen3-4B-Instruct** -- LocoLLM's standard. Ranks first for post-adapter-training performance across diverse tasks. See [base model selection](base-model-selection.md) for the full rationale.
 
 **Llama 3.2 3B Instruct** -- Good tunability, strong community support. A reasonable alternative if the Qwen ecosystem is unavailable.
 
@@ -245,7 +245,7 @@ For fine-tuning and constrained hardware, the 3-4B class offers the best balance
 
 ### For Very Constrained Hardware (4 GB VRAM)
 
-Qwen3-1.7B, Gemma 2B, SmolLM2-1.7B. Surprisingly capable for focused tasks despite small parameter counts. At this size, fine-tuning gains are proportionally larger (the tunability inversion).
+Qwen3-1.7B, Gemma 2B, SmolLM2-1.7B. Surprisingly capable for focused tasks despite small parameter counts. At this size, adapter training gains are proportionally larger (the tunability inversion).
 
 ### For Coding
 

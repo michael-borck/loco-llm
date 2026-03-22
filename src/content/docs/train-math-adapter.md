@@ -19,7 +19,7 @@ Step-by-step instructions for training the math adapter on neurocore (or any mac
 The training pipeline:
 
 1. **Prepare data** — download GSM8K examples and format for Qwen3 chat template
-2. **Train** — QLoRA fine-tune Qwen3-4B using Unsloth, then merge LoRA weights and export as GGUF
+2. **Train** — QLoRA adapter training on Qwen3-4B using Unsloth, then merge LoRA weights and export as GGUF
 3. **Deploy** — load the merged GGUF into Ollama and verify with eval benchmark
 
 The key design choice: we **merge LoRA weights into the base model** and export a standalone GGUF. Ollama does not support Qwen3 LoRA adapters via the `ADAPTER` directive (only Llama/Mistral/Gemma), so merging is required.
@@ -71,7 +71,7 @@ python scripts/train_math_adapter.py
 This script:
 1. Loads `Qwen3-4B` in 4-bit quantization via Unsloth
 2. Applies LoRA (r=16, alpha=32) to attention layers (q/k/v/o_proj)
-3. Fine-tunes for 3 epochs (effective batch size 8) with SFTTrainer
+3. Trains the adapter for 3 epochs (effective batch size 8) with SFTTrainer
 4. Merges LoRA weights into the base model
 5. Exports as `Q4_K_M` GGUF to `adapters/math/gguf/`
 
@@ -119,7 +119,7 @@ ollama run locollm-math "Solve for x: 2x + 5 = 13"
 loco eval math
 ```
 
-This runs the 20-problem benchmark comparing base `qwen3:4b` vs the merged math adapter. Expect the fine-tuned adapter to score higher due to consistent answer formatting.
+This runs the 20-problem benchmark comparing base `qwen3:4b` vs the merged math adapter. Expect the adapter-trained model to score higher due to consistent answer formatting.
 
 ## Troubleshooting
 

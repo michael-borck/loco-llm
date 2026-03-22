@@ -49,7 +49,7 @@ Replace the B250 Mining Expert open frame design with the **WEIHO 8-GPU enclosed
 - Second 2060 Super (Michael's testing card) migrates to Colmena
 
 **Three distinct projects with distinct hardware:**
-- LocoLLM (Burro + Colmena) -- infrastructure, architecture research, fine-tuning
+- LocoLLM (Burro + Colmena) -- infrastructure, architecture research, adapter training
 - LocoBench (Colmena primary) -- benchmarking platform, community results
 - CloudCore Networks + Cerebro (standalone) -- student assessment simulation
 

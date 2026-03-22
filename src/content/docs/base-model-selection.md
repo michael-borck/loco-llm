@@ -14,13 +14,13 @@ This document explains how the standard base model is chosen, the rationale behi
 
 ### Why Qwen3-4B?
 
-The Qwen3-4B-Instruct model ranks first for post-fine-tuning performance across 8 diverse tasks in distil labs' systematic benchmark of 12 small models, outperforming even 8B models after LoRA training. It achieves this while staying within our 8GB RAM constraint in Q4_K_M quantization.
+The Qwen3-4B-Instruct model ranks first for post-adapter-training performance across 8 diverse tasks in distil labs' systematic benchmark of 12 small models, outperforming even 8B models after LoRA training. It achieves this while staying within our 8GB RAM constraint in Q4_K_M quantization.
 
-The most compelling finding for LocoLLM: the fine-tuned Qwen3-4B matched or exceeded a 120B+ teacher model on 7 of 8 benchmarks. On SQuAD 2.0, it beat the teacher by 19 percentage points. A 4B model, properly fine-tuned, can match a model 30x its size. That's the entire thesis of this project validated in someone else's data.
+The most compelling finding for LocoLLM: the adapter-trained Qwen3-4B matched or exceeded a 120B+ teacher model on 7 of 8 benchmarks. On SQuAD 2.0, it beat the teacher by 19 percentage points. A 4B model, properly trained with LoRA adapters, can match a model 30x its size. That's the entire thesis of this project validated in someone else's data.
 
 ## The Tunability Inversion
 
-One of the most important findings from recent small model research is that smaller models gain more from fine-tuning than larger ones. The distil labs benchmark showed the tunability ranking inverts the size hierarchy: Llama-3.2-1B and Qwen3-0.6B showed the largest improvements from fine-tuning, while 8B models gained the least (because they start stronger and have less room to improve).
+One of the most important findings from recent small model research is that smaller models gain more from adapter training than larger ones. The distil labs benchmark showed the tunability ranking inverts the size hierarchy: Llama-3.2-1B and Qwen3-0.6B showed the largest improvements from adapter training, while 8B models gained the least (because they start stronger and have less room to improve).
 
 This directly validates LocoLLM's architecture. We're not settling for small models as a compromise. We're exploiting the fact that small models are precisely the ones that benefit most from the kind of task-specific adaptation we're building. The adapter approach isn't compensating for a weakness; it's leveraging a strength unique to the small model class.
 
@@ -42,7 +42,7 @@ The base model must satisfy all of the following:
 
 ### Soft Preferences
 
-6. **Strong fine-tuning response** (tunability). This matters more than raw base performance for LocoLLM, since every query goes through an adapter. A model that improves dramatically with LoRA training is more valuable than one that starts slightly stronger but plateaus.
+6. **Strong adapter training response** (tunability). This matters more than raw base performance for LocoLLM, since every query goes through an adapter. A model that improves dramatically with LoRA training is more valuable than one that starts slightly stronger but plateaus.
 
 7. **Good multilingual support.** Many of our students work in multiple languages.
 
@@ -69,7 +69,7 @@ HuggingFace maintains a curated collection of the top-performing model at each p
 **distil labs: SLM Fine-Tuning Benchmark**
 https://www.distillabs.ai/blog/we-benchmarked-12-small-language-models-across-8-tasks-to-find-the-best-base-model-for-fine-tuning
 
-The most directly relevant resource for LocoLLM. Benchmarks 12 small models (0.1B to 8B) across 8 tasks, measuring both base performance and post-fine-tuning performance. This is where the tunability inversion finding comes from and where Qwen3-4B was identified as the top performer after fine-tuning.
+The most directly relevant resource for LocoLLM. Benchmarks 12 small models (0.1B to 8B) across 8 tasks, measuring both base performance and post-adapter-training performance. This is where the tunability inversion finding comes from and where Qwen3-4B was identified as the top performer after adapter training.
 
 **SLM-Bench (EMNLP 2025 Findings)**
 https://aclanthology.org/2025.findings-emnlp.1165/
@@ -86,7 +86,7 @@ Comprehensive survey covering SLMs from 100M to 5B parameters. Includes inferenc
 When evaluating a candidate base model for LocoLLM:
 
 1. **Check the Open LLM Leaderboard** for its ranking within its size class on standard benchmarks
-2. **Check distil labs** (or run your own version of their methodology) for fine-tuning response
+2. **Check distil labs** (or run your own version of their methodology) for adapter training response (note: distil labs uses the term "fine-tuning" to include LoRA adapter training — this is common in the literature but distinct from full fine-tuning)
 3. **Check SLM-Bench** or the SLM survey for practical hardware measurements (latency, memory, energy)
 4. **Run LocoLLM's own evaluation** on the specific task domains we care about (see Evaluation Process below)
 
@@ -94,7 +94,7 @@ No single benchmark tells the whole story, but together they give a much clearer
 
 ### Important Caveat: Most Benchmarks Test Full Precision
 
-Nearly all of the external benchmarks above evaluate models at full precision (bfloat16 or float16), not at Q4_K_M quantization. This matters because LocoLLM runs quantized models exclusively. We are making base model selections based on full-precision fine-tuning rankings and assuming those rankings hold after 4-bit quantization. That assumption is probably correct, but it's more confident than the evidence strictly supports.
+Nearly all of the external benchmarks above evaluate models at full precision (bfloat16 or float16), not at Q4_K_M quantization. This matters because LocoLLM runs quantized models exclusively. We are making base model selections based on full-precision adapter training rankings and assuming those rankings hold after 4-bit quantization. That assumption is probably correct, but it's more confident than the evidence strictly supports.
 
 What quantization-specific evidence does exist comes from studies on larger models that suggest the picture is nuanced:
 
@@ -106,37 +106,37 @@ What quantization-specific evidence does exist comes from studies on larger mode
 
 **The gap nobody has filled.** Nobody systematically benchmarks the intersection that LocoLLM sits in: multiple 3-4B models, at Q4_K_M specifically, across standard benchmarks, on consumer CPU hardware. distil labs tells you which model fine-tunes best in full precision. Quantization studies tell you how much larger models lose at 4-bit. But "how do these specific small models perform after quantization AND fine-tuning on the same tasks" is genuinely undocumented territory. LocoLLM's Phase 1 benchmarks will be among the first to generate this data systematically. See the [benchmarking guide](benchmarking-guide.md) for the full methodology, hardware options, and the "bang per bit" visualisation plan.
 
-## Research Viability: Can Fine-Tuning Make Quantized Small Models Good Specialists?
+## Research Viability: Can Adapter Training Make Quantized Small Models Good Specialists?
 
 This is the central question for LocoLLM, and the evidence from multiple independent research groups converges on a clear answer: yes, and the gap to frontier models is closing from both directions.
 
 ### QLoRA Proves the Mechanism Works
 
-QLoRA (Dettmers et al., NeurIPS 2023) demonstrated that fine-tuning through a frozen 4-bit quantized base model into LoRA adapters fully recovers 16-bit fine-tuning performance. Using NF4 quantization with double quantization on LLaMA models from 7B to 65B, QLoRA matched 16-bit LoRA on MMLU. Their key finding for LocoLLM: fine-tuning on a small, high-quality dataset produced state-of-the-art results even with smaller models than the previous best. Data quality mattered far more than dataset size: a 9K-sample dataset outperformed a 450K-sample dataset.
+QLoRA (Dettmers et al., NeurIPS 2023) demonstrated that training LoRA adapters through a frozen 4-bit quantized base model fully recovers 16-bit adapter training performance. Using NF4 quantization with double quantization on LLaMA models from 7B to 65B, QLoRA matched 16-bit LoRA on MMLU. Their key finding for LocoLLM: training adapters on a small, high-quality dataset produced state-of-the-art results even with smaller models than the previous best. Data quality mattered far more than dataset size: a 9K-sample dataset outperformed a 450K-sample dataset.
 
 The original QLoRA work focused on 7B+ models. For LocoLLM's 4B target, the question was whether the same mechanism holds at smaller scale. Newer work confirms it does.
 
 ### The Tooling Is Actively Improving
 
-Standard QLoRA has a known underfitting problem when fine-tuning quantized models: the adapter sees complex inputs and outputs but has limited trainable capacity. Two recent papers specifically address this:
+Standard QLoRA has a known underfitting problem when training adapters on quantized models: the adapter sees complex inputs and outputs but has limited trainable capacity. Two recent papers specifically address this:
 
 **Q-BLoRA** (Shen et al., TACL 2025) rebalances the adapter by simplifying inputs/outputs and increasing rank. Their results consistently outperform QLoRA across LLaMA, LLaMA2, Mistral, and Gemma models. The 4-bit inference variant (QA-BLoRA) outperforms other 4-bit models and even surpasses some 16-bit adapter benchmarks.
 
-**QR-Adaptor** (2025) jointly optimizes quantization bit-width and LoRA rank per layer, allocating more precision and adaptation capacity to critical layers. It achieved a 4.89% accuracy improvement over QLoRA on GSM8K math benchmarks, and in some configurations surpassed 16-bit fine-tuned models while using memory comparable to a 4-bit setting.
+**QR-Adaptor** (2025) jointly optimizes quantization bit-width and LoRA rank per layer, allocating more precision and adaptation capacity to critical layers. It achieved a 4.89% accuracy improvement over QLoRA on GSM8K math benchmarks, and in some configurations surpassed 16-bit adapter-trained models while using memory comparable to a 4-bit setting.
 
-These aren't theoretical improvements. They're published, benchmarked methods that directly apply to LocoLLM's training pipeline. As this tooling matures and gets integrated into standard libraries (HuggingFace PEFT, Unsloth), quantized fine-tuning quality will continue to improve without LocoLLM needing to change its architecture.
+These aren't theoretical improvements. They're published, benchmarked methods that directly apply to LocoLLM's training pipeline. As this tooling matures and gets integrated into standard libraries (HuggingFace PEFT, Unsloth), quantized adapter training quality will continue to improve without LocoLLM needing to change its architecture.
 
 ### Domain-Specific Evidence: Small Specialists Beat Large Generalists
 
 Multiple independent studies across different domains confirm the pattern that LocoLLM depends on:
 
-**Cybersecurity.** CyberBench (Liu et al., 2024) found that smaller, fine-tuned LLMs can sometimes match or exceed the performance of larger general-purpose models on domain-specific cybersecurity tasks including named entity recognition, summarization, and classification.
+**Cybersecurity.** CyberBench (Liu et al., 2024) found that smaller, adapter-trained LLMs can sometimes match or exceed the performance of larger general-purpose models on domain-specific cybersecurity tasks including named entity recognition, summarization, and classification.
 
-**Medical and scientific domains.** A complexity-aware fine-tuning paper (2025) applied their pipeline to Qwen2.5-3B, Phi-4-Mini, and Llama 3.2 3B across medical QA (MedMCQA), mathematics (GSM8K), and general reasoning (MMLU-Pro). They found that carefully tuned smaller models match or outperform larger open models in mathematics, medicine, and chemistry. Their approach used chain-of-thought distillation from larger teacher models, which aligns with LocoLLM's potential to use frontier model outputs as training data.
+**Medical and scientific domains.** A complexity-aware fine-tuning paper (2025) applied their pipeline to Qwen2.5-3B, Phi-4-Mini, and Llama 3.2 3B across medical QA (MedMCQA), mathematics (GSM8K), and general reasoning (MMLU-Pro). They found that carefully trained smaller models match or outperform larger open models in mathematics, medicine, and chemistry. Their approach used chain-of-thought distillation from larger teacher models, which aligns with LocoLLM's potential to use frontier model outputs as adapter training data.
 
-**Language exams.** A study fine-tuning compact open-source models on Ukrainian language exam tasks showed that parameter-efficient fine-tuning combined with quantization produced substantial improvements over baseline. The tuned models outperformed GPT-4o mini, Mistral Large, and larger open-weight models, all running on a single A100 GPU.
+**Language exams.** A study training LoRA adapters on compact open-source models for Ukrainian language exam tasks showed that parameter-efficient adapter training combined with quantization produced substantial improvements over baseline. The adapter-trained models outperformed GPT-4o mini, Mistral Large, and larger open-weight models, all running on a single A100 GPU.
 
-**Cybersecurity with quantization.** CyberLLM-FINDS (2025) specifically combined domain fine-tuning with quantized models under 2B parameters. They found that chain-of-thought reasoning paired with quantized weights performed best, though local inference was constrained to 200-400 effective tokens despite nominal 2048 context support. This is a practical constraint LocoLLM should monitor.
+**Cybersecurity with quantization.** CyberLLM-FINDS (2025) specifically combined domain-specific adapter training with quantized models under 2B parameters. They found that chain-of-thought reasoning paired with quantized weights performed best, though local inference was constrained to 200-400 effective tokens despite nominal 2048 context support. This is a practical constraint LocoLLM should monitor.
 
 ### The Converging Trends
 
@@ -144,19 +144,19 @@ LocoLLM sits at the intersection of five trends that are all moving in the right
 
 1. **Small base models are improving every generation.** Qwen3-4B outperforms last year's Qwen2.5-7B on over half of benchmarks. Each generation of 4B models starts from a higher baseline, which means quantization losses matter less in absolute terms.
 
-2. **Fine-tuning disproportionately helps small models.** The tunability inversion from distil labs data means the technique LocoLLM depends on most, domain-specific LoRA training, is precisely the technique that benefits small models the most relative to their size.
+2. **Adapter training disproportionately helps small models.** The tunability inversion from distil labs data means the technique LocoLLM depends on most, domain-specific LoRA training, is precisely the technique that benefits small models the most relative to their size.
 
-3. **Quantization techniques are improving in parallel.** Q-BLoRA, QR-Adaptor, and similar methods are specifically addressing the accuracy gap in quantized fine-tuning. The 4-bit penalty is shrinking with each new method.
+3. **Quantization techniques are improving in parallel.** Q-BLoRA, QR-Adaptor, and similar methods are specifically addressing the accuracy gap in quantized adapter training. The 4-bit penalty is shrinking with each new method.
 
-4. **The combination is systematically underexplored.** Plenty of people benchmark base models. Plenty benchmark quantization. Plenty benchmark fine-tuning. Almost nobody benchmarks all three together at the 3-4B scale, which means LocoLLM's evaluation data will fill a genuine gap in the literature.
+4. **The combination is systematically underexplored.** Plenty of people benchmark base models. Plenty benchmark quantization. Plenty benchmark adapter training. Almost nobody benchmarks all three together at the 3-4B scale, which means LocoLLM's evaluation data will fill a genuine gap in the literature.
 
 5. **1.58-bit is a parallel bet, not a replacement.** If BitNet tooling matures, the same specialist-adapter architecture applies at even more extreme compression. The research question ("can routed specialist adapters close the gap to frontier?") stays valid regardless of precision format.
 
 ### The Main Risk
 
-The risk isn't that this approach is a dead end. It's that general-purpose small models improve so rapidly that task-specific fine-tuning becomes unnecessary. If Qwen4-4B (or whatever ships in 2027) is good enough at everything that adapters add negligible value, the architecture becomes pointless overhead.
+The risk isn't that this approach is a dead end. It's that general-purpose small models improve so rapidly that task-specific adapter training becomes unnecessary. If Qwen4-4B (or whatever ships in 2027) is good enough at everything that adapters add negligible value, the architecture becomes pointless overhead.
 
-But the distil labs data argues against this. Even with Qwen3-4B being excellent out of the box, fine-tuning still produced massive gains on specific tasks. A fine-tuned 4B matched a 120B+ teacher. The gap between "good generalist" and "great specialist" persists at every model size and every generation. There's no sign of it closing.
+But the distil labs data argues against this. Even with Qwen3-4B being excellent out of the box, adapter training still produced massive gains on specific tasks. An adapter-trained 4B matched a 120B+ teacher. The gap between "good generalist" and "great specialist" persists at every model size and every generation. There's no sign of it closing.
 
 ### Key References
 
@@ -186,12 +186,12 @@ Run each remaining candidate on the existing LocoLLM benchmark suite (all adapte
 
 ### Step 4: LoRA Trainability Test
 
-Fine-tune a quick test adapter (using the math-reasoning training data) on each candidate. Compare:
+Train a quick test adapter (using the math-reasoning training data) on each candidate. Compare:
 - Training convergence speed
 - Final benchmark score after identical training
 - Adapter size
 
-This is the most important step. Some models respond dramatically better to LoRA fine-tuning than others at the same parameter count. The distil labs data provides a starting point, but LocoLLM's task domains may differ.
+This is the most important step. Some models respond dramatically better to LoRA adapter training than others at the same parameter count. The distil labs data provides a starting point, but LocoLLM's task domains may differ.
 
 ### Step 5: Practical Testing
 
@@ -203,7 +203,7 @@ Install each candidate on the lowest-spec student laptop available and test:
 
 ## Model Comparison (2026 Evaluation)
 
-| Model | Parameters | Est. Q4_K_M Size | License | Fine-Tuning Rank (distil labs) | Base Rank (distil labs) |
+| Model | Parameters | Est. Q4_K_M Size | License | Adapter Training Rank (distil labs) | Base Rank (distil labs) |
 |---|---|---|---|---|---|
 | **Qwen3-4B-Instruct** | 4B | ~2.5GB | Apache 2.0 | **#1** | #3 |
 | Qwen3-1.7B | 1.7B | ~1.1GB | Apache 2.0 | #4 | #5 |
@@ -223,18 +223,18 @@ A 7B model in Q4_K_M quantization requires approximately 4.5GB of RAM for the mo
 - Inability to run a web browser or other applications alongside LocoLLM
 - Unreliable performance on machines with shared GPU memory (integrated graphics)
 
-The 3-4B class provides a comfortable margin while still fitting on constrained hardware. And the tunability data shows that smaller models gain more from fine-tuning, so the gap between a 4B adapter-enhanced model and a 7B general model is narrower than the parameter count suggests.
+The 3-4B class provides a comfortable margin while still fitting on constrained hardware. And the tunability data shows that smaller models gain more from adapter training, so the gap between a 4B adapter-enhanced model and a 7B general model is narrower than the parameter count suggests.
 
 ## Why Not Smaller (1-2B)?
 
-Models in the 1-2B range are tempting for their speed and tiny footprint, and the tunability data shows they gain the most from fine-tuning in relative terms. However, their absolute post-fine-tuning scores still trail the 4B class. The Qwen3-4B consistently produces the best fine-tuned results across diverse tasks.
+Models in the 1-2B range are tempting for their speed and tiny footprint, and the tunability data shows they gain the most from adapter training in relative terms. However, their absolute post-adapter-training scores still trail the 4B class. The Qwen3-4B consistently produces the best adapter-trained results across diverse tasks.
 
 That said, 1-2B models are worth considering for specific use cases:
 - Chromebooks or tablets with 4GB RAM
 - Situations where inference speed matters more than quality
 - As a secondary "fast model" in a tiered routing setup
 
-If hardware constraints force a smaller model, Llama-3.2-1B-Instruct shows the highest tunability and Qwen3-1.7B offers the best balance of size and post-fine-tuning quality below 2B.
+If hardware constraints force a smaller model, Llama-3.2-1B-Instruct shows the highest tunability and Qwen3-1.7B offers the best balance of size and post-adapter-training quality below 2B.
 
 ## Future: 1.58-Bit Native Models (Research Track)
 
@@ -279,13 +279,13 @@ LocoLLM's architecture is designed to be base-model-agnostic. The router, evalua
 
 **Semester 3 project: "LocoLLM-1bit"**
 
-A student team ports the LocoLLM framework to a 1.58-bit base (Falcon-Edge 3B or successor), adapts the fine-tuning pipeline to use BitLoRA or Falcon-Edge's native fine-tuning approach, and benchmarks the same task domains at both precisions.
+A student team ports the LocoLLM framework to a 1.58-bit base (Falcon-Edge 3B or successor), adapts the adapter training pipeline to use BitLoRA or Falcon-Edge's native training approach, and benchmarks the same task domains at both precisions.
 
 Research questions:
 - Does routed 1.58-bit task specialization close the gap to 4-bit general models?
 - What is the quality/memory/speed trade-off curve across precisions for the same tasks?
 - Which task domains are most and least sensitive to extreme quantization?
-- Is the tunability inversion (smaller models gain more from fine-tuning) even more pronounced at 1.58-bit?
+- Is the tunability inversion (smaller models gain more from adapter training) even more pronounced at 1.58-bit?
 
 This comparison, done rigorously on the same task benchmarks, would be a novel contribution. Nobody has published routed multi-adapter evaluation at 1.58-bit precision.
 
@@ -294,7 +294,7 @@ This comparison, done rigorously on the same task benchmarks, would be a novel c
 LocoLLM should consider making 1.58-bit the default pathway when:
 
 1. At least one 1.58-bit base model exists at 3-4B parameters with competitive benchmark scores
-2. A LoRA-compatible fine-tuning method (BitLoRA or equivalent) is available through standard tooling (HuggingFace PEFT or similar)
+2. A LoRA-compatible adapter training method (BitLoRA or equivalent) is available through standard tooling (HuggingFace PEFT or similar)
 3. An inference runtime works cross-platform (macOS, Windows, Linux) with a user experience comparable to Ollama
 4. Our own benchmarks confirm that routed 1.58-bit adapters achieve at least 80% of the quality of routed 4-bit adapters on LocoLLM task domains
 

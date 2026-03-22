@@ -72,7 +72,7 @@ The answer — whether positive or negative — is publishable.
 
 ### Why accumulate adapters over semesters instead of building everything at once?
 
-Because the research question requires scale that no single team can achieve. One group cannot fine-tune 20 specialist adapters, build evaluation benchmarks for each, and iterate on a router. But five student groups per semester for three years can.
+Because the research question requires scale that no single team can achieve. One group cannot train 20 specialist adapters, build evaluation benchmarks for each, and iterate on a router. But five student groups per semester for three years can.
 
 This is a deliberate research strategy, not a staffing convenience. Each semester adds:
 - New specialist adapters (expanding domain coverage)
@@ -87,7 +87,7 @@ The accumulation *is* the experiment. System-level performance over time — mea
 Most MoE and routing research is built by ML engineers for deployment to end users. LocoLLM's student cohorts are simultaneously the development team and the target audience.
 
 This is not just a nice story for a grant application. It means:
-- **Evaluation criteria are grounded in real task needs**, not synthetic benchmarks. When a group fine-tunes an adapter for accounting problem formats, it is because they actually need that capability.
+- **Evaluation criteria are grounded in real task needs**, not synthetic benchmarks. When a group trains an adapter for accounting problem formats, it is because they actually need that capability.
 - **The feedback loop between builder and user is zero-length.** The person who notices the adapter fails on a certain problem type is the same person who can retrain it.
 - **The learning is in the building.** Understanding how AI works by constructing the system yourself develops skills that using a hosted service does not.
 

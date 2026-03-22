@@ -1,37 +1,40 @@
 ---
-title: "Fine-Tuning Primer"
+title: "Adapter Primer"
 ---
 
-A conceptual foundation for contributors who are new to fine-tuning. Read this before diving into the [Adapter Development Guide](adapter-guide.md).
+A conceptual foundation for contributors who are new to LoRA adapters — the core technique LocoLLM uses to create specialist models. Read this before diving into the [Adapter Development Guide](adapter-guide.md).
 
-## What Is Fine-Tuning?
+## Adapters vs Fine-Tuning: Why the Distinction Matters
 
-When you use a language model, you're working with a neural network that has billions of **parameters** — numerical weights learned during a massive initial training phase called **pretraining**. Pretraining is what makes the model "know" language: it has read billions of words and learned patterns for generating coherent, relevant text.
+These terms are often used interchangeably, but in LocoLLM they refer to different things. Getting this right avoids confusion when reading research papers, talking to other teams, or onboarding new contributors.
 
-**Prompting** is when you give the model instructions at inference time — "solve this math problem step by step" — and hope it follows them. This works surprisingly well for many tasks, but it has limits. The model's behavior is constrained by what it learned during pretraining, and you're limited to what you can fit in a single prompt. You can't teach it new skills or consistently change how it approaches a problem class.
+| | Full Fine-Tuning | Adapter Training (what LocoLLM does) |
+|---|---|---|
+| **What changes** | All model parameters | A small set of added parameters (LoRA weights) |
+| **Output** | A new, modified copy of the entire model (gigabytes) | A small adapter file (20-30MB) that layers on top of an unchanged base model |
+| **Base model** | Permanently altered | Untouched — stays frozen |
+| **Cost** | Needs large GPUs, lots of memory, significant time | Runs on consumer hardware (Colab T4, RTX 3060, Mac M1) |
+| **Swappability** | You get one model per fine-tune | Multiple adapters swap in/out of the same base model in milliseconds |
 
-**Fine-tuning** goes further. It takes a pretrained model and continues training it on a smaller, task-specific dataset, actually updating the model's parameters so it internalizes new patterns. After fine-tuning, the model doesn't need elaborate prompting to perform well on the target task — the behavior is baked in.
+**Full fine-tuning** takes a pretrained model and continues training it on a task-specific dataset, updating *every* parameter. You end up with a new model. This is expensive, slow, and produces a single monolithic result.
 
-There are two broad approaches:
+**Adapter training** (specifically LoRA / QLoRA) adds a small set of new parameters to the base model and trains only those. The base model stays frozen. You end up with a lightweight adapter file that modifies the base model's behaviour when loaded. This is what LocoLLM does — exclusively.
 
-| Approach | What changes | Cost | When to use |
-|---|---|---|---|
-| **Full fine-tuning** | All parameters | Very high (needs large GPU, lots of memory) | When you have massive data and compute |
-| **Parameter-efficient fine-tuning (PEFT)** | A small subset of parameters | Low (runs on consumer hardware) | When you want specialist behavior without the cost |
+The distinction matters architecturally: because adapters are small and the base model is shared, LocoLLM can swap between specialist adapters in milliseconds. One base model in memory, many specialisations available on demand. With full fine-tuning, you'd need a separate copy of the entire model for each specialism — impossible on an 8GB laptop.
 
-LocoLLM uses PEFT exclusively, specifically a technique called **LoRA**. This is why adapters are only 20-30MB instead of several gigabytes — you're training a small addition to the model rather than rewriting the whole thing.
+Some literature uses "fine-tuning" as an umbrella term that includes adapter training (PEFT). In LocoLLM documentation, we keep them separate:
+- **Fine-tuning** = modifying all model parameters (we don't do this)
+- **Adapter training** = training LoRA weights on a frozen base model (this is what we do)
 
-### Why LocoLLM Uses Adapters
+If you encounter "fine-tuning" elsewhere in our docs or in research papers, check whether they mean full fine-tuning or adapter training — the workflows, costs, and outcomes are very different.
 
-The adapter approach gives LocoLLM a key architectural advantage: the base model stays loaded in memory, and swapping a LoRA adapter takes milliseconds. You get the effect of multiple specialist models while only keeping one model in RAM. For a system targeting 8GB laptops, this is the difference between "possible" and "impossible." See [architecture.md](architecture.md) for the full design.
-
-## LoRA in Plain English
+## How Adapters Work: LoRA in Plain English
 
 **LoRA (Low-Rank Adaptation)** is the technique behind every LocoLLM adapter. Here's the intuition.
 
 A pretrained model's knowledge lives in large weight matrices — tables of numbers that determine how the model transforms input into output. During full fine-tuning, you'd update every number in these matrices. LoRA's insight is that the *change* you need to make for a specific task can be represented by much smaller matrices.
 
-Think of it like this: the base model is a detailed city map. Fine-tuning for math reasoning doesn't require redrawing the entire map — it's more like adding a transparent overlay that highlights the math-relevant routes. LoRA creates that overlay.
+Think of it like this: the base model is a detailed city map. Specialising for math reasoning doesn't require redrawing the entire map — it's more like adding a transparent overlay that highlights the math-relevant routes. LoRA creates that overlay.
 
 Technically, LoRA decomposes the weight update into two small matrices whose product approximates the full update. The size of these matrices is controlled by a parameter called **rank**.
 
@@ -39,17 +42,17 @@ Technically, LoRA decomposes the weight update into two small matrices whose pro
 
 Two hyperparameters define a LoRA adapter's capacity:
 
-- **Rank** (`lora_rank`): Controls how much the adapter can learn. Higher rank = more capacity to capture complex patterns, but also a larger adapter file and more risk of overfitting. LocoLLM defaults to rank 16, which is a solid middle ground. If your domain needs the model to learn many distinct new behaviors, you might try rank 32. If it's a narrow formatting task, rank 8 might suffice.
+- **Rank** (`lora_rank`): Controls how much the adapter can learn. Higher rank = more capacity to capture complex patterns, but also a larger adapter file and more risk of overfitting. LocoLLM defaults to rank 16, which is a solid middle ground. If your domain needs the model to learn many distinct new behaviours, you might try rank 32. If it's a narrow formatting task, rank 8 might suffice.
 
 - **Alpha** (`lora_alpha`): A scaling factor that controls how strongly the adapter influences the base model. The ratio alpha/rank determines the effective learning rate for the adapter weights. LocoLLM defaults to alpha 32 (with rank 16), giving a scaling factor of 2. You rarely need to change this.
 
-The standard LocoLLM configuration targets the model's attention layers (`q_proj`, `v_proj`, `k_proj`, `o_proj`), which is where most task-specific behavior lives. See the [architecture doc](architecture.md#lora-low-rank-adaptation) for the exact config.
+The standard LocoLLM configuration targets the model's attention layers (`q_proj`, `v_proj`, `k_proj`, `o_proj`), which is where most task-specific behaviour lives. See the [architecture doc](architecture.md#lora-low-rank-adaptation) for the exact config.
 
-### QLoRA: LoRA on Quantized Models
+### QLoRA: Training Adapters on Quantized Models
 
-LocoLLM's base model is stored in **4-bit quantized** format (Q4_K_M) to fit in limited RAM. You might wonder: can you fine-tune a model that's been compressed this aggressively?
+LocoLLM's base model is stored in **4-bit quantized** format (Q4_K_M) to fit in limited RAM. You might wonder: can you train adapters on a model that's been compressed this aggressively?
 
-Yes. **QLoRA** (Quantized LoRA) keeps the base model frozen in 4-bit while training the LoRA adapter weights at full precision. The key finding from the original QLoRA paper (Dettmers et al., NeurIPS 2023) is that this matches the performance of fine-tuning a full-precision model. The quantized base provides the foundation; the full-precision adapter provides the task-specific refinement.
+Yes. **QLoRA** (Quantized LoRA) keeps the base model frozen in 4-bit while training the LoRA adapter weights at full precision. The key finding from the original QLoRA paper (Dettmers et al., NeurIPS 2023) is that this matches the performance of training adapters on a full-precision model. The quantized base provides the foundation; the full-precision adapter provides the task-specific refinement.
 
 This is why LocoLLM can train adapters on Google Colab's free T4 GPU or even on a Mac with MPS — the memory footprint during training is dramatically smaller than full fine-tuning.
 
@@ -57,7 +60,7 @@ This is why LocoLLM can train adapters on Google Colab's free T4 GPU or even on 
 
 If there's one thing to internalize from this primer, it's this: **the quality of your training data matters more than anything else you'll decide during adapter development**. More than rank, more than learning rate, more than the number of epochs.
 
-The QLoRA paper demonstrated that a model fine-tuned on just 9,000 high-quality examples outperformed one trained on 450,000 lower-quality examples on human evaluation. Quality isn't just "slightly better" — it's the dominant factor.
+The QLoRA paper demonstrated that a model trained on just 9,000 high-quality examples outperformed one trained on 450,000 lower-quality examples on human evaluation. Quality isn't just "slightly better" — it's the dominant factor.
 
 ### What Makes a Good Training Example
 
@@ -86,7 +89,7 @@ This is easy to do accidentally, especially when pulling from public datasets th
 
 ## The Training Loop
 
-You don't need to understand the math of gradient descent to fine-tune an adapter, but having a mental model of what happens during training helps you diagnose problems.
+You don't need to understand the math of gradient descent to train an adapter, but having a mental model of what happens during training helps you diagnose problems.
 
 ### What Happens During Training
 
@@ -117,7 +120,7 @@ The [contributing guide](https://github.com/michael-borck/loco-llm/blob/main/CON
 
 ## Hardware Realities
 
-Fine-tuning with QLoRA is designed for consumer hardware, but "consumer hardware" still has constraints.
+Training adapters with QLoRA is designed for consumer hardware, but "consumer hardware" still has constraints.
 
 ### Memory Math
 
@@ -183,4 +186,4 @@ You now have the conceptual foundation. Here's where to go from here:
 - **[Architecture](architecture.md)**: How LocoLLM's components (router, adapter manager, inference pipeline, evaluation harness) fit together.
 - **[Evaluation Standards](evaluation-standards.md)**: What "good enough" means, how benchmarks work, and how scoring varies by domain type.
 - **[Benchmarking Guide](benchmarking-guide.md)**: Methodology for comparing adapters, base models, and quantization levels.
-- **[Base Model Selection](base-model-selection.md)**: Why LocoLLM uses the current base model, the research evidence for fine-tuning quantized small models, and the decision framework for future model changes.
+- **[Base Model Selection](base-model-selection.md)**: Why LocoLLM uses the current base model, the research evidence for training adapters on quantized small models, and the decision framework for future model changes.

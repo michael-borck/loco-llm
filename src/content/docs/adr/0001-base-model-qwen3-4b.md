@@ -14,7 +14,7 @@ Accepted
 
 LocoLLM needs a single base model that all adapters target for an academic year. The model must:
 - Fit in 8GB RAM with room for OS and adapter overhead (~4GB budget for the model)
-- Support LoRA fine-tuning with good community tooling (Unsloth, PEFT)
+- Support LoRA adapter training with good community tooling (Unsloth, PEFT)
 - Have strong instruction-following out of the box
 - Be available in GGUF format for Ollama
 - Have a permissive license for academic use

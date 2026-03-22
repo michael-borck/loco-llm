@@ -6,7 +6,7 @@ This document outlines the research questions, milestones, and evaluation criter
 
 ## Core Research Question
 
-> Can a routed swarm of fine-tuned small language models (4B parameters, 4-bit quantization) outperform a generalist model of equivalent size on real-world tasks, while running entirely on consumer hardware?
+> Can a routed swarm of adapter-trained small language models (4B parameters, 4-bit quantization) outperform a generalist model of equivalent size on real-world tasks, while running entirely on consumer hardware?
 
 ### Sub-Questions
 

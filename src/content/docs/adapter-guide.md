@@ -102,7 +102,7 @@ Before finalizing your dataset, verify:
 {"instruction": "Solve the following arithmetic word problem. Show your reasoning step by step, then give the final answer.", "input": "A bakery makes 240 muffins per day. They sell 75% of them at full price ($3 each) and donate the rest. What is their daily revenue from muffins?", "output": "Step 1: Calculate muffins sold at full price.\n240 muffins x 75% = 240 x 0.75 = 180 muffins sold\n\nStep 2: Calculate revenue.\n180 muffins x $3 = $540\n\nThe bakery's daily muffin revenue is $540."}
 ```
 
-## Phase 3: Fine-Tune (Week 4-5)
+## Phase 3: Train the Adapter (Week 4-5)
 
 ### Google Colab Setup
 
@@ -116,11 +116,9 @@ If you don't have local GPU access, use this Colab workflow:
 ### Local Training
 
 ```bash
-uv run python scripts/fine_tune.py \
-  --base-model Qwen/Qwen2.5-3B-Instruct \
-  --dataset adapters/your-domain/training/dataset.jsonl \
-  --output adapters/your-domain/ \
-  --lora-rank 16 \
+uv run python scripts/train_adapter.py \
+  --adapter-name your-domain \
+  --lora-r 16 \
   --epochs 3 \
   --lr 2e-4
 ```

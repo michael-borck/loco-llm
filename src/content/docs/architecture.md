@@ -9,7 +9,7 @@ This document describes how LocoLLM's components fit together and the reasoning 
 LocoLLM has five core components:
 
 1. **Base Model**: A single quantized small language model (4B parameters, 4-bit) that stays loaded in memory
-2. **Adapter Library**: A collection of LoRA adapters, each fine-tuned for a specific task domain
+2. **Adapter Library**: A collection of LoRA adapters, each trained for a specific task domain
 3. **Router**: A lightweight classifier that examines incoming queries and selects the most appropriate adapter
 4. **Inference Enhancements**: Stackable techniques (RE2 prompting, self-consistency voting) that boost output quality at no financial cost
 5. **CLI / Runtime**: The user-facing interface that ties everything together
@@ -32,7 +32,7 @@ The base model is standardized for an entire academic year. All adapters must ta
 
 **Why 3-4B and not 7B?**
 
-A 7B model in 4-bit quantization needs roughly 4-5GB of RAM for the model alone. With the OS, runtime overhead, and adapter, you're pushing past 8GB. Many student laptops, especially older ones or Chromebooks, have exactly 8GB. The 3-4B class gives us more headroom and faster inference, at the cost of weaker baseline capability, which is exactly what the adapters compensate for. Recent benchmarking (distil labs, 2025) also shows that smaller models gain more from fine-tuning than larger ones, so the gap narrows further once adapters are applied.
+A 7B model in 4-bit quantization needs roughly 4-5GB of RAM for the model alone. With the OS, runtime overhead, and adapter, you're pushing past 8GB. Many student laptops, especially older ones or Chromebooks, have exactly 8GB. The 3-4B class gives us more headroom and faster inference, at the cost of weaker baseline capability, which is exactly what the adapters compensate for. Recent benchmarking (distil labs, 2025) also shows that smaller models gain more from adapter training than larger ones, so the gap narrows further once adapters are applied.
 
 **Why 4-bit quantization?**
 
@@ -203,7 +203,7 @@ LocoLLM supports a stack of inference enhancements that can be combined:
 
 ### Layer 1: Task-Specific Adaptation (Always On)
 
-The router selects the best LoRA adapter for the query. This is the foundation. A fine-tuned specialist produces better starting points than the base model for its target domain.
+The router selects the best LoRA adapter for the query. This is the foundation. A trained specialist adapter produces better starting points than the base model for its target domain.
 
 ### Layer 2: RE2 Prompting (On by Default)
 
@@ -246,7 +246,7 @@ Self-consistency (Wang et al., 2023) showed the same effect: sampling diverse re
 
 **Limitations:**
 
-Voting helps most when errors are diverse (different wrong answers each time). If the model consistently produces the same wrong answer due to a systematic gap in its training, voting won't fix it. That's what adapter fine-tuning is for. The two techniques are complementary: fine-tuning reduces systematic errors, voting reduces random errors.
+Voting helps most when errors are diverse (different wrong answers each time). If the model consistently produces the same wrong answer due to a systematic gap in its training, voting won't fix it. That's what adapter training is for. The two techniques are complementary: adapter training reduces systematic errors, voting reduces random errors.
 
 ### The Full Stack
 
@@ -390,8 +390,8 @@ Adapters are hosted on:
 
 **Router accuracy matters more as the library grows.** With 3-5 adapters, even keyword routing works fine. With 15+, misrouting becomes a real issue and can produce worse results than no adapter at all. The router needs to scale with the adapter library.
 
-**Base model quality sets the floor.** Adapters can improve specific capabilities but can't compensate for fundamental limitations in the base model's architecture or pretraining. If the base model can't do basic language understanding, no amount of LoRA fine-tuning will fix that. This is why base model selection matters so much.
+**Base model quality sets the floor.** Adapters can improve specific capabilities but can't compensate for fundamental limitations in the base model's architecture or pretraining. If the base model can't do basic language understanding, no amount of LoRA adapter training will fix that. This is why base model selection matters so much.
 
-**4-bit quantization is not free, but fine-tuning compensates.** Most published benchmarks evaluate full-precision models, so our base model selection relies partly on rankings that may shift after Q4_K_M quantization. QLoRA and newer methods (Q-BLoRA, QR-Adaptor) demonstrate that fine-tuning through quantized weights recovers most or all of the precision loss. Multiple domain studies confirm fine-tuned quantized small models match larger general-purpose models. However, systematic benchmarking of 3-4B models at Q4_K_M across standard tasks is largely absent from the literature. LocoLLM's evaluation data will help fill that gap. See [base-model-selection.md](base-model-selection.md) for the full evidence review and [benchmarking-guide.md](benchmarking-guide.md) for the methodology.
+**4-bit quantization is not free, but adapter training compensates.** Most published benchmarks evaluate full-precision models, so our base model selection relies partly on rankings that may shift after Q4_K_M quantization. QLoRA and newer methods (Q-BLoRA, QR-Adaptor) demonstrate that training LoRA adapters through quantized weights recovers most or all of the precision loss. Multiple domain studies confirm adapter-trained quantized small models match larger general-purpose models. However, systematic benchmarking of 3-4B models at Q4_K_M across standard tasks is largely absent from the literature. LocoLLM's evaluation data will help fill that gap. See [base-model-selection.md](base-model-selection.md) for the full evidence review and [benchmarking-guide.md](benchmarking-guide.md) for the methodology.
 
 **1.58-bit changes the hardware equation.** Native 1.58-bit models (BitNet architecture) reduce the memory floor from ~3.5GB to ~0.8GB, potentially moving LocoLLM from "runs on a laptop" to "runs on a Raspberry Pi." However, the current trade-off is tooling maturity: no Ollama support, no standard LoRA compatibility, and a limited model selection. The architecture of LocoLLM (router, eval harness, benchmarks, adapter workflow) is designed to be precision-agnostic, so a 1.58-bit base model can be slotted in as a research track without restructuring the project. See [base-model-selection.md](base-model-selection.md) for the full analysis and decision framework.

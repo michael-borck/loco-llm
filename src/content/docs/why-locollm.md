@@ -6,7 +6,7 @@ This document describes what LocoLLM is, the assumptions it makes, and the philo
 
 ## A Teaching and Research Framework
 
-LocoLLM is primarily a teaching project. Each semester, students learn about fine-tuning, evaluation, data curation, routing, and system design by contributing to a working system. The research question — can routed specialist adapters on a quantized small model approach frontier quality on scoped tasks? — gives that work direction and publishable outcomes.
+LocoLLM is primarily a teaching project. Each semester, students learn about adapter training, evaluation, data curation, routing, and system design by contributing to a working system. The research question — can routed specialist adapters on a quantized small model approach frontier quality on scoped tasks? — gives that work direction and publishable outcomes.
 
 The system also happens to run on hardware students already own, at zero ongoing cost. In any given tutorial, some students have frontier AI subscriptions and capable hardware; others are working with whatever free tier they can get. That gap is real (Perkins & Roe, 2025), and it is worth noting that LocoLLM sidesteps it entirely by running locally. But the project exists because the teaching and research questions are interesting, not as a response to the access gap.
 
@@ -18,7 +18,7 @@ A student brainstorming essay topics does not need GPT-4. A student working thro
 
 "Good enough" is not a compromise. It is a design target. And the evidence supports it: a fine-tuned 4B parameter model matched or exceeded a 120B+ teacher model on 7 of 8 benchmarks in recent testing (distil labs, 2025). A 13B model with majority voting outperformed a 70B model on a single pass (Li et al., 2024). The gap between small specialist and large generalist is narrower than most people assume, and it is closing.
 
-LocoLLM's thesis is not "small models are as good as frontier models." They are not, and pretending otherwise would be dishonest. The thesis is: for well-defined tasks where the model is fine-tuned, prompted well, and given structured context, a 4B model running free on a student's laptop can provide meaningfully useful AI assistance. Not perfect. Useful.
+LocoLLM's thesis is not "small models are as good as frontier models." They are not, and pretending otherwise would be dishonest. The thesis is: for well-defined tasks where the model is adapter-trained, prompted well, and given structured context, a 4B model running free on a student's laptop can provide meaningfully useful AI assistance. Not perfect. Useful.
 
 The difference between "no AI access" and "useful AI access" matters far more than the difference between "useful AI access" and "frontier AI access."
 
@@ -74,7 +74,7 @@ Privacy in this context is not a feature. It is a structural property of the arc
 
 Given all of the above, LocoLLM's contribution is not a single breakthrough. It is the integration of several known techniques into a coherent system designed for a specific use case:
 
-**Task-specific fine-tuning** narrows the gap between small and large models on defined tasks. A routed adapter hits the right specialist for each query without the user needing to know or care which adapter is active.
+**Task-specific adapter training** narrows the gap between small and large models on defined tasks. A routed adapter hits the right specialist for each query without the user needing to know or care which adapter is active.
 
 **RE2 prompting** (repeating the question in the prompt) improves reasoning quality at zero cost on local inference. On an API this doubles your prompt tokens. On a local model, it is free.
 
@@ -100,7 +100,7 @@ Honesty about limitations matters more than optimism about potential.
 
 LocoLLM is a small project with modest ambitions. It is a teaching framework first, a research project second, and everything else is a byproduct.
 
-What it can do is demonstrate that the technical floor for useful AI-assisted learning is lower than most people assume. The combination of task-specific fine-tuning, smart prompting, and local inference produces results that are worth studying — and potentially worth using.
+What it can do is demonstrate that the technical floor for useful AI-assisted learning is lower than most people assume. The combination of task-specific adapter training, smart prompting, and local inference produces results that are worth studying — and potentially worth using.
 
 If the benchmarks confirm the hypothesis, and the evaluation data shows that routed specialist adapters on a 4B model approach frontier quality on well-defined tasks, that is a finding worth publishing. If the data shows they do not, that is equally worth knowing.
 

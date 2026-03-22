@@ -4,7 +4,7 @@
 This script:
 1. Loads Qwen3-4B in 4-bit quantization via Unsloth
 2. Applies LoRA adapters to attention layers
-3. Fine-tunes on GSM8K-style math problems
+3. Trains on GSM8K-style math problems
 4. Merges LoRA weights into the base model
 5. Exports as Q4_K_M GGUF ready for Ollama
 

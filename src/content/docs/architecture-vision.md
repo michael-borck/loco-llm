@@ -85,17 +85,17 @@ Not every part of a response requires the same level of capability. Consider a l
 | Domain execution (math, code, etc.) | Learned patterns | 1-3B, specialised |
 | Output formatting, assembly | Language fluency | 3-8B |
 
-The insight is that "understanding" and "pattern execution" are different jobs. A 7B model that understands the query structure can delegate computational subtasks to smaller specialists that have been fine-tuned to execute specific patterns reliably.
+The insight is that "understanding" and "pattern execution" are different jobs. A 7B model that understands the query structure can delegate computational subtasks to smaller specialists that have been trained via LoRA adapters to execute specific patterns reliably.
 
 This is analogous to how a senior engineer works with junior developers. The senior architect designs the system and reviews the output. The juniors write the specific modules. The juniors do not need to understand the full system architecture. The senior does not need to write every line of code. The skill requirement at each layer is different, and the labour allocation reflects that.
 
 ### Why Small Models Can Be Good Specialists
 
-Small models (1-3B) have limited capacity for multi-step reasoning, but they can learn specific input-output patterns very effectively through fine-tuning. A TinyLlama trained on thousands of examples of "given matrix A and B, compute AB" may not *understand* linear algebra, but it can reproduce the mechanical steps reliably.
+Small models (1-3B) have limited capacity for multi-step reasoning, but they can learn specific input-output patterns very effectively through adapter training. A TinyLlama trained on thousands of examples of "given matrix A and B, compute AB" may not *understand* linear algebra, but it can reproduce the mechanical steps reliably.
 
-This works because fine-tuning teaches patterns, and patterns are enough for well-scoped subtasks. The understanding — knowing *when* matrix multiplication is needed — comes from the orchestration layer above.
+This works because adapter training teaches patterns, and patterns are enough for well-scoped subtasks. The understanding — knowing *when* matrix multiplication is needed — comes from the orchestration layer above.
 
-There is a floor below which fine-tuning cannot compensate for architectural limitations. Current evidence suggests that floor is somewhere around 1-3B parameters, depending on the task. Below that, the model lacks the internal representations to learn even mechanical patterns reliably. Above 3B, fine-tuning gains are substantial and consistent.
+There is a floor below which adapter training cannot compensate for architectural limitations. Current evidence suggests that floor is somewhere around 1-3B parameters, depending on the task. Below that, the model lacks the internal representations to learn even mechanical patterns reliably. Above 3B, adapter training gains are substantial and consistent.
 
 ---
 
@@ -218,7 +218,7 @@ Tool use also softens the fuzzy boundary problem between domains. "Is data analy
 
 This is not a novel idea. It is exactly what frontier models do. ChatGPT's Code Interpreter, Claude's tool use, Gemini's function calling — they all follow the same pattern: the model reasons in language, delegates execution to tools, and interprets the results.
 
-The difference is that frontier models learn tool use during pretraining and RLHF at massive scale. LocoLLM would need to teach it through fine-tuning at small scale. Whether a 4B model can learn reliable tool-call generation from hundreds (not millions) of examples is an open question. Early evidence from function-calling fine-tunes (Gorilla, NexusRaven, Functionary) suggests it is feasible, but the reliability bar is high — a tool call that is almost right is worse than no tool call at all.
+The difference is that frontier models learn tool use during pretraining and RLHF at massive scale. LocoLLM would need to teach it through adapter training at small scale. Whether a 4B model can learn reliable tool-call generation from hundreds (not millions) of examples is an open question. Early evidence from function-calling adapters (Gorilla, NexusRaven, Functionary) suggests it is feasible, but the reliability bar is high — a tool call that is almost right is worse than no tool call at all.
 
 ### A Practical Starting Point
 
@@ -250,7 +250,7 @@ A teaching lab with 20 machines, each with a modest GPU, can retrain 20 adapters
 
 A simple task runner (even a spreadsheet mapping adapters to machines) is sufficient for coordination. No distributed training framework needed. No gradient synchronisation. Just embarrassingly parallel independent jobs.
 
-This also solves the "who trains what" problem for a teaching project: each student or student team owns an adapter. When the base model changes, each team retrains their adapter. The annual rebuild becomes a teaching exercise in itself — students see firsthand how their adapter's performance changes on a new base, which is a concrete lesson in the relationship between base model capability and fine-tuning gains.
+This also solves the "who trains what" problem for a teaching project: each student or student team owns an adapter. When the base model changes, each team retrains their adapter. The annual rebuild becomes a teaching exercise in itself — students see firsthand how their adapter's performance changes on a new base, which is a concrete lesson in the relationship between base model capability and adapter training gains.
 
 ### What Actually Takes Time
 
@@ -290,7 +290,7 @@ LocoLLM is not an agent framework. It is not trying to be one. But it teaches th
 
 ## What This Means for LocoLLM
 
-None of the above changes what LocoLLM is today. The current system — one base model, keyword router, three adapters — is the right starting point. Students need to understand fine-tuning, evaluation, and routing before they can meaningfully engage with decomposition, granularity tradeoffs, and hardware-level parallelism.
+None of the above changes what LocoLLM is today. The current system — one base model, keyword router, three adapters — is the right starting point. Students need to understand adapter training, evaluation, and routing before they can meaningfully engage with decomposition, granularity tradeoffs, and hardware-level parallelism.
 
 But the ideas connect. Each piece of LocoLLM today is a simplified version of a piece in the larger vision:
 
@@ -313,12 +313,12 @@ Each upgrade from the left column to the right column is a project in its own ri
 These are genuinely open. If you have ideas, that is what research is for.
 
 1. **Decomposition strategy**: How do you decide whether to route a query whole or decompose it? What model is the decomposer, and how do you train it?
-2. **Optimal granularity**: At what domain specificity do fine-tuned adapters stop improving? Is "linear algebra" the right grain, or is "3x3 matrix inversion" too narrow to be useful?
+2. **Optimal granularity**: At what domain specificity do adapters stop improving? Is "linear algebra" the right grain, or is "3x3 matrix inversion" too narrow to be useful?
 3. **Recombination quality**: Can you assemble specialist outputs into a coherent response without losing context or introducing contradictions?
 4. **Hardware scheduling**: On a multi-GPU commodity setup, what is the optimal allocation of models to devices? Should the orchestrator share a GPU with a rarely-used specialist?
-5. **Capability floor**: Below what parameter count does fine-tuning fail to produce useful specialists? How does this vary by domain?
+5. **Capability floor**: Below what parameter count does adapter training fail to produce useful specialists? How does this vary by domain?
 6. **Economic crossover**: At what point does a swarm of small models on cheap hardware match the cost-performance of a single large model on expensive hardware? Does that crossover point even exist for most workloads?
-7. **Tool-call reliability**: Can a 4B model learn to generate correct tool calls from hundreds of fine-tuning examples? What is the failure rate, and is an almost-right tool call worse than no tool call?
+7. **Tool-call reliability**: Can a 4B model learn to generate correct tool calls from hundreds of adapter training examples? What is the failure rate, and is an almost-right tool call worse than no tool call?
 8. **Domain boundaries under tool use**: If multiple adapters delegate to the same tools (Python, sympy), does the adapter distinction still matter, or does tool use flatten the domain hierarchy?
 9. **Rebuild automation**: What does a fully automated retrain-and-benchmark pipeline look like, and how much human judgement remains in the loop for evaluating retrained adapters?
 

@@ -9,7 +9,7 @@ A generic workflow for creating LocoLLM adapters. The math, code, and analysis a
 Every adapter goes through five stages:
 
 1. **Prepare data** — download a dataset and format it for Qwen3 chat template
-2. **Train** — QLoRA fine-tune Qwen3-4B and export as merged GGUF
+2. **Train** — QLoRA adapter training on Qwen3-4B and export as merged GGUF
 3. **Register** — add the adapter to `adapters/registry.yaml`
 4. **Deploy** — load the merged GGUF into Ollama via `loco setup`
 5. **Evaluate** — run `loco eval <adapter>` to compare against the base model
@@ -45,7 +45,7 @@ source .venv-train/bin/activate
 python scripts/train_adapter.py --adapter-name <name>
 ```
 
-This handles LoRA setup, fine-tuning, and GGUF export. Override defaults if needed:
+This handles LoRA setup, adapter training, and GGUF export. Override defaults if needed:
 
 ```bash
 python scripts/train_adapter.py --adapter-name code --epochs 5 --lr 1e-4

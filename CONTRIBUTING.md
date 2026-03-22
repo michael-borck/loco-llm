@@ -8,7 +8,7 @@ Contributing an adapter involves five steps:
 
 1. Propose a domain and get it approved
 2. Curate and prepare training data
-3. Fine-tune a LoRA adapter using the standard training script
+3. Train a LoRA adapter using the standard training script
 4. Evaluate it against the base model using the standard harness
 5. Submit a pull request with all required artifacts
 
@@ -88,16 +88,14 @@ Using a frontier model to generate training examples is fine and often practical
 - **Training set**: Your main JSONL file (minimum 500 examples)
 - **Benchmark set** (`eval/benchmark.jsonl`): Separate set of at least 50 examples, held out from training, used for evaluation. These should never appear in training data.
 
-## Step 3: Fine-Tune
+## Step 3: Train the Adapter
 
 Use the standard training script to ensure consistency across all adapters:
 
 ```bash
-uv run python scripts/fine_tune.py \
-  --base-model Qwen/Qwen2.5-3B-Instruct \
-  --dataset adapters/your-domain/training/dataset.jsonl \
-  --output adapters/your-domain/ \
-  --lora-rank 16 \
+uv run python scripts/train_adapter.py \
+  --adapter-name your-domain \
+  --lora-r 16 \
   --epochs 3 \
   --lr 2e-4 \
   --batch-size 4 \
@@ -106,7 +104,7 @@ uv run python scripts/fine_tune.py \
 
 ### Training Hardware
 
-Fine-tuning a 3B model with LoRA is feasible on:
+Training a 3B model adapter with LoRA is feasible on:
 - A single consumer GPU (8GB+ VRAM) in 1-4 hours
 - Google Colab free tier (T4 GPU) in 2-6 hours
 - University lab machines
@@ -115,7 +113,7 @@ The standard script uses QLoRA (4-bit base model + LoRA adapters) to minimize me
 
 ### Hyperparameter Guidance
 
-The defaults in `fine_tune.py` are good starting points. If you want to experiment:
+The defaults in `train_adapter.py` are good starting points. If you want to experiment:
 
 | Parameter | Default | Notes |
 |---|---|---|

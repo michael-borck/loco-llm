@@ -29,7 +29,7 @@ Each adapter must include at least 50 evaluation examples. See [evaluation stand
 The following are documented in [evaluation standards](evaluation-standards.md) as requirements but are not yet built into the harness. Each is a student project:
 
 - **Out-of-domain check** — run your adapter on another domain's benchmark to verify it doesn't degrade general capability. The eval-standards doc specifies within 5 percentage points of base.
-- **Cross-model comparison** — run the same benchmark against other quantized models (e.g., does our fine-tuned Qwen3-4B beat a stock Phi-3-mini at Q4_K_M on math?). This would answer whether fine-tuning is better than just picking a different base model.
+- **Cross-model comparison** — run the same benchmark against other quantized models (e.g., does our adapter-trained Qwen3-4B beat a stock Phi-3-mini at Q4_K_M on math?). This would answer whether adapter training is better than just picking a different base model.
 - **Frontier API comparison** — run the benchmark against GPT-4 / Claude / Gemini to establish an upper bound. Answers the central research question: how close can routed 4-bit specialists get?
 - **Structured results output** — `results.json` with per-difficulty breakdowns, hardware info, inference settings, and version history.
 - **LLM-as-judge scoring** — for domains like writing where exact match doesn't apply.
@@ -39,4 +39,4 @@ The following are documented in [evaluation standards](evaluation-standards.md) 
 
 The base model (Qwen3-4B at Q4_K_M) was selected using data from [LocoBench](https://github.com/michael-borck/loco-bench), an independent benchmarking project that evaluates small language models across standard tasks (MMLU, GSM8K, HellaSwag, etc.) at multiple quantization levels on consumer hardware. The selection rationale is documented in [ADR-0001](adr/0001-base-model-qwen3-4b.md) and [base model selection](base-model-selection.md).
 
-LocoBench and LocoLLM are separate projects. LocoBench benchmarks base models. LocoLLM benchmarks what fine-tuning adds on top.
+LocoBench and LocoLLM are separate projects. LocoBench benchmarks base models. LocoLLM benchmarks what adapter training adds on top.

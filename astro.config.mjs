@@ -37,7 +37,7 @@ export default defineConfig({
           label: 'Guides',
           items: [
             { label: 'Adapter Development', slug: 'adapter-guide' },
-            { label: 'Fine-Tuning Primer', slug: 'finetuning-primer' },
+            { label: 'Adapter Primer', slug: 'adapter-primer' },
             { label: 'Training the Math Adapter', slug: 'train-math-adapter' },
             { label: 'Training New Adapters', slug: 'training-new-adapters' },
             { label: 'Benchmarking', slug: 'benchmarking-guide' },

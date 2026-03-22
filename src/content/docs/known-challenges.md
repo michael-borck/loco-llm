@@ -10,17 +10,17 @@ A project that cannot articulate its own weaknesses is not rigorous. It is promo
 
 ## The Moving Target Problem
 
-Every generation of small models gets better out of the box. The fine-tuned Qwen3-4B adapter that beats the base model on GSM8K today may be outperformed by Qwen4-4B's base model in twelve months. This is not a hypothetical risk. It is the predictable consequence of the scaling and distillation trends that make LocoLLM possible in the first place.
+Every generation of small models gets better out of the box. The adapter-trained Qwen3-4B that beats the base model on GSM8K today may be outperformed by Qwen4-4B's base model in twelve months. This is not a hypothetical risk. It is the predictable consequence of the scaling and distillation trends that make LocoLLM possible in the first place.
 
 The implications are serious:
 
 - **Adapters have a shelf life.** A LoRA trained against Qwen3-4B cannot be applied to Qwen4-4B. When the base model changes, every adapter must be retrained. The semester-by-semester accumulation story is not "we accumulate adapters." It is "we accumulate datasets, methodology, and evaluation infrastructure that survive base model transitions."
-- **The goalposts move.** A result showing "our fine-tuned 4B model achieves 85% of frontier performance on task X" may be unimpressive by the time it is published, because the next base model achieves 90% without fine-tuning.
-- **The research question shifts.** The interesting question is not "can we make this specific model better?" It is: **how good can 4-bit models in the 1-4B range actually get, and what is the ceiling when you combine fine-tuning, prompting techniques, and routing?** That question survives model generations.
+- **The goalposts move.** A result showing "our adapter-trained 4B model achieves 85% of frontier performance on task X" may be unimpressive by the time it is published, because the next base model achieves 90% without adapter training.
+- **The research question shifts.** The interesting question is not "can we make this specific model better?" It is: **how good can 4-bit models in the 1-4B range actually get, and what is the ceiling when you combine adapter training, prompting techniques, and routing?** That question survives model generations.
 
 ### Why This Is Not Fatal
 
-The moving target cuts both ways. If base models improve, then the *fine-tuned* versions of those base models also improve. The gap between "base 4B" and "fine-tuned 4B" may narrow, but the absolute capability of the fine-tuned system rises with each generation. The methodology — identify weakness, curate data, fine-tune, evaluate, route — remains valid regardless of which specific model sits underneath.
+The moving target cuts both ways. If base models improve, then the *adapter-trained* versions of those base models also improve. The gap between "base 4B" and "adapter-trained 4B" may narrow, but the absolute capability of the adapter-trained system rises with each generation. The methodology — identify weakness, curate data, train adapters, evaluate, route — remains valid regardless of which specific model sits underneath.
 
 The durable contributions are:
 
@@ -66,7 +66,7 @@ This is not a new skill that AI demands. It is the same critical thinking that e
 
 The deeper concern is not model accuracy. It is the mindset that AI is *the answer* rather than *part of the journey*.
 
-A student who treats any AI output — from GPT-4 or from a fine-tuned 4B model — as authoritative has a dependency problem, not a model quality problem. The difference between "I need the latest frontier model" and "I need any model at all" is often less about capability and more about the belief that AI should be doing the thinking.
+A student who treats any AI output — from GPT-4 or from an adapter-trained 4B model — as authoritative has a dependency problem, not a model quality problem. The difference between "I need the latest frontier model" and "I need any model at all" is often less about capability and more about the belief that AI should be doing the thinking.
 
 This connects directly to the [Conversation, Not Delegation](why-locollm.md#conversation-not-delegation) philosophy. The purpose of AI in learning is to *amplify* thinking, not replace it. A student who uses a small model to brainstorm, draft, and iterate — and then applies their own judgement to the result — is developing capability. A student who pastes a question into a frontier model and submits the output is developing dependency, regardless of how good the model is.
 
@@ -119,7 +119,7 @@ That said, local capability and cloud capability are not mutually exclusive. Loc
 
 LocoLLM is part of a broader ecosystem of local AI tools, and the documentation should acknowledge rather than ignore them. See [AI Landscape](https://locolabo.org) for an honest positioning of where LocoLLM sits relative to alternatives.
 
-The short version: a student running Ollama with a good system prompt already gets most of the way to what LocoLLM provides. The question is whether the adapter routing system, evaluation framework, and specialist fine-tuning add enough value to justify the additional complexity. That is an empirical question, and the answer may turn out to be "not much for general use, but interesting as research."
+The short version: a student running Ollama with a good system prompt already gets most of the way to what LocoLLM provides. The question is whether the adapter routing system, evaluation framework, and specialist adapter training add enough value to justify the additional complexity. That is an empirical question, and the answer may turn out to be "not much for general use, but interesting as research."
 
 ---
 
@@ -162,14 +162,14 @@ There is also a practical point about hardware reuse: secondhand enterprise hard
 
 LocoLLM risks trying to be too many things at once:
 
-- A research project (routing, benchmarking, quantized fine-tuning)
+- A research project (routing, benchmarking, quantized adapter training)
 - A teaching framework (semester-based student contributions)
 - A product for students (local AI assistant)
 - A local-first alternative to cloud AI
 
 These are all legitimate, but they serve different audiences and should not be collapsed into a single narrative.
 
-**The primary identity is a teaching project.** Each semester, students learn about fine-tuning, evaluation, data curation, and system design by contributing to a real system. The learning is in the building.
+**The primary identity is a teaching project.** Each semester, students learn about adapter training, evaluation, data curation, and system design by contributing to a real system. The learning is in the building.
 
 **The secondary identity is a research project.** The benchmarking data, the routing experiments, and the methodology are genuine research contributions. If they lead to publications, that is a welcome outcome, not the driving purpose.
 
