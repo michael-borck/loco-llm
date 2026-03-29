@@ -706,6 +706,52 @@
 
     .footer-links a:hover { color: var(--text-secondary); }
 
+    /* Ecosystem bridge diagram */
+    .bridge-diagram { max-width: 780px; margin: 0 auto; }
+    .bridge-deck {
+      position: relative; overflow: hidden;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px 12px 0 0; padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      min-height: 70px; text-decoration: none; transition: all 0.3s;
+    }
+    .bridge-deck:hover { background: var(--bg-card-hover); }
+    .bridge-deck-label {
+      font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700;
+      color: var(--text-primary); letter-spacing: 0.05em; z-index: 2;
+    }
+    .bridge-deck-icon { font-size: 1.25rem; z-index: 2; }
+    .bridge-svg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1; opacity: 0.08; color: var(--text-muted);
+    }
+    .pillar-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: -2px;
+    }
+    .pillar {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 1.25rem; text-align: center;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .pillar:first-child { border-radius: 0 0 0 12px; }
+    .pillar:last-child  { border-radius: 0 0 12px 0; }
+    .pillar.highlighted { border-color: var(--accent); border-width: 2px; }
+    .pillar-label {
+      font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .pillar.highlighted .pillar-label { color: var(--accent); }
+    .pillar-cards { display: flex; flex-direction: column; gap: 0.5rem; }
+    .pillar-cards a {
+      background: var(--bg-card-hover); border: 1px solid var(--border-light);
+      border-radius: 8px; padding: 0.75rem; text-decoration: none; color: inherit; transition: all 0.2s;
+    }
+    .pillar-cards a:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .pillar-cards .lc-icon { font-size: 1.1rem; margin-bottom: 0.15rem; }
+    .pillar-cards .lc-name { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+    .pillar-cards .lc-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; margin-top: 0.15rem; }
+    .ecosystem-section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 768px) {
       .nav-links { display: none; }
@@ -729,6 +775,9 @@
       .terminal-preview { margin-top: 2rem; }
       .arch-row { flex-direction: column; }
       .footer-inner { flex-direction: column; text-align: center; }
+      .pillar-row { grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+      .pillar { border-radius: 8px !important; }
+      .bridge-deck { border-radius: 12px; }
     }
 
     /* ═══ SCROLL ANIMATIONS ═══ */
@@ -1009,6 +1058,75 @@
     <p class="section-desc fade-up" style="margin-top:1.5rem; font-style:italic; opacity:0.85;">
       If a project interests you but you're not sure you have the skills, that's probably the right project. The one that stretches you is the one you'll learn the most from.
     </p>
+  </section>
+
+  <!-- ECOSYSTEM -->
+  <section class="ecosystem-section" id="ecosystem">
+    <div class="section-label fade-up">Part of LocoLab</div>
+    <h2 class="section-title fade-up">Six projects. Three layers. One lab.</h2>
+    <div class="bridge-diagram fade-up">
+      <a href="https://locopuente.org" class="bridge-deck">
+        <svg class="bridge-svg" viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="180" y="0" width="6" height="80" fill="currentColor"/>
+          <rect x="614" y="0" width="6" height="80" fill="currentColor"/>
+          <path d="M0,10 Q200,70 400,15 Q600,70 800,10" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <line x1="100" y1="38" x2="100" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="150" y1="30" x2="150" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="250" y1="30" x2="250" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="320" y1="22" x2="320" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="400" y1="15" x2="400" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="480" y1="22" x2="480" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="550" y1="30" x2="550" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="650" y1="30" x2="650" y2="72" stroke="currentColor" stroke-width="1"/>
+          <line x1="700" y1="38" x2="700" y2="72" stroke="currentColor" stroke-width="1"/>
+          <rect x="0" y="72" width="800" height="8" fill="currentColor" rx="2"/>
+        </svg>
+        <span class="bridge-deck-icon">&#9961;&#65039;</span>
+        <span class="bridge-deck-label">LocoPuente</span>
+      </a>
+      <div class="pillar-row">
+        <div class="pillar">
+          <div class="pillar-label">Experience</div>
+          <div class="pillar-cards">
+            <a href="https://locoensayo.org">
+              <div class="lc-icon">&#127917;</div>
+              <div class="lc-name">LocoEnsayo</div>
+              <div class="lc-desc">AI-populated rehearsal environments</div>
+            </a>
+          </div>
+        </div>
+        <div class="pillar highlighted">
+          <div class="pillar-label">Intelligence</div>
+          <div class="pillar-cards">
+            <a href="https://locollm.org">
+              <div class="lc-icon">&#128302;</div>
+              <div class="lc-name">LocoLLM</div>
+              <div class="lc-desc">Routed specialist model swarm</div>
+            </a>
+            <a href="https://locoagente.org">
+              <div class="lc-icon">&#129302;</div>
+              <div class="lc-name">LocoAgente</div>
+              <div class="lc-desc">Agentic scaffolding for SLMs</div>
+            </a>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">Infrastructure</div>
+          <div class="pillar-cards">
+            <a href="https://locobench.org">
+              <div class="lc-icon">&#128736;</div>
+              <div class="lc-name">LocoBench</div>
+              <div class="lc-desc">VRAM tier benchmarking</div>
+            </a>
+            <a href="https://lococonvoy.org">
+              <div class="lc-icon">&#128666;</div>
+              <div class="lc-name">LocoConvoy</div>
+              <div class="lc-desc">Multi-GPU parallelism</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- CONTACT -->
