@@ -1,0 +1,35 @@
+---
+title: LocoLLM
+description: Routed specialist AI on consumer hardware. One base model, many adapters, zero cloud dependencies.
+template: splash
+hero:
+  tagline: Frontier AI on a budget. Crazy, right?
+  image:
+    file: ../../assets/llama.svg
+  actions:
+    - text: Why LocoLLM
+      link: /docs/why-locollm/
+      icon: right-arrow
+      variant: primary
+    - text: View Benchmarks
+      link: /docs/benchmarks/
+      icon: external
+      variant: secondary
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Specialist adapters" icon="puzzle">
+    One quantised 4B base model, many domain-specific adapters. A router dispatches each query to the right specialist — no monolithic model required.
+  </Card>
+  <Card title="Runs on your hardware" icon="laptop">
+    Designed for consumer GPUs and student laptops. No subscription, no rate limits, no data leaving your machine.
+  </Card>
+  <Card title="Evaluation first" icon="approve-check">
+    Every adapter must prove it beats the base model before it ships. Systematic benchmarking, not vibes.
+  </Card>
+  <Card title="Built to teach" icon="open-book">
+    Students learn adapter training, routing, evaluation, and system design by contributing to a working system — not a toy.
+  </Card>
+</CardGrid>
