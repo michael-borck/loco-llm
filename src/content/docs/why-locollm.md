@@ -4,6 +4,8 @@ title: "Why LocoLLM Exists"
 
 This document describes what LocoLLM is, the assumptions it makes, and the philosophy that shapes its design.
 
+*Not sure if LocoLLM is the right entry point? See [Are You Loco Enough?](https://locolabo.org/docs/audience/) for the full picture across all LocoLab projects.*
+
 ## A Teaching and Research Framework
 
 LocoLLM is primarily a teaching project. Each semester, students learn about adapter training, evaluation, data curation, routing, and system design by contributing to a working system. The research question — can routed specialist adapters on a quantized small model approach frontier quality on scoped tasks? — gives that work direction and publishable outcomes.
