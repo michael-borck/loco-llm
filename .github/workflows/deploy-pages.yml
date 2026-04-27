@@ -34,8 +34,8 @@ jobs:
         run: |
           mkdir _site
 
-          # Landing page files at root
-          cp docs/index.html _site/
+          # Redirect root → /docs/
+          echo '<meta http-equiv="refresh" content="0; url=/docs/"><a href="/docs/">Redirecting…</a>' > _site/index.html
           cp docs/CNAME _site/
           touch _site/.nojekyll
 
