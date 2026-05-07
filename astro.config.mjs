@@ -9,6 +9,7 @@ export default defineConfig({
       title: 'LocoLLM',
       description: 'Frontier AI on a Budget',
       favicon: '/llama.svg',
+      disable404Route: true,
       logo: {
         alt: 'LocoLLM',
         src: './src/assets/llama.svg',
