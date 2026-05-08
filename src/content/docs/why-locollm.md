@@ -4,7 +4,7 @@ title: "Why LocoLLM Exists"
 
 This document describes what LocoLLM is, the assumptions it makes, and the philosophy that shapes its design.
 
-*Not sure if LocoLLM is the right entry point? See [Are You Loco Enough?](https://locolabo.org/docs/audience/) for the full picture across all LocoLab projects.*
+*Not sure if LocoLLM is the right entry point? See [Are You Loco Enough?](https://locolabo.org/audience/) for the full picture across all LocoLab projects.*
 
 ## A Teaching and Research Framework
 
