@@ -3,7 +3,6 @@ import starlight from '@astrojs/starlight';
 
 export default defineConfig({
   site: 'https://locollm.org',
-  base: '/docs',
   integrations: [
     starlight({
       title: 'LocoLLM',
