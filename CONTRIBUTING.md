@@ -16,7 +16,7 @@ The whole process is designed to be completable by a student team in one semeste
 
 ## Step 1: Propose a Domain
 
-Before starting work, open a GitHub issue using the `[adapter-proposal]` template. Your proposal should cover:
+Before starting work, open a GitHub issue with `[adapter-proposal]` in the title. Your proposal should cover:
 
 - **Target domain**: What task or subject area will this adapter specialize in?
 - **Why the base model underperforms**: Show 3-5 example queries where the base model gives poor results. This is your motivation.
@@ -54,17 +54,30 @@ Adapters work best when the target domain has these properties:
 
 ### Format
 
-All training data must be in JSONL format with three fields:
+Training data and evaluation data use **different** formats. Getting these right
+before you generate hundreds of examples saves a lot of rework.
+
+**Training data** (`training_data.jsonl`), one JSON object per line, each holding
+a two-turn conversation:
 
 ```json
-{"instruction": "What to do", "input": "Context or problem", "output": "Expected response"}
+{"conversations": [{"role": "user", "content": "Write a formal email declining a meeting invitation."}, {"role": "assistant", "content": "Dear [Name], ..."}]}
 ```
 
-For tasks without separate context, leave `input` as an empty string:
+**Evaluation data** (`eval_dataset.jsonl`) depends on the `eval_type` you declare
+in `registry.yaml`. Three are supported:
 
-```json
-{"instruction": "Write a formal email declining a meeting invitation", "input": "", "output": "Dear [Name], ..."}
-```
+| `eval_type` | Line format | Scored by |
+|---|---|---|
+| `numeric` | `{"question": "...", "answer": 42}` | Extracting a number from the response and comparing it |
+| `code` | `{"question": "...", "answer_keywords": ["def", "sorted"]}` | Valid Python syntax plus the expected keywords appearing |
+| `analysis` | `{"question": "...", "answer": "expected text"}` | Case-insensitive check that the expected text appears in the response |
+
+**Choose your eval type before you choose your domain**, not after. The harness
+can only score what these three types can express. A domain whose correct answers
+cannot be reduced to a number, a set of keywords, or a required phrase will need
+the harness extended, which is a larger piece of work. Raise it early if that is
+where you are heading.
 
 ### Requirements
 
@@ -85,26 +98,36 @@ Using a frontier model to generate training examples is fine and often practical
 
 ### Data Splits
 
-- **Training set**: Your main JSONL file (minimum 500 examples)
-- **Benchmark set** (`eval/benchmark.jsonl`): Separate set of at least 50 examples, held out from training, used for evaluation. These should never appear in training data.
+- **Training set** (`training_data.jsonl`): Your main JSONL file (minimum 500 examples)
+- **Benchmark set** (`eval_dataset.jsonl`): Separate set of at least 50 examples, held out from training, used for evaluation. These should never appear in training data.
 
 ## Step 3: Train the Adapter
 
-Use the standard training script to ensure consistency across all adapters:
+Use the standard training script to ensure consistency across all adapters. It
+reads `adapters/<name>/training_data.jsonl`, trains the LoRA, merges it into the
+base model, and exports a Q4_K_M GGUF ready for Ollama.
+
+Training needs Unsloth, which is heavy and GPU-specific, so it lives in a
+separate environment from the main project:
 
 ```bash
-uv run python scripts/train_adapter.py \
+source .venv-train/bin/activate
+pip install unsloth unsloth_zoo
+
+python scripts/train_adapter.py \
   --adapter-name your-domain \
   --lora-r 16 \
   --epochs 3 \
   --lr 2e-4 \
-  --batch-size 4 \
   --max-seq-length 1024
 ```
 
+On Google Colab, use the notebooks in `notebooks/` rather than running this
+script directly.
+
 ### Training Hardware
 
-Training a 3B model adapter with LoRA is feasible on:
+Training a 4B model adapter with LoRA is feasible on:
 - A single consumer GPU (8GB+ VRAM) in 1-4 hours
 - Google Colab free tier (T4 GPU) in 2-6 hours
 - University lab machines
@@ -120,48 +143,51 @@ The defaults in `train_adapter.py` are good starting points. If you want to expe
 | LoRA rank | 16 | Higher = more capacity but larger adapter. 8-32 is reasonable range. |
 | Learning rate | 2e-4 | Standard for QLoRA. Reduce if loss is unstable. |
 | Epochs | 3 | Watch for overfitting. 2-5 is typical. |
-| Batch size | 4 | Increase if GPU memory allows. |
+| Batch size | 2 | Increase if GPU memory allows. Effective batch is this times `--grad-accum` (default 4). |
 | Max sequence length | 1024 | Increase for tasks with longer inputs/outputs. |
 
 ### Output Artifacts
 
-After training, your adapter directory should contain:
+The training script merges the LoRA weights into the base model and exports a
+quantized GGUF, which is what Ollama loads. After training, your adapter
+directory should contain:
 
 ```
 adapters/your-domain/
-├── adapter_config.json          # LoRA configuration
-├── adapter_model.safetensors    # Trained weights
-├── training/
-│   ├── dataset.jsonl            # Training data
-│   ├── train_config.yaml        # Exact config used
-│   └── TRAINING_LOG.md          # Human-readable training record
-└── eval/
-    ├── benchmark.jsonl           # 50+ held-out test cases
-    └── results.json              # Populated in Step 4
+├── gguf/
+│   └── unsloth.Q4_K_M.gguf      # Merged model (gitignored, see below)
+├── training_data.jsonl           # Training data, 500+ examples
+├── eval_dataset.jsonl            # Held-out benchmark, 50+ examples
+├── TRAINING_LOG.md               # Human-readable training record
+└── results.json                  # Populated in Step 4
 ```
+
+**GGUF files are not committed.** `.gitignore` excludes `*.gguf`, because the
+merged models are gigabytes each. Your pull request contains the datasets, the
+log, the results, and the registry entry. Arrange transfer of the GGUF itself
+with a maintainer.
 
 ## Step 4: Evaluate
 
-Run the standard evaluation harness to benchmark your adapter:
+Add your adapter to `adapters/registry.yaml` first, including its `eval_dataset`
+and `eval_type` fields, then run the standard harness:
 
 ```bash
-# Evaluate your adapter
-uv run python scripts/evaluate.py \
-  --adapter adapters/your-domain/ \
-  --benchmark adapters/your-domain/eval/benchmark.jsonl \
-  --output adapters/your-domain/eval/results.json
-
-# Evaluate the base model on the same benchmark (for comparison)
-uv run python scripts/evaluate.py \
-  --benchmark adapters/your-domain/eval/benchmark.jsonl \
-  --output adapters/your-domain/eval/base_results.json
-
-# Run out-of-domain check (pick another adapter's benchmark)
-uv run python scripts/evaluate.py \
-  --adapter adapters/your-domain/ \
-  --benchmark adapters/math-reasoning/eval/benchmark.jsonl \
-  --output adapters/your-domain/eval/ood_results.json
+uv run loco eval your-domain
 ```
+
+This runs **both** the base model and your adapter over
+`eval_dataset.jsonl` and reports the two scores side by side. You do not run the
+baseline separately, and you should not write your own harness. A score with no
+baseline to compare it against is not a result.
+
+### Out-of-Domain Check
+
+`loco eval` always uses the adapter's own evaluation dataset, so there is no
+one-line command for this yet. To check that your adapter has not degraded on
+other tasks, temporarily point your registry entry's `eval_dataset` at another
+adapter's dataset (for example `../math/eval_dataset.jsonl`), re-run
+`loco eval your-domain`, and record the numbers before reverting the change.
 
 ### Minimum Bar
 
@@ -173,14 +199,14 @@ There is no fixed percentage improvement threshold. A 10% improvement on a hard 
 
 ### Results Format
 
-The evaluation script produces a `results.json`:
+Record your results in `results.json`:
 
 ```json
 {
   "adapter": "your-domain",
-  "base_model": "Qwen/Qwen2.5-3B-Instruct",
+  "base_model": "Qwen/Qwen3-4B-Instruct",
   "quantization": "Q4_K_M",
-  "benchmark": "your-domain/eval/benchmark.jsonl",
+  "benchmark": "your-domain/eval_dataset.jsonl",
   "n_examples": 50,
   "metric": "exact_match",
   "adapter_score": 0.72,
@@ -204,13 +230,14 @@ Open a pull request that includes:
 
 ### PR Checklist
 
-- [ ] `adapter_config.json` and `adapter_model.safetensors` present
-- [ ] `training/dataset.jsonl` with 500+ examples
-- [ ] `training/TRAINING_LOG.md` fully documented
-- [ ] `eval/benchmark.jsonl` with 50+ held-out test cases
-- [ ] `eval/results.json` showing improvement over base model
+- [ ] `training_data.jsonl` with 500+ examples
+- [ ] `eval_dataset.jsonl` with 50+ held-out test cases
+- [ ] **No overlap between the two.** Nothing in `eval_dataset.jsonl` may appear in `training_data.jsonl`. Check this, do not assume it.
+- [ ] `TRAINING_LOG.md` fully documented
+- [ ] `results.json` showing both the base model score and the adapter score
 - [ ] Out-of-domain evaluation completed
-- [ ] `registry.yaml` updated with new adapter entry
+- [ ] `registry.yaml` updated with new adapter entry, matching what you submitted
+- [ ] Merged GGUF transfer arranged with a maintainer (the file itself is not committed)
 - [ ] No copyrighted material in training data
 - [ ] All data sources documented
 

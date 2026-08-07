@@ -1,15 +1,36 @@
 """Adapter manager: loads registry, creates Modelfiles, manages adapters in Ollama."""
 
+import os
 from pathlib import Path
 
 import yaml
 
 from locollm import ollama_client
 
-# Locate the adapters directory relative to the project root.
-# Walk up from this file: src/locollm/adapter_manager.py -> project root
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-ADAPTERS_DIR = _PROJECT_ROOT / "adapters"
+
+def _locate_adapters_dir():
+    """Find the adapters directory.
+
+    Checked in order:
+    1. $LOCOLLM_ADAPTERS_DIR, for installed copies and student workspaces
+    2. ./adapters relative to the working directory, if it holds a registry
+    3. The source checkout layout: src/locollm/adapter_manager.py -> project root
+
+    Without 1 and 2 the package only works from a source clone, since an
+    installed copy resolves step 3 to somewhere inside site-packages.
+    """
+    override = os.environ.get("LOCOLLM_ADAPTERS_DIR")
+    if override:
+        return Path(override).expanduser().resolve()
+
+    cwd_adapters = Path.cwd() / "adapters"
+    if (cwd_adapters / "registry.yaml").is_file():
+        return cwd_adapters.resolve()
+
+    return Path(__file__).resolve().parent.parent.parent / "adapters"
+
+
+ADAPTERS_DIR = _locate_adapters_dir()
 REGISTRY_PATH = ADAPTERS_DIR / "registry.yaml"
 
 # Prefix used for Ollama model names created from adapters
@@ -18,6 +39,12 @@ ADAPTER_MODEL_PREFIX = "locollm-"
 
 def load_registry():
     """Parse adapters/registry.yaml and return the full config dict."""
+    if not REGISTRY_PATH.is_file():
+        raise FileNotFoundError(
+            f"No adapter registry found at {REGISTRY_PATH}\n"
+            "Run loco from a directory containing adapters/registry.yaml, "
+            "or set LOCOLLM_ADAPTERS_DIR to point at your adapters directory."
+        )
     with open(REGISTRY_PATH) as f:
         return yaml.safe_load(f)
 
