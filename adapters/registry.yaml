@@ -5,6 +5,20 @@
 # over the base model before being added here.
 #
 # Base model for 2026-2027: Qwen/Qwen3-4B-Instruct (Q4_K_M)
+#
+# STATUS, 2026-08: no adapter has yet been built on the current base model.
+# The three entries below came from the TinyLlama proof of concept
+# (notebooks/train_tiny_poc.ipynb), which existed to prove the pipeline end to
+# end, not to produce shippable adapters. Their merged GGUFs were never
+# persisted to this repository, so `loco setup` will skip them and
+# `loco eval <name>` will fail until they are rebuilt.
+#
+# What IS real in each directory below is eval_dataset.jsonl. Those are usable
+# as out-of-domain comparison sets, though at 20 examples each they sit under
+# the 50 minimum required of a contributed adapter, so do not copy them as a
+# model of benchmark size.
+#
+# Read these entries as a schema reference, not as a record of trained models.
 
 base_model:
   name: "Qwen/Qwen3-4B-Instruct"
@@ -17,6 +31,7 @@ base_model:
 adapters:
   math:
     version: "0.2.0"
+    status: "not-built"        # TinyLlama proof of concept; no GGUF for the current base model
     type: "merged-gguf"
     gguf_path: "math/gguf/unsloth.Q4_K_M.gguf"  # relative to adapters/
     description: "Math reasoning adapter (LoRA merged, Q4_K_M)"
@@ -26,7 +41,8 @@ adapters:
     eval_type: "numeric"
     router_keywords: ["solve", "calculate", "equation", "math", "sum", "divide", "multiply", "how many", "how much", "total", "average"]
     training:
-      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      base_model: "unsloth/tinyllama-bnb-4bit"   # proof of concept, NOT the current base model
+      note: "Trained via notebooks/train_tiny_poc.ipynb. Hyperparameters below are the PoC run, not a validated recipe for Qwen3-4B."
       method: "qlora"
       dataset: "GSM8K (200 examples)"
       lora_r: 16
@@ -36,6 +52,7 @@ adapters:
 
   code:
     version: "0.1.0"
+    status: "not-built"        # TinyLlama proof of concept; no GGUF for the current base model
     type: "merged-gguf"
     gguf_path: "code/gguf/unsloth.Q4_K_M.gguf"
     description: "Python code generation adapter (LoRA merged, Q4_K_M)"
@@ -45,7 +62,8 @@ adapters:
     eval_type: "code"
     router_keywords: ["code", "python", "function", "program", "script", "class", "implement", "algorithm", "debug", "write a function"]
     training:
-      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      base_model: "unsloth/tinyllama-bnb-4bit"   # proof of concept, NOT the current base model
+      note: "Trained via notebooks/train_tiny_poc.ipynb. Hyperparameters below are the PoC run, not a validated recipe for Qwen3-4B."
       method: "qlora"
       dataset: "python_code_instructions_18k_alpaca (300 examples)"
       lora_r: 16
@@ -55,6 +73,7 @@ adapters:
 
   analysis:
     version: "0.1.0"
+    status: "not-built"        # TinyLlama proof of concept; no GGUF for the current base model
     type: "merged-gguf"
     gguf_path: "analysis/gguf/unsloth.Q4_K_M.gguf"
     description: "Reading comprehension / analysis adapter (LoRA merged, Q4_K_M)"
@@ -64,7 +83,8 @@ adapters:
     eval_type: "analysis"
     router_keywords: ["analyze", "analyse", "explain", "why", "describe", "passage", "reasoning", "evidence", "summarize", "summarise", "interpret", "compare"]
     training:
-      base_model: "unsloth/Qwen3-4B-unsloth-bnb-4bit"
+      base_model: "unsloth/tinyllama-bnb-4bit"   # proof of concept, NOT the current base model
+      note: "Trained via notebooks/train_tiny_poc.ipynb. Hyperparameters below are the PoC run, not a validated recipe for Qwen3-4B."
       method: "qlora"
       dataset: "allenai/sciq (300 examples)"
       lora_r: 16
