@@ -20,7 +20,7 @@ All four answers are useful. None of them are derivable from reading frontier-mo
 
 ## Methodology
 
-Each study follows the [LocoLab epistemic stance](https://locolabo.org/the-loco-thesis): honest baselines, surfaced uncertainty, status markers. A study includes:
+Each study follows the [LocoLabo epistemic stance](https://locolabo.org/the-loco-thesis): honest baselines, surfaced uncertainty, status markers. A study includes:
 
 1. **Claim under test** — exactly what the technique is alleged to do, with the citation it comes from.
 2. **Hypothesis on small models** — what we expect on Qwen3-4B specifically, and why.
@@ -46,7 +46,7 @@ Studies appear here once they have at least a draft methodology. They reach `mea
 
 ## What this is not
 
-- **Not a benchmark suite.** [LocoBench](https://locobench.org) characterises hardware tiers and engines. Scaffolding studies characterise prompt-level interventions on a fixed base.
+- **Not a benchmark suite.** [LocoBanco](https://locobanco.org) characterises hardware tiers and engines. Scaffolding studies characterise prompt-level interventions on a fixed base.
 - **Not a frontier-model replication.** Where a technique has been validated on GPT-4-class models, that is the *prior*; the question here is whether the effect transfers down.
 - **Not a critique of the original work.** A null result on Qwen3-4B does not invalidate a finding on a frontier model. It bounds the result's scope.
 

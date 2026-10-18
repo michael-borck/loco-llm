@@ -58,4 +58,4 @@ This boundary is what lets each side evolve independently. New orchestration pat
 - [ADR-0006: GGUF/Ollama inference standard](adr/0006-gguf-ollama-inference-standard.md)
 - [Small model strategies](small-model-strategies.md) — the single-turn scaffolding LocoAgente builds on
 - [Scaffolding studies](scaffolding-studies/index.md) — empirical tests of those strategies on Qwen3-4B
-- [LocoLab: Technique before scale](https://locolabo.org/the-loco-thesis#technique-before-scale) — how the projects compose at the lab level
+- [LocoLabo: Technique before scale](https://locolabo.org/the-loco-thesis#technique-before-scale) — how the projects compose at the lab level
