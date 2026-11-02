@@ -27,7 +27,7 @@ Use **Qwen3-4B-Instruct** in Q4_K_M quantization (~2.5GB) as the base model for 
 
 ## Consequences
 
-- Standardises the ecosystem — any adapter works on any LocoLLM installation
+- Standardises the ecosystem: any adapter works on any LocoLLM installation
 - Limits students to one model architecture (no experimentation with different bases)
 - Annual re-evaluation allows adopting better models as they emerge
 - Q4_K_M quantization balances quality and memory; students wanting higher quality can experiment with Q5 or Q6 on capable hardware but must submit Q4_K_M for the registry

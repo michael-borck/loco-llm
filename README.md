@@ -4,7 +4,7 @@
 [![collaborative](https://img.shields.io/badge/-collaborative-blue?style=flat-square)](https://github.com/topics/collaborative) [![consumer-hardware](https://img.shields.io/badge/-consumer--hardware-blue?style=flat-square)](https://github.com/topics/consumer-hardware) [![lora-adapters](https://img.shields.io/badge/-lora--adapters-blue?style=flat-square)](https://github.com/topics/lora-adapters) [![jupyter-notebook](https://img.shields.io/badge/-jupyter--notebook-blue?style=flat-square)](https://github.com/topics/jupyter-notebook) [![language-model](https://img.shields.io/badge/-language--model-blue?style=flat-square)](https://github.com/topics/language-model) [![python](https://img.shields.io/badge/-python-3776ab?style=flat-square)](https://github.com/topics/python) [![routing](https://img.shields.io/badge/-routing-blue?style=flat-square)](https://github.com/topics/routing) [![task-specific](https://img.shields.io/badge/-task--specific-blue?style=flat-square)](https://github.com/topics/task-specific)
 <!-- BADGES:END -->
 
-### Local Collaborative LLMs -- Frontier AI on a Student Budget
+### Local Collaborative LLMs: Frontier AI on a Student Budget
 
 > *"Crazy enough to work."*
 
@@ -12,7 +12,7 @@ LocoLLM is an open-source framework for building a routed collection of task-spe
 
 The project is designed to be built collaboratively, semester by semester, by university students. Each cohort contributes new specialist adapters, improved evaluation benchmarks, and better routing logic. The result is a growing ecosystem of local AI capability that anyone can install on a laptop.
 
-The goal is not to compete with frontier models. It is to understand how they work by building smaller versions of the same patterns. Students who build adapters, design evaluations, and reason about routing tradeoffs are learning the concepts that modern AI systems are built from: adapter training, specialisation, tool use, orchestration. Frameworks come and go. That understanding transfers.
+The goal is educational: understand how frontier models work by building smaller versions of the same patterns. Students who build adapters, design evaluations, and reason about routing tradeoffs are learning the concepts that modern AI systems are built from: adapter training, specialisation, tool use, orchestration. Frameworks come and go, but that understanding transfers.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/michael-borck/loco-llm/blob/main/notebooks/train_math_adapter.ipynb) **Train your first adapter in 20 minutes, no GPU required.**
 
@@ -168,7 +168,7 @@ adapters:
 
 ## Evaluation Standards
 
-Every adapter must demonstrate measurable improvement over the base model. No exceptions. An adapter that doesn't beat the base model on its target task doesn't ship.
+Every adapter must demonstrate measurable improvement over the base model. An adapter that doesn't beat the base model on its target task doesn't ship.
 
 ### Required for Every Adapter
 
@@ -197,7 +197,7 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 
 **Accumulative.** The project grows each semester. New adapters extend the ecosystem. Better adapters replace older ones. The evaluation harness is the source of truth.
 
-**Simple over clever.** Start with keyword routing before building an ML classifier. Use Ollama before writing custom inference code. Complexity is earned, not assumed.
+**Simple over clever.** Start with keyword routing before building an ML classifier. Use Ollama before writing custom inference code. Add complexity only when it earns its place.
 
 **Reproducible.** Every adapter includes its training data, config, and logs. Anyone should be able to retrain it and get comparable results.
 
@@ -238,21 +238,21 @@ Every adapter must demonstrate measurable improvement over the base model. No ex
 
 ## Research Context
 
-LocoLLM builds on several converging lines of research, and critically, these techniques are stackable rather than competing:
+LocoLLM builds on several lines of research, and these techniques stack:
 
-**Task-specific adapters outperform general models.** Predibase's LoRA Land showed LoRA-adapted Mistral-7B beating GPT-4 on specific tasks. distil labs' 2025 benchmark of 12 small models confirmed this at the 3-4B scale: adapter-trained Qwen3-4B matched or exceeded a 120B+ teacher model on 7 of 8 tasks. Crucially, [smaller models show the largest gains from adapter training](https://www.distillabs.ai/blog/we-benchmarked-12-small-language-models-across-8-tasks-to-find-the-best-base-model-for-fine-tuning), meaning LocoLLM's approach exploits a strength unique to the small model class, not just compensating for a weakness.
+Task-specific adapters outperform general models. Predibase's LoRA Land showed LoRA-adapted Mistral-7B beating GPT-4 on specific tasks. distil labs' 2025 benchmark of 12 small models confirmed this at the 3-4B scale: adapter-trained Qwen3-4B matched or exceeded a 120B+ teacher model on 7 of 8 tasks. The same benchmark found that [smaller models show the largest gains from adapter training](https://www.distillabs.ai/blog/we-benchmarked-12-small-language-models-across-8-tasks-to-find-the-best-base-model-for-fine-tuning), so LocoLLM's approach exploits a strength unique to the small model class.
 
-**Routing reduces cost without sacrificing quality.** RouteLLM (Ong et al., ICLR 2025) demonstrated 2x+ cost reduction by routing queries to appropriately-sized models. Routers generalize well even across model pairs they weren't trained on.
+Routing reduces cost without sacrificing quality. RouteLLM (Ong et al., ICLR 2025) demonstrated 2x+ cost reduction by routing queries to appropriately-sized models. Routers generalize well even across model pairs they weren't trained on.
 
-**Re-reading improves small model reasoning for free.** RE2 (Xu et al., EMNLP 2024) showed that simply repeating the question in the prompt enables pseudo-bidirectional attention in decoder-only models, improving reasoning accuracy. Reading twice is optimal. On a local model with no per-token cost, this is effectively free. This is LocoLLM's second layer, applied by default to every query.
+Re-reading improves small model reasoning for free. RE2 (Xu et al., EMNLP 2024) showed that simply repeating the question in the prompt enables pseudo-bidirectional attention in decoder-only models, improving reasoning accuracy. Reading twice is optimal. On a local model with no per-token cost, this is effectively free. This is LocoLLM's second layer, applied by default to every query.
 
-**Ensembling small models scales performance.** "More Agents Is All You Need" (Li et al., TMLR 2024) showed majority voting across small model instances can match larger models. Llama2-13B with voting outperformed Llama2-70B on a single pass. On a local model, the only cost is time, not money. This is LocoLLM's third layer: opt-in self-consistency voting.
+Ensembling small models scales performance. "More Agents Is All You Need" (Li et al., TMLR 2024) showed majority voting across small model instances can match larger models. Llama2-13B with voting outperformed Llama2-70B on a single pass. On a local model, the only cost is time, not money. This is LocoLLM's third layer: opt-in self-consistency voting.
 
-**Quantization preserves capability, and adapter training recovers the rest.** 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops. An important caveat: most published benchmarks evaluate full-precision models, so systematic data on how 3-4B models perform specifically at Q4_K_M quantization is thin. Studies on larger models show 96-99% recovery (Red Hat), but an IJCAI 2025 study warned that smaller LLMs can see significant accuracy drops at 4-bit. LocoLLM's Phase 1 benchmarks will help fill this gap. Critically, QLoRA (Dettmers et al., NeurIPS 2023) demonstrated that training LoRA adapters through a frozen 4-bit base model fully recovers 16-bit performance, and newer methods like Q-BLoRA (TACL 2025) further close the gap, sometimes exceeding 16-bit baselines. Multiple domain-specific studies confirm that adapter-trained quantized small models can match or outperform larger general-purpose models in cybersecurity, medicine, mathematics, and language tasks. See [base model selection](docs/base-model-selection.md#research-viability-can-adapter-training-make-quantized-small-models-good-specialists) for the full evidence review. Looking further ahead, [BitNet b1.58](https://github.com/microsoft/BitNet) demonstrates that models trained natively at 1.58-bit precision (ternary weights: -1, 0, +1) can match full-precision peers while using 6x less RAM and 2-3x faster inference on CPU. A 2B BitNet model fits in 0.4GB. The tooling is still maturing, but the trajectory points toward sub-1GB models running on phones and Raspberry Pis.
+Quantization preserves capability, and adapter training recovers the rest. 4-bit methods (GPTQ, AWQ, GGUF) retain most model capability at a fraction of the memory, making 3-4B parameter models practical on 8GB laptops. An important caveat: most published benchmarks evaluate full-precision models, so systematic data on how 3-4B models perform specifically at Q4_K_M quantization is thin. Studies on larger models show 96-99% recovery (Red Hat), but an IJCAI 2025 study warned that smaller LLMs can see significant accuracy drops at 4-bit. LocoLLM's Phase 1 benchmarks will help fill this gap. QLoRA (Dettmers et al., NeurIPS 2023) demonstrated that training LoRA adapters through a frozen 4-bit base model fully recovers 16-bit performance, and newer methods like Q-BLoRA (TACL 2025) further close the gap, sometimes exceeding 16-bit baselines. Multiple domain-specific studies confirm that adapter-trained quantized small models can match or outperform larger general-purpose models in cybersecurity, medicine, mathematics, and language tasks. See [base model selection](docs/base-model-selection.md#research-viability-can-adapter-training-make-quantized-small-models-good-specialists) for the full evidence review. Looking further ahead, [BitNet b1.58](https://github.com/microsoft/BitNet) demonstrates that models trained natively at 1.58-bit precision (ternary weights: -1, 0, +1) can match full-precision peers while using 6x less RAM and 2-3x faster inference on CPU. A 2B BitNet model fits in 0.4GB. The tooling is still maturing, but the trajectory points toward sub-1GB models running on phones and Raspberry Pis.
 
 ### The Stackable Advantage
 
-The key insight is that local inference makes all of these techniques cheaper than they would be through an API:
+Local inference makes all of these techniques cheaper than they would be through an API:
 
 | Enhancement | API Cost | Local Cost |
 |---|---|---|
@@ -260,7 +260,7 @@ The key insight is that local inference makes all of these techniques cheaper th
 | RE2 prompting | ~2x prompt tokens billed | Near zero |
 | 5-sample voting | 5x generation cost | ~30 seconds of wall time |
 
-A routed, prompt-enhanced, vote-verified 4-bit 4B model may genuinely approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free. Testing that hypothesis is the project's central research question.
+A routed, prompt-enhanced, vote-verified 4-bit 4B model may approach frontier quality on well-defined tasks, running entirely on consumer hardware, for free.
 
 ## FAQ
 

@@ -2,21 +2,19 @@
 title: "Frequently Asked Questions"
 ---
 
----
-
 ## The Basics
 
 ### Why not just give students API credits?
 
 Because API credits run out, subscriptions require credit cards, and rate limits throttle usage during assignment deadlines. When the provider changes pricing, deprecates a model, or goes down, your curriculum breaks.
 
-LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity. That said, free tiers and cheap APIs are strong options too — see the [AI Landscape](https://locolabo.org) for an honest comparison.
+LocoLLM runs on hardware students already own. No subscription, no credit card, no dependency on any external service. The cost of inference is electricity. That said, free tiers and cheap APIs are strong options too; see the [AI Landscape](https://locolabo.org) for an honest comparison.
 
 ### How is this different from just running Ollama?
 
 Ollama gives you one model. LocoLLM gives you a *system*: a router that classifies your query, selects the best specialist adapter, applies inference enhancements (RE2 prompting, self-consistency voting), and returns a result. You ask a question and the system figures out which specialist should answer it.
 
-Ollama is the engine. LocoLLM is the vehicle.
+Ollama is the engine; LocoLLM is the vehicle.
 
 ### Can I use a different base model instead of Qwen3-4B?
 
@@ -24,22 +22,18 @@ Not within the current ecosystem. All adapters target the same base model for a 
 
 The base model is re-evaluated annually. If a better option emerges, a new ADR supersedes the current one and adapters are retrained.
 
----
-
 ## Architecture
 
 ### How is LocoLLM different from Mixture of Experts (MoE) or RouteLLM?
 
-This is the most important distinction.
-
 Every existing routing system treats the small model as the **floor** and a large model as the **ceiling**. RouteLLM routes easy queries to Llama-8B and hard queries to GPT-4. The optimisation is about minimising how often you need the expensive option. The big model is always there as the safety net.
 
-**LocoLLM has no safety net.** The 4-bit quantized small model is all you have. There is no "escalate to the expensive model." That constraint changes the entire research question:
+LocoLLM has no safety net: the 4-bit quantized small model is all you have, with no "escalate to the expensive model." That constraint changes the entire research question:
 
 - RouteLLM asks: *"How often can we avoid using the big model?"*
 - LocoLLM asks: *"Can specialisation depth compensate for the total absence of a big model?"*
 
-That is a fundamentally different problem. The closest published work is Predibase's LoRA Land showing task-specific LoRAs on Mistral-7B beating GPT-4, but that is cherry-picked tasks on a 7B model with full cloud resources. LocoLLM asks whether you can do it at 3-4B, quantized to 4-bit, on a laptop, across a broad enough set of domains to be genuinely useful.
+That is a different problem. The closest published work is Predibase's LoRA Land showing task-specific LoRAs on Mistral-7B beating GPT-4, but that is cherry-picked tasks on a 7B model with full cloud resources. LocoLLM asks whether you can do it at 3-4B, quantized to 4-bit, on a laptop, across a broad enough set of domains to be genuinely useful.
 
 ### Why call it an "LLM" if the models are small?
 
@@ -51,11 +45,9 @@ This is the core claim: *large is a property of system design, not model size.* 
 
 ### What happens when the model gets it wrong?
 
-The same thing that happens with any AI tool: you notice, because you understood the problem before you asked. This is the [AI Last](why-locollm.md#ai-last-smaller-problems-suit-smaller-models) principle. Students decompose their task, attempt it themselves, and use LocoLLM to augment — not replace — their reasoning.
+The same thing that happens with any AI tool: you notice, because you understood the problem before you asked. This is the [AI Last](why-locollm.md#ai-last-smaller-problems-suit-smaller-models) principle. Students decompose their task, attempt it themselves, and use LocoLLM to augment, not replace, their reasoning.
 
 LocoLLM is explicitly scoped to assist within defined task domains, not to be an oracle. A specialist adapter that is 72% accurate on GSM8K math problems is useful when you are checking your own work, not when you are blindly copying answers.
-
----
 
 ## Research Design
 
@@ -68,7 +60,7 @@ The tool is the instrument; the research question is whether a *routed swarm of 
 3. **Consumer hardware**: 8GB RAM, no GPU required
 4. **Reproducible by anyone**: Every result can be verified on a laptop you can buy for under $200 AUD
 
-The answer — whether positive or negative — is publishable.
+The answer, whether positive or negative, is publishable.
 
 ### Why accumulate adapters over semesters instead of building everything at once?
 
@@ -80,13 +72,13 @@ This is a deliberate research strategy, not a staffing convenience. Each semeste
 - More benchmark data (strengthening evaluation rigour)
 - Router improvements (better classification as domains multiply)
 
-The accumulation *is* the experiment. System-level performance over time — measured against frontier models — is the primary result.
+The accumulation *is* the experiment. System-level performance over time, measured against frontier models, is the primary result.
 
 ### Why are students both building and using the system?
 
 Most MoE and routing research is built by ML engineers for deployment to end users. LocoLLM's student cohorts are simultaneously the development team and the target audience.
 
-This is not just a nice story for a grant application. It means:
+This has practical consequences:
 - **Evaluation criteria are grounded in real task needs**, not synthetic benchmarks. When a group trains an adapter for accounting problem formats, it is because they actually need that capability.
 - **The feedback loop between builder and user is zero-length.** The person who notices the adapter fails on a certain problem type is the same person who can retrain it.
 - **The learning is in the building.** Understanding how AI works by constructing the system yourself develops skills that using a hosted service does not.
@@ -101,19 +93,15 @@ That registry is a research artifact in its own right. Other researchers could u
 - Evaluate whether a new base model improves across all domains
 - Study how adapter quality evolves over cohorts
 
-The project is not just building a system. It is building a benchmark ecosystem.
-
----
+The project is building a benchmark ecosystem.
 
 ## Privacy and Compliance
 
 ### Is the data really private?
 
-Yes, structurally. Not by policy, by architecture. Nothing leaves the device because nothing *can* leave the device. There is no cloud fallback, no telemetry, no phone-home for hard queries. See [Privacy Is a Structural Choice](why-locollm.md#privacy-is-a-structural-choice) for the full argument.
+Yes, structurally. Nothing leaves the device because nothing *can* leave the device. There is no cloud fallback, no telemetry, no phone-home for hard queries. See [Privacy Is a Structural Choice](why-locollm.md#privacy-is-a-structural-choice) for the full argument.
 
-For Australian university contexts where students work with case studies, client data in business units, or health data in related programs, this is not a nice-to-have. It is a compliance argument that gets stronger as data sovereignty regulation tightens.
-
----
+For Australian university contexts where students work with case studies, client data in business units, or health data in related programs, this is a compliance argument that gets stronger as data sovereignty regulation tightens.
 
 ## Reproducibility
 
@@ -121,6 +109,6 @@ For Australian university contexts where students work with case studies, client
 
 Yes. The entire training and inference pipeline runs on hardware you can buy on eBay for under $200 AUD. If we publish a paper claiming "routed 4-bit specialists on Qwen3-4B achieve X% of GPT-4 performance on these tasks," any reviewer can verify it on their own machine.
 
-Academic ML has a massive reproducibility problem. Papers benchmark on A100 clusters that reviewers cannot access. LocoLLM's constraint — consumer hardware only — is a limitation that doubles as a methodological strength.
+Academic ML has a massive reproducibility problem. Papers benchmark on A100 clusters that reviewers cannot access. LocoLLM's constraint, consumer hardware only, is a limitation that doubles as a methodological strength.
 
-The entire training lab — five secondhand machines with 14 GPUs spanning 2 GB to 24 GB VRAM — cost well under $2,000 AUD. See [Meet the Lab](https://locolabo.org/meet-the-lab/) for the full hardware specs.
+The entire training lab, five secondhand machines with 14 GPUs spanning 2 GB to 24 GB VRAM, cost well under $2,000 AUD. See [Meet the Lab](https://locolabo.org/meet-the-lab/) for the full hardware specs.

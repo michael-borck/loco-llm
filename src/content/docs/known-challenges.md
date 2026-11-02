@@ -2,25 +2,23 @@
 title: "Known Challenges"
 ---
 
-This document names the risks, tensions, and open questions that could undermine LocoLLM's thesis. They are recorded here not because they have been resolved, but because pretending they do not exist would be worse than confronting them honestly.
+This document names the risks, tensions, and open questions that could undermine LocoLLM's thesis. They are recorded here because pretending they do not exist would be worse than confronting them honestly.
 
-A project that cannot articulate its own weaknesses is not rigorous. It is promotional.
-
----
+A project that cannot articulate its own weaknesses is promotional.
 
 ## The Moving Target Problem
 
-Every generation of small models gets better out of the box. The adapter-trained Qwen3-4B that beats the base model on GSM8K today may be outperformed by Qwen4-4B's base model in twelve months. This is not a hypothetical risk. It is the predictable consequence of the scaling and distillation trends that make LocoLLM possible in the first place.
+Every generation of small models gets better out of the box. The adapter-trained Qwen3-4B that beats the base model on GSM8K today may be outperformed by Qwen4-4B's base model in twelve months. That is the predictable consequence of the scaling and distillation trends that make LocoLLM possible in the first place.
 
 The implications are serious:
 
-- **Adapters have a shelf life.** A LoRA trained against Qwen3-4B cannot be applied to Qwen4-4B. When the base model changes, every adapter must be retrained. The semester-by-semester accumulation story is not "we accumulate adapters." It is "we accumulate datasets, methodology, and evaluation infrastructure that survive base model transitions."
+- **Adapters have a shelf life.** A LoRA trained against Qwen3-4B cannot be applied to Qwen4-4B. When the base model changes, every adapter must be retrained. What accumulates across semesters is datasets, methodology, and evaluation infrastructure that survive base model transitions, not adapters.
 - **The goalposts move.** A result showing "our adapter-trained 4B model achieves 85% of frontier performance on task X" may be unimpressive by the time it is published, because the next base model achieves 90% without adapter training.
-- **The research question shifts.** The interesting question is not "can we make this specific model better?" It is: **how good can 4-bit models in the 1-4B range actually get, and what is the ceiling when you combine adapter training, prompting techniques, and routing?** That question survives model generations.
+- **The research question shifts.** The interesting question is how good 4-bit models in the 1-4B range can actually get, and what the ceiling is when you combine adapter training, prompting techniques, and routing. That question survives model generations.
 
 ### Why This Is Not Fatal
 
-The moving target cuts both ways. If base models improve, then the *adapter-trained* versions of those base models also improve. The gap between "base 4B" and "adapter-trained 4B" may narrow, but the absolute capability of the adapter-trained system rises with each generation. The methodology — identify weakness, curate data, train adapters, evaluate, route — remains valid regardless of which specific model sits underneath.
+The moving target cuts both ways. If base models improve, then the *adapter-trained* versions of those base models also improve. The gap between "base 4B" and "adapter-trained 4B" may narrow, but the absolute capability of the adapter-trained system rises with each generation. The methodology (identify weakness, curate data, train adapters, evaluate, route) remains valid regardless of which specific model sits underneath.
 
 The durable contributions are:
 
@@ -33,44 +31,40 @@ If the project is framed around methodology and infrastructure rather than any s
 
 ### The F1 and the Sedan
 
-Frontier models are Formula 1 cars. They push the absolute limits of what is possible. They cost millions. Nobody drives one to work.
+Frontier models are Formula 1 cars: they push the absolute limits of what is possible, cost millions, and nobody drives one to work.
 
 Small models are sedans. They are built from technology that trickled down from the frontier: better architectures, improved training recipes, distillation techniques, more efficient attention mechanisms. Each year, the sedan gets better because the F1 team solved a problem that eventually made it into production vehicles.
 
-LocoLLM is not trying to build an F1 car. It is trying to build the best possible sedan from this year's parts, and to measure how close the sedan gets to the track car on specific stretches of road. The sedan will never win the Grand Prix. But it does not need to. It needs to get you to work reliably, safely, and cheaply.
+LocoLLM is trying to build the best possible sedan from this year's parts, and to measure how close the sedan gets to the track car on specific stretches of road. The sedan will never win the Grand Prix, but it does not need to; it needs to get you to work reliably, safely, and cheaply.
 
-The moving target means next year's sedan will be better. That is not a threat to the project. It is the trend the project depends on.
-
----
+The moving target means next year's sedan will be better. That is the trend the project depends on.
 
 ## The Good Enough Threshold
 
-A 4-bit 4B model will sometimes produce confident, fluent, wrong output. In an educational context, this is not just an inconvenience. A student who trusts a wrong answer because it sounds authoritative has been actively harmed by the tool.
-
-This is a real risk and it deserves honest treatment.
+A 4-bit 4B model will sometimes produce confident, fluent, wrong output. In an educational context, a student who trusts a wrong answer because it sounds authoritative has been actively harmed by the tool.
 
 ### But This Is an AI Literacy Problem, Not a Model Problem
 
-The danger of confidently wrong output exists at every scale. Frontier models hallucinate. Published papers contain errors. Textbooks go out of date. Lecturers misspeak. The question is not "does this source ever produce wrong output?" The question is: **does the user have the skills to notice?**
+The danger of confidently wrong output exists at every scale. Frontier models hallucinate. Published papers contain errors. Textbooks go out of date. Lecturers misspeak. Every source produces wrong output sometimes. The question is whether the user has the skills to notice.
 
 If a student reads an article, hears a claim, or receives AI output, it should pass their BS meter. They should be able to:
 
-- Verify key claims against a second source
+- Verify claims against a second source
 - Recognise when an answer feels too clean for a genuinely hard problem
 - Distinguish between "I don't know enough to evaluate this" and "this checks out"
-- Understand that no single source — AI or otherwise — is the final word
+- Understand that no single source, AI or otherwise, is the final word
 
-This is not a new skill that AI demands. It is the same critical thinking that education has always been about. AI just makes the need more urgent because the output is fluent enough to bypass the usual signals of unreliability (poor grammar, obvious hedging, lack of citations).
+This is the same critical thinking that education has always been about. AI just makes the need more urgent because the output is fluent enough to bypass the usual signals of unreliability (poor grammar, obvious hedging, lack of citations).
 
 ### The Dependency Trap
 
-The deeper concern is not model accuracy. It is the mindset that AI is *the answer* rather than *part of the journey*.
+The concern is the mindset that treats AI as *the answer* when it should be *part of the journey*.
 
-A student who treats any AI output — from GPT-4 or from an adapter-trained 4B model — as authoritative has a dependency problem, not a model quality problem. The difference between "I need the latest frontier model" and "I need any model at all" is often less about capability and more about the belief that AI should be doing the thinking.
+A student who treats any AI output, from GPT-4 or from an adapter-trained 4B model, as authoritative has a dependency problem, not a model quality problem. The difference between "I need the latest frontier model" and "I need any model at all" is often less about capability and more about the belief that AI should be doing the thinking.
 
-This connects directly to the [Conversation, Not Delegation](why-locollm.md#conversation-not-delegation) philosophy. The purpose of AI in learning is to *amplify* thinking, not replace it. A student who uses a small model to brainstorm, draft, and iterate — and then applies their own judgement to the result — is developing capability. A student who pastes a question into a frontier model and submits the output is developing dependency, regardless of how good the model is.
+This connects directly to the [Conversation, Not Delegation](why-locollm.md#conversation-not-delegation) philosophy. The purpose of AI in learning is to *amplify* thinking, not replace it. A student who uses a small model to brainstorm, draft, and iterate, and then applies their own judgement to the result, is developing capability. A student who pastes a question into a frontier model and submits the output is developing dependency, regardless of how good the model is.
 
-The "must have the latest model" impulse is worth examining. How much of it is about genuine capability gaps, and how much is about wanting the AI to do more of the work? If the task is "think with me about this problem," a 4B model is sufficient. If the task is "produce a polished final answer I can submit without reading," then yes, you need a better model — but that is the wrong task.
+The "must have the latest model" impulse is worth examining. How much of it is about genuine capability gaps, and how much is about wanting the AI to do more of the work? If the task is "think with me about this problem," a 4B model is sufficient. If the task is "produce a polished final answer I can submit without reading," then yes, you need a better model, but that is the wrong task.
 
 ### Human-in-the-Loop Is Not Optional
 
@@ -80,23 +74,21 @@ None of this excuses poor model output. LocoLLM has a responsibility to:
 - **Set expectations clearly.** Users should know they are working with a 4-bit quantized small model, not a frontier system. The interface should never imply otherwise.
 - **Evaluate honestly.** The benchmarking framework exists precisely to measure where the model fails, not just where it succeeds. Adapters that score 60% on hard problems should say so.
 
-But the broader point stands: the "good enough" threshold is as much about the user as the model. A critical user with a mediocre model will outperform an uncritical user with a frontier model. Investing in AI literacy — teaching students *how* to work with AI, not just *which* AI to use — has higher returns than chasing model quality.
+But the broader point stands: the "good enough" threshold is as much about the user as the model. A critical user with a mediocre model will outperform an uncritical user with a frontier model. Investing in AI literacy (teaching students *how* to work with AI, not just *which* AI to use) has higher returns than chasing model quality.
 
 If the model gets the easy questions right and struggles with the hard ones, and the student knows this, that is a useful tool. If the student does not know this, no model is safe.
 
----
-
 ## The Free Tier Reality
 
-LocoLLM does not exist in a vacuum. Students have options.
+Students have options.
 
 Google's free tier of Gemini is, as of early 2026, remarkably capable when managed well. OpenAI offers free ChatGPT access. Anthropic's Claude has a free tier. OpenRouter frequently offers free models. Services like GitHub Copilot have student programmes. The "students have zero AI access" framing overstates the problem.
 
 ### What Is Honest
 
 - **Free tiers exist and are often good.** A student using free Gemini for brainstorming and drafting is well-served. LocoLLM should not pretend otherwise.
-- **Cheap API models are competitive.** Haiku, GPT-4o-mini, Gemini Flash — these cost fractions of a cent per query and outperform any 4B model on most tasks today. For students with modest budgets, they are strong options.
-- **LocoLLM cannot compete on raw quality** with free-tier frontier models for general tasks. Not now, and possibly not ever.
+- **Cheap API models are competitive.** Haiku, GPT-4o-mini, Gemini Flash cost fractions of a cent per query and outperform any 4B model on most tasks today. For students with modest budgets, they are strong options.
+- **LocoLLM cannot compete on raw quality** with free-tier frontier models for general tasks, now or possibly ever.
 
 ### What Is Also True
 
@@ -107,13 +99,11 @@ Google's free tier of Gemini is, as of early 2026, remarkably capable when manag
 
 ### The Honest Recommendation
 
-LocoLLM's position should be: **use the best tools available to you, including free tiers.** We are not competing with Google's free Gemini offering. We are building something that works when the free tier runs out, when the internet is unreliable, when the provider changes terms, or when the task requires unlimited iteration without cost anxiety.
+LocoLLM's position should be: **use the best tools available to you, including free tiers.** We are not competing with Google's free Gemini offering, but building something that works when the free tier runs out, when the internet is unreliable, when the provider changes terms, or when the task requires unlimited iteration without cost anxiety.
 
-If the free tiers get better, the old models from providers become cheap enough, and local alternatives become unnecessary — that is a good outcome for students. LocoLLM should welcome that future, not fear it.
+If the free tiers get better, the old models from providers become cheap enough, and local alternatives become unnecessary; that is a good outcome for students. LocoLLM should welcome that future, not fear it.
 
 That said, local capability and cloud capability are not mutually exclusive. LocoLLM's bet is that there is research and teaching value in understanding how to build and run AI systems locally, independent of whether cloud alternatives are available. If the research shows the architecture adds meaningful value, that is worth knowing. If it does not, that is equally useful.
-
----
 
 ## The AI Landscape: We Do Not Stand Alone
 
@@ -121,15 +111,13 @@ LocoLLM is part of a broader ecosystem of local AI tools, and the documentation 
 
 The short version: a student running Ollama with a good system prompt already gets most of the way to what LocoLLM provides. The question is whether the adapter routing system, evaluation framework, and specialist adapter training add enough value to justify the additional complexity. That is an empirical question, and the answer may turn out to be "not much for general use, but interesting as research."
 
----
-
 ## The Router Question
 
 A student running Qwen3-4B through Ollama with a good system prompt gets roughly 80% of the way to useful AI assistance. LocoLLM's adapter and routing system adds complexity on top of that. The honest question is: **is the marginal improvement worth the additional complexity?**
 
-For *practical use* — brainstorming, drafting, iterating ideas — the answer might be no. A single well-prompted base model handles these tasks adequately. Students do not need the latest and greatest model for this work, and they do not necessarily need specialist routing either. This is more about AI literacy than about model architecture.
+For *practical use* (brainstorming, drafting, iterating ideas), the answer might be no. A single well-prompted base model handles these tasks adequately. Students do not need the latest and greatest model for this work, and they do not necessarily need specialist routing either. This is more about AI literacy than about model architecture.
 
-For *research* — the answer is genuinely unknown, and that is what makes it interesting.
+For *research*, the answer is genuinely unknown, and that is what makes it interesting.
 
 - Can classifier-based routing to specialist adapters outperform a single generalist on aggregate?
 - Does the routing overhead (classification latency, adapter swap time) eat into the quality gains?
@@ -142,21 +130,17 @@ It is worth being explicit about this: **the router is the research, not necessa
 
 The project should be designed so that both results are valuable, not structured so that only a positive result justifies the work.
 
----
-
 ## The 50K Question
 
 If someone handed the project $50,000 in cloud GPU credits tomorrow, would we still do this?
 
-The honest answer is: probably yes, but differently. $50K sounds like a lot until you price A100 hours for training. The large labs spend millions. $50K would let us do the same work with bigger models (7B, 13B) and more thorough hyperparameter sweeps, but it would not fundamentally change the research question. It would just move the constraint boundary.
+The honest answer is: probably yes, but differently. $50K sounds like a lot until you price A100 hours for training. The large labs spend millions. $50K would let us do the same work with bigger models (7B, 13B) and more thorough hyperparameter sweeps, but it would not change the research question. It would just move the constraint boundary.
 
-And that is revealing. The project is not defined by its constraints the way a hobby project is defined by whatever parts are lying around. The constraints are *part of the research design*. Studying what works at the bottom of the capability curve is a different and complementary question to studying what works at the top. TinyML is a legitimate field not because researchers cannot afford bigger chips, but because embedded devices exist and need ML too. LocoLLM occupies an analogous position: consumer hardware exists, students have it, and understanding what AI capability it can deliver is a question worth answering regardless of budget.
+And that is revealing. The project is not defined by its constraints the way a hobby project is defined by whatever parts are lying around. The constraints are *part of the research design*. Studying what works at the bottom of the capability curve is a different and complementary question to studying what works at the top. TinyML is a legitimate field: embedded devices exist and need ML too. LocoLLM occupies an analogous position: consumer hardware exists, students have it, and understanding what AI capability it can deliver is a question worth answering regardless of budget.
 
-That said, the project should be honest about the interplay between conviction and circumstance. The constraints are real, the hardware is secondhand, and the budget is near zero. That is not a weakness to hide. It is a methodological choice that happens to align with financial reality. Both things are true.
+That said, the project should be honest about how conviction and circumstance interact. The constraints are real, the hardware is secondhand, and the budget is near zero. That is a methodological choice that happens to match financial reality.
 
 There is also a practical point about hardware reuse: secondhand enterprise hardware is capable for the price. A Tesla P100 that cost $5,000 new can be had for under $100 and still trains LoRA adapters effectively. The total cost of ownership calculation often favours patient secondhand sourcing over buying new.
-
----
 
 ## Scope and Identity
 
@@ -173,11 +157,9 @@ These are all legitimate, but they serve different audiences and should not be c
 
 **The secondary identity is a research project.** The benchmarking data, the routing experiments, and the methodology are genuine research contributions. If they lead to publications, that is a welcome outcome, not the driving purpose.
 
-**Everything else is a byproduct.** The CLI tool, the local-first architecture, the privacy properties — these are real and they matter, but they are consequences of the primary and secondary goals, not goals in their own right.
+**Everything else is a byproduct.** The CLI tool, the local-first architecture, and the privacy properties are real and they matter, but they are consequences of the primary and secondary goals, not goals in their own right.
 
 Keeping this hierarchy clear prevents scope creep and ensures that each output is evaluated against the right success criteria. A teaching project succeeds when students learn. A research project succeeds when it generates replicable findings. A product succeeds when users prefer it to alternatives. These are different standards, and conflating them leads to a project that is mediocre at all three.
-
----
 
 ## Summary
 
@@ -188,6 +170,6 @@ Keeping this hierarchy clear prevents scope creep and ensures that each output i
 | Free tier competition | Current and strong | Acknowledge openly; position as complement, not replacement |
 | Router value unclear | Unknown (that is the point) | Design research so negative results are also publishable |
 | Scope creep | Risk | Teaching first, research second, everything else is byproduct |
-| Constraint-driven framing | Honest tension | Own it — constraints are real AND part of the research design |
+| Constraint-driven framing | Honest tension | Own it: constraints are real AND part of the research design |
 
-These challenges do not invalidate the project. They define its boundaries. A project that cannot name its risks is not ambitious. It is careless.
+These challenges do not invalidate the project; they define its boundaries. A project that cannot name its risks is careless.

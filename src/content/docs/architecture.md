@@ -2,7 +2,7 @@
 title: "LocoLLM Architecture"
 ---
 
-This document describes how LocoLLM's components fit together and the reasoning behind key technical decisions.
+This document describes how LocoLLM's components fit together and the reasoning behind the main technical decisions.
 
 ## System Overview
 
@@ -14,7 +14,7 @@ LocoLLM has five core components:
 4. **Inference Enhancements**: Stackable techniques (RE2 prompting, self-consistency voting) that boost output quality at no financial cost
 5. **CLI / Runtime**: The user-facing interface that ties everything together
 
-The key insight is that LoRA adapters are tiny (typically 20-30MB) compared to the base model (2-3GB in 4-bit). Swapping an adapter takes milliseconds. This means LocoLLM can behave like a multi-model system while only ever keeping one model in memory.
+LoRA adapters are tiny (typically 20-30MB) compared to the base model (2-3GB in 4-bit). Swapping an adapter takes milliseconds. This means LocoLLM can behave like a multi-model system while only ever keeping one model in memory.
 
 ## Base Model Selection
 
@@ -122,7 +122,7 @@ This is deliberately unsophisticated. It works well enough for a small adapter l
 Once there are enough adapters that keyword overlap becomes a problem (typically 6+ adapters), the router upgrades to a lightweight text classifier:
 
 - A small model (e.g., a fine-tuned sentence transformer or even a logistic regression on TF-IDF features) trained on example queries for each domain
-- Training data comes from the accumulated benchmark files: each adapter's benchmark examples serve as labeled training data for the router
+- Training data comes from the accumulated benchmark files: each adapter's benchmark examples are labeled training data for the router
 - The classifier outputs a probability distribution over adapters plus a "none" class for queries best handled by the base model
 
 This becomes a project in its own right, suitable for a student team in Semester 2 or 3.
@@ -197,7 +197,7 @@ The query is repeated at the end of the prompt. This is the RE2 technique (Xu et
 
 ## Inference Enhancements
 
-One of LocoLLM's key advantages over API-based access is that local inference has no marginal cost. Every token is free. This makes techniques that trade compute time for quality practically viable in ways they aren't when you're paying per token.
+Local inference has no marginal cost, which gives LocoLLM an advantage over API-based access. Every token is free. This makes techniques that trade compute time for quality practically viable in ways they aren't when you're paying per token.
 
 LocoLLM supports a stack of inference enhancements that can be combined:
 
@@ -310,7 +310,7 @@ loco query "Solve: ..." --no-reread --votes 1
 
 ### Harness Design
 
-The evaluation harness is a core piece of infrastructure, not an afterthought. It serves three purposes:
+The evaluation harness is core infrastructure. It serves three purposes:
 
 1. **Gating**: Adapters must pass evaluation to be included in the registry
 2. **Comparison**: Standardized scoring lets us compare adapters, track improvement across versions, and benchmark against external models
@@ -384,7 +384,7 @@ Adapters are hosted on:
 
 ## Technical Constraints and Trade-offs
 
-**Memory ceiling dictates everything.** The 8GB RAM target is the single most important constraint. Every architectural decision flows from it. This is why we use 4B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead). All training and inference is done on consumer-grade hardware — see [Meet the Lab](https://locolabo.org) for the full specs.
+The 8GB RAM target is the single most important constraint, and every architectural decision flows from it. This is why we use 4B models, 4-bit quantization, and LoRA (which adds minimal runtime memory overhead). All training and inference is done on consumer-grade hardware; see [Meet the Lab](https://locolabo.org) for the full specs.
 
 **Adapter swapping adds latency, not memory.** Loading a LoRA adapter takes 50-200ms depending on size and disk speed. This is noticeable but acceptable for interactive use. It means we can have many adapters installed without increasing memory usage.
 

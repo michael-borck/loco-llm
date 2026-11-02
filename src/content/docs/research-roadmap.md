@@ -16,8 +16,6 @@ This document outlines the research questions, milestones, and evaluation criter
 4. **Inference-time enhancements**: How much do RE2 prompting and self-consistency voting improve results when compute is free (local inference)?
 5. **Scaling the swarm**: How does system performance change as we add more domains (5 -> 10 -> 20 adapters)?
 
----
-
 ## Phased Milestones
 
 ### Phase 1: Foundation (Semester 1, 2026)
@@ -44,7 +42,7 @@ This document outlines the research questions, milestones, and evaluation criter
 | Adapter installer | `loco adapters install` | Students can share adapters easily |
 
 ### Phase 3: Research Depth (Semester 3+, 2027-2028)
-**Goal**: Push the boundaries — confidence routing, adapter composition, sub-4-bit quantization.
+**Goal**: Push the boundaries: confidence routing, adapter composition, sub-4-bit quantization.
 
 | Milestone | Deliverable | Success Criteria |
 |-----------|------------|-----------------|
@@ -52,8 +50,6 @@ This document outlines the research questions, milestones, and evaluation criter
 | Adapter composition | Multi-adapter inference | Meaningful quality gain on cross-domain tasks |
 | 1.58-bit exploration | BitNet-style quantization | Feasibility study on quality vs memory |
 | Learned router | Feedback-driven routing | Improves with usage data |
-
----
 
 ## Evaluation Framework
 
@@ -90,8 +86,6 @@ Each domain maintains its own benchmark. The system-level benchmark is the union
 | Summarisation | ROUGE-L | Token overlap | TBD |
 | ... | ... | ... | ... |
 
----
-
 ## User Stories
 
 LocoLLM serves three user types. While not a traditional application, framing requirements as user stories clarifies what we're building and defines acceptance criteria for testing.
@@ -124,19 +118,15 @@ LocoLLM serves three user types. While not a traditional application, framing re
 | PL-03 | As the project lead, I want to track system-level performance over semesters | Results archived per semester; trend report |
 | PL-04 | As the project lead, I want to set the base model for the next academic year | ADR process for base model selection; migration guide |
 
----
-
 ## Open Research Questions
 
-Tracked in `docs/ideas.md`. Key items:
+Tracked in `docs/ideas.md`. Items:
 
-- Ensemble voting across same-domain adapters — latency vs accuracy tradeoff
-- Adapter composition (stacking two LoRAs) — feasibility and interference
+- Ensemble voting across same-domain adapters: latency vs accuracy tradeoff
+- Adapter composition (stacking two LoRAs): feasibility and interference
 - Confidence-based routing with fallback chains
 - Adapter retirement policy for long-term registry management
 - Sub-4-bit quantization (1.58-bit BitNet) viability
-
----
 
 ## Semester Planning Template
 

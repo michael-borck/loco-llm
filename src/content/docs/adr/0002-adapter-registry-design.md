@@ -20,7 +20,7 @@ Multiple students may build adapters for the same domain (e.g., math) across sem
 4. Record benchmark scores for automated leaderboard generation
 5. Track provenance (which semester/cohort built it)
 
-The current registry is flat — one adapter per name, no domain grouping.
+The current registry is flat: one adapter per name, no domain grouping.
 
 ## Decision
 
@@ -36,7 +36,7 @@ Adapter names become more specific to distinguish within a domain: `math-gsm8k`,
 ## Consequences
 
 - Students can freely build competing adapters without displacing previous work
-- The "best wins" model is transparent — benchmark scores decide the active adapter
+- The "best wins" model is transparent: benchmark scores decide the active adapter
 - Registry file grows over time; may need to split into per-domain files in later years
-- Router logic becomes simpler — it routes to a domain, then the registry resolves which adapter
+- Router logic becomes simpler: it routes to a domain, then the registry resolves which adapter
 - Migration required: rename `math` -> `math-gsm8k` and add new fields

@@ -4,7 +4,7 @@ title: "Benchmark Results"
 
 ## Base Model Benchmarks
 
-LocoLLM's base model (Qwen3-4B at Q4_K_M) was selected using data from [LocoBanco](https://github.com/michael-borck/loco-banco), which evaluates small language models across standard tasks at multiple quantization levels. The key finding that shaped our choice:
+LocoLLM's base model (Qwen3-4B at Q4_K_M) was selected using data from [LocoBanco](https://github.com/michael-borck/loco-banco), which evaluates small language models across standard tasks at multiple quantization levels. The finding that shaped our choice:
 
 !!! tip "The Sweet Spot"
     Q4_K_M consistently retains **90-95% of BF16 quality** at roughly **30% of the file size**. Below Q3_K_M, quality collapses sharply for knowledge-heavy tasks.

@@ -8,11 +8,11 @@ A generic workflow for creating LocoLLM adapters. The math, code, and analysis a
 
 Every adapter goes through five stages:
 
-1. **Prepare data** — download a dataset and format it for Qwen3 chat template
-2. **Train** — QLoRA adapter training on Qwen3-4B and export as merged GGUF
-3. **Register** — add the adapter to `adapters/registry.yaml`
-4. **Deploy** — load the merged GGUF into Ollama via `loco setup`
-5. **Evaluate** — run `loco eval <adapter>` to compare against the base model
+1. **Prepare data:** download a dataset and format it for Qwen3 chat template
+2. **Train:** QLoRA adapter training on Qwen3-4B and export as merged GGUF
+3. **Register:** add the adapter to `adapters/registry.yaml`
+4. **Deploy:** load the merged GGUF into Ollama via `loco setup`
+5. **Evaluate:** run `loco eval <adapter>` to compare against the base model
 
 ## Stage 1: Data Preparation
 
@@ -51,7 +51,7 @@ This handles LoRA setup, adapter training, and GGUF export. Override defaults if
 python scripts/train_adapter.py --adapter-name code --epochs 5 --lr 1e-4
 ```
 
-The adapter-specific `train_math_adapter.py` still works for math — the generic script is equivalent with `--adapter-name math`.
+The adapter-specific `train_math_adapter.py` still works for math; the generic script is equivalent with `--adapter-name math`.
 
 See [Training the Math Adapter](train-math-adapter.md) for detailed walkthrough of the training process.
 
@@ -93,9 +93,9 @@ adapters:
       quantization: "q4_k_m"
 ```
 
-Key fields:
+Fields:
 
-- **`eval_type`**: Controls how `loco eval` scores responses — `"numeric"` (exact number match), `"code"` (syntax + keywords), or `"analysis"` (substring match)
+- **`eval_type`**: Controls how `loco eval` scores responses: `"numeric"` (exact number match), `"code"` (syntax + keywords), or `"analysis"` (substring match)
 - **`router_keywords`**: Words that trigger this adapter when using automatic routing
 
 ## Stage 4: Deployment
@@ -144,9 +144,9 @@ loco eval <adapter_name>
 The current adapters are deliberately basic (PoC quality). Here are concrete ways to improve them:
 
 - **Better data prep**: Clean up noisy examples, add more training data, improve prompt templates
-- **Analysis adapter**: The templated reasoning is crude — replace with actual model-generated explanations
+- **Analysis adapter**: The templated reasoning is crude; replace it with actual model-generated explanations
 - **Code eval**: Add execution-based testing (run the code, check outputs) instead of syntax-only checks
 - **Hyperparameter tuning**: Experiment with LoRA rank, learning rate, number of epochs
 - **Router upgrade**: Replace keyword matching with an ML classifier (see ADR-0003)
-- **New adapters**: Creative writing, translation, summarization — follow the same workflow
+- **New adapters**: Creative writing, translation, summarization: follow the same workflow
 - **Prompting strategies**: Add RE2 prompting or chain-of-thought to the eval harness

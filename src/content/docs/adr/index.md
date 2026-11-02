@@ -6,7 +6,7 @@ We use ADRs to capture significant technical and research decisions in LocoLLM.
 
 ## What is an ADR?
 
-An Architecture Decision Record is a short document that captures a single decision, including the context, the decision itself, and the consequences. ADRs are **immutable once accepted** — if a decision is reversed, a new ADR supersedes the old one.
+An Architecture Decision Record is a short document that captures a single decision, including the context, the decision itself, and the consequences. ADRs are **immutable once accepted**; if a decision is reversed, a new ADR supersedes the old one.
 
 ## When to write an ADR
 
@@ -20,13 +20,13 @@ You do **not** need an ADR for routine implementation choices.
 
 ## Format
 
-Use the template in `0000-template.md`. Key sections:
+Use the template in `0000-template.md`. Sections:
 
-1. **Title** — short noun phrase (e.g., "Use Qwen3-4B as base model")
-2. **Status** — `proposed` | `accepted` | `deprecated` | `superseded by ADR-NNNN`
-3. **Context** — What is the issue? What forces are at play?
-4. **Decision** — What we decided and why
-5. **Consequences** — What becomes easier, harder, or different?
+1. **Title:** short noun phrase (e.g., "Use Qwen3-4B as base model")
+2. **Status:** `proposed` | `accepted` | `deprecated` | `superseded by ADR-NNNN`
+3. **Context:** What is the issue? What forces are at play?
+4. **Decision:** What we decided and why
+5. **Consequences:** What becomes easier, harder, or different?
 
 ## Numbering
 

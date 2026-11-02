@@ -17,9 +17,9 @@ The published claim is that RE2 reduces errors caused by the model misreading or
 
 We expect RE2 to help Qwen3-4B *more* than it helps frontier models, for three reasons:
 
-- **Smaller attention budgets** — fewer attention heads and layers; more likely to miss content on a single pass.
-- **Tighter effective context** — re-reading is cheap when the question is short relative to the model's context window.
-- **Asymmetric cost** — the technique cost (extra input tokens) is borne by both small and large models equally; the gain on small models should be larger.
+- **Smaller attention budgets:** fewer attention heads and layers; more likely to miss content on a single pass.
+- **Tighter effective context:** re-reading is cheap when the question is short relative to the model's context window.
+- **Asymmetric cost:** the technique cost (extra input tokens) is borne by both small and large models equally; the gain on small models should be larger.
 
 We expect the effect to be largest on:
 
@@ -34,7 +34,7 @@ We expect the effect to be smallest or absent on:
 
 ## Methodology
 
-(Draft — to be refined before running.)
+(Draft, to be refined before running.)
 
 - **Base model:** Qwen3-4B-Instruct at Q4_K_M (LocoLLM standard, per [ADR-0001](../adr/0001-base-model-qwen3-4b.md) and [ADR-0006](../adr/0006-gguf-ollama-inference-standard.md))
 - **Comparison run:** Llama 3.1 8B Instruct at Q4_K_M, on a sub-sample, to test the asymmetric-effect hypothesis
@@ -45,8 +45,8 @@ We expect the effect to be smallest or absent on:
 - **Sample count:** sized for a 95% CI on accuracy difference of ±2 percentage points (~600 items per condition, depending on baseline accuracy)
 - **Sampling:** `temperature=0` for the primary run; an `N=5` rerun at `temperature=0.3` to characterise variance
 - **Conditions:**
-  - **Baseline** — plain prompt
-  - **RE2** — baseline prompt with the re-read prefix and "Now answer" suffix
+  - **Baseline:** plain prompt
+  - **RE2:** baseline prompt with the re-read prefix and "Now answer" suffix
 - **Pass criterion per item:** task-specific (exact match for multi-choice; numeric match for GSM8K; rubric-graded by a frozen judge model for the constructed set, with judge variance characterised separately)
 
 ## Results
@@ -75,4 +75,4 @@ Until results land, the [Small Model Strategies](../small-model-strategies.md) s
 
 - [Small Model Strategies §2: Prompting Strategies](../small-model-strategies.md#2-prompting-strategies)
 - [Scaffolding Studies index](index.md)
-- [RE2 (general-audience version)](https://github.com/michael-borck/the-ai-skills-passport) — `ai-toolkit/downloads/re2-prompting.qmd` in the AI Skills Passport
+- [RE2 (general-audience version)](https://github.com/michael-borck/the-ai-skills-passport): `ai-toolkit/downloads/re2-prompting.qmd` in the AI Skills Passport

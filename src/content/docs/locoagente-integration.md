@@ -3,7 +3,7 @@ title: "LocoAgente as the Multi-Turn Harness"
 description: How LocoLLM composes with LocoAgente as the inference layer of a conversational, multi-turn harness.
 ---
 
-LocoLLM's Ollama-served models can serve as the inference backend for [LocoAgente](https://locoagente.org), the conversational harness library that handles multi-turn orchestration patterns — Debate, Perspective, Synthesis, Iterative Refinement.
+LocoLLM's Ollama-served models can be the inference backend for [LocoAgente](https://locoagente.org), the conversational harness library that handles multi-turn orchestration patterns: Debate, Perspective, Synthesis, Iterative Refinement.
 
 ## The integration in one paragraph
 
@@ -22,10 +22,10 @@ LocoAgente's `Inference` subsystem speaks OpenAI-compatible HTTP. Ollama exposes
 
 Frontier-equivalent multi-turn capability on local hardware needs both sides:
 
-- **Specialised models** — LocoLLM closes single-call quality gaps via adapters and prompting techniques.
-- **Multi-turn harness** — LocoAgente gets reliable work out of those models across debate, refinement, and verification loops.
+- **Specialised models**: LocoLLM closes single-call quality gaps via adapters and prompting techniques.
+- **Multi-turn harness**: LocoAgente gets reliable work out of those models across debate, refinement, and verification loops.
 
-Used alone, each is half the system. Composed, they answer the lab's central question — *how do we get useful work out of small local models?* — at both the per-call and per-conversation layers.
+Used alone, each is half the system. Composed, they answer the lab's central question, *how do we get useful work out of small local models?*, at both the per-call and per-conversation layers.
 
 ## Configuration example
 
@@ -40,22 +40,22 @@ client = OpenAICompatibleClient(
 )
 ```
 
-That is the entire integration. Every LocoAgente Orchestration pattern (`SinglePass`, `DebatePattern`, `SynthesisPattern`, `IterativeRefinement`) accepts any `InferenceClient` — so a LocoLLM-served model fits all patterns by construction.
+That is the entire integration. Every LocoAgente Orchestration pattern (`SinglePass`, `DebatePattern`, `SynthesisPattern`, `IterativeRefinement`) accepts any `InferenceClient`, so a LocoLLM-served model fits all patterns by construction.
 
 ## Boundaries
 
 The OpenAI-compatible chat-completions contract is the entire interface. From LocoLLM's side:
 
-- LocoLLM does **not** see Orchestration state or conversation history — it sees individual prompt/completion pairs, one per harness call.
+- LocoLLM does **not** see Orchestration state or conversation history; it sees individual prompt/completion pairs, one per harness call.
 - LocoLLM does **not** know which Orchestration pattern is active; the same model serves a `SinglePass` request and a Debate-round request identically.
-- Adapter routing inside LocoLLM is unaffected by the harness's structure — each call is routed on its own merits.
+- Adapter routing inside LocoLLM is unaffected by the harness's structure; each call is routed on its own merits.
 
 This boundary is what lets each side evolve independently. New orchestration patterns in LocoAgente, or new adapters in LocoLLM, do not require changes on the other side.
 
 ## Further reading
 
-- [LocoAgente: Four subsystems](https://locoagente.org/architecture/four-subsystems) — where Inference sits in the harness
+- [LocoAgente: Four subsystems](https://locoagente.org/architecture/four-subsystems): where Inference sits in the harness
 - [ADR-0006: GGUF/Ollama inference standard](adr/0006-gguf-ollama-inference-standard.md)
-- [Small model strategies](small-model-strategies.md) — the single-turn scaffolding LocoAgente builds on
-- [Scaffolding studies](scaffolding-studies/index.md) — empirical tests of those strategies on Qwen3-4B
-- [LocoLabo: Technique before scale](https://locolabo.org/the-loco-thesis#technique-before-scale) — how the projects compose at the lab level
+- [Small model strategies](small-model-strategies.md): the single-turn scaffolding LocoAgente builds on
+- [Scaffolding studies](scaffolding-studies/index.md): empirical tests of those strategies on Qwen3-4B
+- [LocoLabo: Technique before scale](https://locolabo.org/the-loco-thesis#technique-before-scale): how the projects compose at the lab level

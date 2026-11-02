@@ -4,7 +4,7 @@ title: "Training the Math LoRA Adapter"
 
 Step-by-step instructions for training the math adapter on neurocore (or any machine with an NVIDIA GPU and 8GB+ VRAM).
 
-> **No GPU?** Use the [Colab notebook](https://github.com/michael-borck/loco-llm/blob/main/notebooks/train_math_adapter.ipynb) instead — it runs on a free T4 GPU and produces the same GGUF file.
+> **No GPU?** Use the [Colab notebook](https://github.com/michael-borck/loco-llm/blob/main/notebooks/train_math_adapter.ipynb) instead; it runs on a free T4 GPU and produces the same GGUF file.
 
 ## Prerequisites
 
@@ -18,11 +18,11 @@ Step-by-step instructions for training the math adapter on neurocore (or any mac
 
 The training pipeline:
 
-1. **Prepare data** — download GSM8K examples and format for Qwen3 chat template
-2. **Train** — QLoRA adapter training on Qwen3-4B using Unsloth, then merge LoRA weights and export as GGUF
-3. **Deploy** — load the merged GGUF into Ollama and verify with eval benchmark
+1. **Prepare data:** download GSM8K examples and format for Qwen3 chat template
+2. **Train:** QLoRA adapter training on Qwen3-4B using Unsloth, then merge LoRA weights and export as GGUF
+3. **Deploy:** load the merged GGUF into Ollama and verify with eval benchmark
 
-The key design choice: we **merge LoRA weights into the base model** and export a standalone GGUF. Ollama does not support Qwen3 LoRA adapters via the `ADAPTER` directive (only Llama/Mistral/Gemma), so merging is required.
+One design choice drives the rest: we **merge LoRA weights into the base model** and export a standalone GGUF. Ollama does not support Qwen3 LoRA adapters via the `ADAPTER` directive (only Llama/Mistral/Gemma), so merging is required.
 
 ## Phase 1: Environment Setup
 
@@ -53,7 +53,7 @@ source .venv-train/bin/activate
 python scripts/prepare_gsm8k.py --num-examples 200
 ```
 
-This produces `adapters/math/training_data.jsonl` — 200 math problems in Qwen3 chat format:
+This produces `adapters/math/training_data.jsonl`: 200 math problems in Qwen3 chat format:
 
 ```jsonl
 {"conversations": [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]}
@@ -127,7 +127,7 @@ This runs the 20-problem benchmark comparing base `qwen3:4b` vs the merged math 
 
 **Unsloth install fails**: Check CUDA version compatibility. Unsloth requires CUDA 12.1+. Run `nvidia-smi` to verify driver version.
 
-**GGUF file not found after training**: Check `adapters/math/gguf/` for any `.gguf` files — Unsloth may use a slightly different naming convention than expected.
+**GGUF file not found after training**: Check `adapters/math/gguf/` for any `.gguf` files; Unsloth may use a slightly different naming convention than expected.
 
 **`loco setup` skips math adapter**: The GGUF must exist before setup can register it. Train first, then run setup.
 
@@ -139,7 +139,7 @@ The math adapter can also be trained using the generic `train_adapter.py`:
 python scripts/train_adapter.py --adapter-name math
 ```
 
-This is equivalent to `train_math_adapter.py` with the same defaults. The generic script supports all adapters (math, code, analysis) — see [Training New Adapters](training-new-adapters.md) for the full workflow.
+This is equivalent to `train_math_adapter.py` with the same defaults. The generic script supports all adapters (math, code, analysis); see [Training New Adapters](training-new-adapters.md) for the full workflow.
 
 ## Output Files
 

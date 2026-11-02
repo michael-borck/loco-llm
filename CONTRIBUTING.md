@@ -73,7 +73,7 @@ in `registry.yaml`. Three are supported:
 | `code` | `{"question": "...", "answer_keywords": ["def", "sorted"]}` | Valid Python syntax plus the expected keywords appearing |
 | `analysis` | `{"question": "...", "answer": "expected text"}` | Case-insensitive check that the expected text appears in the response |
 
-**Choose your eval type before you choose your domain**, not after. The harness
+**Choose your eval type before you choose your domain.** The harness
 can only score what these three types can express. A domain whose correct answers
 cannot be reduced to a number, a set of keywords, or a required phrase will need
 the harness extended, which is a larger piece of work. Raise it early if that is

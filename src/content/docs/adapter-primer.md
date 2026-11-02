@@ -2,7 +2,7 @@
 title: "Adapter Primer"
 ---
 
-A conceptual foundation for contributors who are new to LoRA adapters — the core technique LocoLLM uses to create specialist models. Read this before diving into the [Adapter Development Guide](adapter-guide.md).
+A conceptual foundation for contributors who are new to LoRA adapters, the core technique LocoLLM uses to create specialist models. Read this before the [Adapter Development Guide](adapter-guide.md).
 
 ## Adapters vs Fine-Tuning: Why the Distinction Matters
 
@@ -12,29 +12,29 @@ These terms are often used interchangeably, but in LocoLLM they refer to differe
 |---|---|---|
 | **What changes** | All model parameters | A small set of added parameters (LoRA weights) |
 | **Output** | A new, modified copy of the entire model (gigabytes) | A small adapter file (20-30MB) that layers on top of an unchanged base model |
-| **Base model** | Permanently altered | Untouched — stays frozen |
+| **Base model** | Permanently altered | Untouched, stays frozen |
 | **Cost** | Needs large GPUs, lots of memory, significant time | Runs on consumer hardware (Colab T4, RTX 3060, Mac M1) |
 | **Swappability** | You get one model per fine-tune | Multiple adapters swap in/out of the same base model in milliseconds |
 
 **Full fine-tuning** takes a pretrained model and continues training it on a task-specific dataset, updating *every* parameter. You end up with a new model. This is expensive, slow, and produces a single monolithic result.
 
-**Adapter training** (specifically LoRA / QLoRA) adds a small set of new parameters to the base model and trains only those. The base model stays frozen. You end up with a lightweight adapter file that modifies the base model's behaviour when loaded. This is what LocoLLM does — exclusively.
+**Adapter training** (specifically LoRA / QLoRA) adds a small set of new parameters to the base model and trains only those. The base model stays frozen. You end up with a lightweight adapter file that modifies the base model's behaviour when loaded. This is what LocoLLM does exclusively.
 
-The distinction matters architecturally: because adapters are small and the base model is shared, LocoLLM can swap between specialist adapters in milliseconds. One base model in memory, many specialisations available on demand. With full fine-tuning, you'd need a separate copy of the entire model for each specialism — impossible on an 8GB laptop.
+The distinction matters architecturally: because adapters are small and the base model is shared, LocoLLM can swap between specialist adapters in milliseconds. One base model in memory, many specialisations available on demand. With full fine-tuning, you'd need a separate copy of the entire model for each specialism, impossible on an 8GB laptop.
 
 Some literature uses "fine-tuning" as an umbrella term that includes adapter training (PEFT). In LocoLLM documentation, we keep them separate:
 - **Fine-tuning** = modifying all model parameters (we don't do this)
 - **Adapter training** = training LoRA weights on a frozen base model (this is what we do)
 
-If you encounter "fine-tuning" elsewhere in our docs or in research papers, check whether they mean full fine-tuning or adapter training — the workflows, costs, and outcomes are very different.
+If you encounter "fine-tuning" elsewhere in our docs or in research papers, check whether they mean full fine-tuning or adapter training; the workflows, costs, and outcomes are very different.
 
 ## How Adapters Work: LoRA in Plain English
 
-**LoRA (Low-Rank Adaptation)** is the technique behind every LocoLLM adapter. Here's the intuition.
+**LoRA (Low-Rank Adaptation)** is the technique behind every LocoLLM adapter.
 
-A pretrained model's knowledge lives in large weight matrices — tables of numbers that determine how the model transforms input into output. During full fine-tuning, you'd update every number in these matrices. LoRA's insight is that the *change* you need to make for a specific task can be represented by much smaller matrices.
+A pretrained model's knowledge lives in large weight matrices, tables of numbers that determine how the model transforms input into output. During full fine-tuning, you'd update every number in these matrices. LoRA's insight is that the *change* you need to make for a specific task can be represented by much smaller matrices.
 
-Think of it like this: the base model is a detailed city map. Specialising for math reasoning doesn't require redrawing the entire map — it's more like adding a transparent overlay that highlights the math-relevant routes. LoRA creates that overlay.
+Think of it like this: the base model is a detailed city map. Specialising for math reasoning doesn't require redrawing the entire map; it's more like adding a transparent overlay that marks the math-relevant routes. LoRA creates that overlay.
 
 Technically, LoRA decomposes the weight update into two small matrices whose product approximates the full update. The size of these matrices is controlled by a parameter called **rank**.
 
@@ -50,17 +50,17 @@ The standard LocoLLM configuration targets the model's attention layers (`q_proj
 
 ### QLoRA: Training Adapters on Quantized Models
 
-LocoLLM's base model is stored in **4-bit quantized** format (Q4_K_M) to fit in limited RAM. You might wonder: can you train adapters on a model that's been compressed this aggressively?
+LocoLLM's base model is stored in **4-bit quantized** format (Q4_K_M) to fit in limited RAM. Can you train adapters on a model that's been compressed this aggressively?
 
-Yes. **QLoRA** (Quantized LoRA) keeps the base model frozen in 4-bit while training the LoRA adapter weights at full precision. The key finding from the original QLoRA paper (Dettmers et al., NeurIPS 2023) is that this matches the performance of training adapters on a full-precision model. The quantized base provides the foundation; the full-precision adapter provides the task-specific refinement.
+Yes. **QLoRA** (Quantized LoRA) keeps the base model frozen in 4-bit while training the LoRA adapter weights at full precision. The finding from the original QLoRA paper (Dettmers et al., NeurIPS 2023) is that this matches the performance of training adapters on a full-precision model. The quantized base provides the foundation; the full-precision adapter provides the task-specific refinement.
 
-This is why LocoLLM can train adapters on Google Colab's free T4 GPU or even on a Mac with MPS — the memory footprint during training is dramatically smaller than full fine-tuning.
+This is why LocoLLM can train adapters on Google Colab's free T4 GPU or even on a Mac with MPS: the memory footprint during training is dramatically smaller than full fine-tuning.
 
 ## Data Is the Bottleneck
 
-If there's one thing to internalize from this primer, it's this: **the quality of your training data matters more than anything else you'll decide during adapter development**. More than rank, more than learning rate, more than the number of epochs.
+The quality of your training data matters more than anything else you'll decide during adapter development: more than rank, more than learning rate, more than the number of epochs.
 
-The QLoRA paper demonstrated that a model trained on just 9,000 high-quality examples outperformed one trained on 450,000 lower-quality examples on human evaluation. Quality isn't just "slightly better" — it's the dominant factor.
+The QLoRA paper demonstrated that a model trained on just 9,000 high-quality examples outperformed one trained on 450,000 lower-quality examples on human evaluation. Quality is the dominant factor.
 
 ### What Makes a Good Training Example
 
@@ -78,12 +78,12 @@ The [Adapter Development Guide](adapter-guide.md#data-quality-checklist) has a c
 Using a frontier model (like GPT-4 or Claude) to generate training examples is practical and common. LocoLLM explicitly supports this workflow. But synthetic data has specific risks:
 
 - **Homogeneity**: A single model tends to produce examples in a similar style and at a similar difficulty level. You get breadth without true diversity. Vary your generation prompts aggressively.
-- **Inherited errors**: The generating model has its own biases and mistakes. Always review a sample of generated examples manually — the [contributing guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md#synthetic-data-generation) recommends at least 10%.
+- **Inherited errors**: The generating model has its own biases and mistakes. Always review a sample of generated examples manually; the [contributing guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md#synthetic-data-generation) recommends at least 10%.
 - **Subtle incorrectness**: For technical domains (math, code), synthetic outputs can look plausible but be wrong. Verify outputs, especially for tasks where you can check correctness programmatically.
 
 ### Data Contamination
 
-**Data contamination** occurs when examples from your evaluation benchmark leak into your training set. This makes your benchmark scores meaningless — the model isn't generalizing, it's memorizing.
+**Data contamination** occurs when examples from your evaluation benchmark leak into your training set. This makes your benchmark scores meaningless: the model isn't generalizing, it's memorizing.
 
 This is easy to do accidentally, especially when pulling from public datasets that overlap. LocoLLM's evaluation harness tracks benchmark file hashes to detect changes, and PR reviewers check for contamination. Keep your training set and benchmark set strictly separate. The [evaluation standards](evaluation-standards.md) explain the integrity requirements.
 
@@ -95,7 +95,7 @@ You don't need to understand the math of gradient descent to train an adapter, b
 
 1. The training script loads a batch of examples from your dataset.
 2. For each example, it feeds the instruction and input to the model and compares the model's output to the expected output.
-3. The difference between the model's output and the expected output is measured as **loss** — a number that represents how wrong the model is.
+3. The difference between the model's output and the expected output is measured as **loss**, a number that represents how wrong the model is.
 4. The LoRA adapter weights are adjusted slightly to reduce that loss (the base model weights stay frozen).
 5. This repeats for every batch in the dataset. One complete pass through the entire dataset is called an **epoch**.
 
@@ -112,7 +112,7 @@ The [Adapter Development Guide](adapter-guide.md#monitoring-training) covers wha
 
 ### Epochs and Learning Rate Intuition
 
-**Epochs**: How many times the model sees the full dataset. With a small dataset (500 examples), you typically need 3-5 epochs — the model needs multiple passes to learn the patterns. With a large dataset (5000+), 1-2 epochs may suffice because there's enough variety in a single pass.
+**Epochs**: How many times the model sees the full dataset. With a small dataset (500 examples), you typically need 3-5 epochs, because the model needs multiple passes to learn the patterns. With a large dataset (5000+), 1-2 epochs may suffice because there's enough variety in a single pass.
 
 **Learning rate**: How big a step the model takes when adjusting weights. Too high and training is unstable (overshooting). Too low and the model barely learns (tiny steps that never get anywhere). LocoLLM defaults to 2e-4, which is the standard starting point for QLoRA. You almost never need to increase it; occasionally you need to decrease it.
 
@@ -157,7 +157,7 @@ Most first-time adapters don't pass the evaluation bar on the first try. Expect 
 
 When your adapter doesn't beat the base model by enough (or at all), work through this decision tree:
 
-**1. Is it a data problem?** (Most likely — check this first)
+**1. Is it a data problem?** (Most likely, so check this first)
 - Are training outputs actually correct? Spot-check 20 random examples.
 - Is the dataset diverse enough, or is it 500 variations of the same thing?
 - Do training examples match the style and format you're evaluating on?
@@ -171,15 +171,15 @@ When your adapter doesn't beat the base model by enough (or at all), work throug
 
 **3. Is it a scope problem?**
 - Is the domain too broad? "All of mathematics" is a PhD thesis. "Multi-step arithmetic word problems" is an adapter.
-- Does the base model fundamentally lack the capability you're trying to build on? Adapters amplify existing abilities; they can't create entirely new ones from scratch.
+- Does the base model lack the capability you're trying to build on? Adapters amplify existing abilities; they can't create entirely new ones from scratch.
 
 ### Iteration Is the Process
 
-The [Adapter Development Guide](adapter-guide.md#iteration-cycle) walks through the specific iteration workflow: analyze failures, add targeted training data, retrain, re-evaluate. Each cycle should be informed by the previous one's failure analysis — don't just "add more data" without understanding *why* the model is failing.
+The [Adapter Development Guide](adapter-guide.md#iteration-cycle) walks through the specific iteration workflow: analyze failures, add targeted training data, retrain, re-evaluate. Each cycle should be informed by the previous one's failure analysis; don't just "add more data" without understanding *why* the model is failing.
 
 ## Next Steps
 
-You now have the conceptual foundation. Here's where to go from here:
+You now have the conceptual foundation.
 
 - **[Adapter Development Guide](adapter-guide.md)**: The step-by-step practical guide for building your first adapter, from baseline testing through submission.
 - **[Contributing Guide](https://github.com/michael-borck/loco-llm/blob/main/CONTRIBUTING.md)**: The full contribution workflow including proposal, data requirements, evaluation bar, and PR checklist.

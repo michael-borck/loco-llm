@@ -2,9 +2,7 @@
 title: "LocoLLM Ideas & Open Questions"
 ---
 
-Captured design discussions and future directions. Items here are **not committed to** — they are candidates for ADRs and the research roadmap.
-
----
+Captured design discussions and future directions. Items here are **not committed to**; they are candidates for ADRs and the research roadmap.
 
 ## 1. Multiple Adapters Per Domain
 
@@ -65,14 +63,14 @@ adapters:
 |-------|---------|
 | `domain` | Groups adapters so router knows they cover the same territory |
 | `active` | Only one adapter per domain is active for routing; rest are in the library |
-| `semester` | Tracks provenance — which cohort built this adapter |
+| `semester` | Tracks provenance: which cohort built this adapter |
 | `benchmark_scores` | Structured scores enabling automated leaderboard and "best wins" selection |
 
 ### Selection strategies (not mutually exclusive)
 
-1. **Best-on-benchmarks (default)** — Router picks the single best adapter per domain based on eval scores. Zero latency cost.
-2. **Ensemble voting** — Run query through 2-3 adapters for the same domain, majority vote on answer. Builds on the existing self-consistency voting design. Higher latency (multiple LoRA swaps).
-3. **Fallback chain** — Try best adapter; if confidence is low, try second-best. Requires confidence estimation.
+1. **Best-on-benchmarks (default):** Router picks the single best adapter per domain based on eval scores. Zero latency cost.
+2. **Ensemble voting:** Run query through 2-3 adapters for the same domain, majority vote on answer. Builds on the existing self-consistency voting design. Higher latency (multiple LoRA swaps).
+3. **Fallback chain:** Try best adapter; if confidence is low, try second-best. Requires confidence estimation.
 
 ### Leaderboard concept
 
@@ -92,19 +90,13 @@ Domain: code
 
 Active adapter is auto-selected as the one with the highest primary benchmark score, unless manually overridden.
 
----
-
-## 2. Multiple Routers — Hold Off
+## 2. Multiple Routers: Hold Off
 
 A single router that evolves through phases (keyword -> classifier -> learned) is simpler and sufficient. If a student wants to improve routing, frame it as upgrading the existing router, not running competing routers in parallel. Revisit if domain overlap becomes severe (10+ domains with fuzzy boundaries).
-
----
 
 ## 3. Adapter Composition
 
 Can two adapters be applied simultaneously? E.g., a "math" adapter + a "formal writing" adapter for a math proof writing task. This is non-trivial with LoRA (weight merging, interference) but worth investigating as a research question.
-
----
 
 ## 4. Confidence-Based Routing
 
@@ -115,16 +107,12 @@ Router outputs a confidence score. If below threshold:
 
 Ties into the ensemble voting idea above.
 
----
-
 ## 5. Adapter Retirement Policy
 
 As new semesters produce better adapters, what happens to old ones?
 - Keep in registry with `active: false` and `retired: true`?
 - Archive to a separate file?
 - How long do we keep GGUF files around? (storage cost)
-
----
 
 ## 6. Cross-Domain Evaluation
 
