@@ -4,13 +4,13 @@
   "scripts": {
     "dev": "astro dev",
     "clean": "rm -rf dist .astro node_modules/.astro",
-    "build": "astro build",
+    "build": "find src/content -name '._*' -delete || true; astro build",
     "rebuild": "npm run clean && npm run build",
-    "preview": "astro preview",
-    "prebuild": "find src/content -name '._*' -delete || true"
+    "preview": "astro preview"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.34",
+    "@locolabo/theme": "github:michael-borck/loco-theme#v0.1.1",
     "astro": "^5.7",
     "sharp": "^0.33"
   }
