@@ -48,3 +48,6 @@ adapter_checkpoints/
 # Environment
 .env
 .env.local
+
+# macOS + Node hygiene
+._*
