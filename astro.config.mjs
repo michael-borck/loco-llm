@@ -53,6 +53,14 @@ export default defineConfig({
               { label: 'Small Model Strategies', slug: 'small-model-strategies' },
               { label: 'Research Roadmap', slug: 'research-roadmap' },
               { label: 'Ideas & Open Questions', slug: 'ideas' },
+              { label: 'LocoAgente Integration', slug: 'locoagente-integration' },
+            ],
+          },
+          {
+            label: 'Scaffolding Studies',
+            items: [
+              { label: 'Overview', slug: 'scaffolding-studies' },
+              { label: 'RE2 (Re-Reading)', slug: 'scaffolding-studies/re2' },
             ],
           },
           {

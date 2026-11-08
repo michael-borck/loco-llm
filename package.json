@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.34",
-    "@locolabo/theme": "github:michael-borck/loco-theme#v0.1.1",
+    "@locolabo/theme": "github:michael-borck/loco-theme#v0.3.0",
     "astro": "^5.7",
     "sharp": "^0.33"
   }
