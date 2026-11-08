@@ -13,10 +13,9 @@ export default defineConfig({
         home: 'https://locollm.org',
         github: 'loco-llm',
         accent: { low: '#1a0d02', main: '#f97316', high: '#fbd5b0' },
-        favicon: '/llama.svg',
         logo: {
           alt: 'LocoLLM',
-          src: './src/assets/llama.svg',
+          src: './src/assets/art/icon.png',
           replacesTitle: false,
         },
         sidebar: [
